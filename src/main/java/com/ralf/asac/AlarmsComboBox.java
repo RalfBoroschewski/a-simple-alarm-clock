@@ -1,25 +1,20 @@
 package com.ralf.asac;
 
-import java.util.GregorianCalendar;
-
 import javafx.scene.control.ComboBox;
 import javafx.util.StringConverter;
 
 public class AlarmsComboBox extends ComboBox<Alarm> {
 
 	private Alarm storedAlarm;
-	private long timeOfLastEdit;
 
 	@SuppressWarnings("java:S6201")
 	AlarmsComboBox(MainClass mainClass, TimeDurationField timeDurationField) {
 		setEditable(true);
 
 		setOnAction(_ -> {
-
 			Object value = getValue();
 			if (value instanceof Alarm) {
 				storedAlarm = (Alarm) value;
-				timeDurationField.setText(storedAlarm.time);
 				if (storedAlarm != null) {
 					timeDurationField.setText(storedAlarm.time);
 				} else {
@@ -29,19 +24,7 @@ public class AlarmsComboBox extends ComboBox<Alarm> {
 			mainClass.evaluateTimeDurationField();
 		});
 
-		getEditor().textProperty().addListener((_, _, newText) -> {
-			if (newText == null || newText.trim().isEmpty()) {
-				return;
-			}
-
-			Alarm alarm = getSelectionModel().getSelectedItem();
-			if (alarm != null && alarm.name != null) {
-				timeOfLastEdit = newText.equals(alarm.name) ? new GregorianCalendar().getTimeInMillis() : 0;
-			}
-		});
-
-		setConverter();
-
+		setConverter(this, timeDurationField);
 	}
 
 	Alarm getStoredAlarm() {
@@ -52,22 +35,35 @@ public class AlarmsComboBox extends ComboBox<Alarm> {
 		this.storedAlarm = storedAlarm;
 	}
 
-	private void setConverter() {
+	private void setConverter(AlarmsComboBox alarmsComboBox, TimeDurationField timeDurationField) {
 		setConverter(new StringConverter<Alarm>() {
+
 			@Override
 			public String toString(final Alarm alarm) {
 				if (alarm == null) {
-					return "";
+					return getEditor().getText();
+				}
+
+				if (alarm.name.strip().isEmpty()) {
+					return getEditor().getText();
 				}
 				return alarm.name;
 			}
 
 			@Override
-			public Alarm fromString(final String string) {
-				if (string == null || string.trim().isEmpty()) {
-					return null;
+			public Alarm fromString(final String name) {
+
+				if (name == null || name.trim().isEmpty() || getValue() == null) {
+					return new Alarm(getEditor().getText(), timeDurationField.getText(), null);
 				}
-				return getValue();
+
+				for (Alarm item : alarmsComboBox.getItems()) {
+					if (item.name.equals(name)) {
+						return item;
+					}
+				}
+
+				return new Alarm(getEditor().getText(), timeDurationField.getText(), null);
 			}
 		});
 	}
@@ -76,24 +72,16 @@ public class AlarmsComboBox extends ComboBox<Alarm> {
 	String getName() {
 		String name = "";
 		storedAlarm = getValue();
-		System.out.println("Holla 1" + storedAlarm);
-		if (storedAlarm != null) {
-			System.out.println("Holla 2");
+		if (storedAlarm == null) {
+			name = getEditor().getText();
+		} else {
 			if (storedAlarm instanceof Alarm) {
-				System.out.println("Holla 3");
 				name = ((Alarm) storedAlarm).name;
 			} else {
-				System.out.println("Holla 4");
 				name = storedAlarm.toString();
 			}
 		}
 		return name;
-	}
-
-	boolean isTextFieldEdited() {
-		long elapsedTime = new GregorianCalendar().getTimeInMillis() - timeOfLastEdit;
-
-		return elapsedTime < 20_000;
 	}
 
 	void clear() {
@@ -114,6 +102,6 @@ class Alarm {
 	}
 
 	public String toString() {
-		return name;
+		return "Name: " + name + " Time: " + time;
 	}
 }

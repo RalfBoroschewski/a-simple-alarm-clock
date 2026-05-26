@@ -22,7 +22,7 @@ class AlarmSounds {
 		return result;
 	}
 
-	// build a list with all sounds in side the .jar
+	// build a list with all sounds inside the .jar
 	private List<AlarmSoundData> getAlarmSoundsResource() {
 		final List<AlarmSoundData> result = new ArrayList<>();
 		try (ScanResult scanResult = new ClassGraph().acceptPaths(".").scan()) {

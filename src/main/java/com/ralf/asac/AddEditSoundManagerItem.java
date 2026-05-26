@@ -39,6 +39,15 @@ class AddEditSoundManagerItem {
 
 		nameTextField = new TextField(name);
 		pathFieldTextField = new TextField(path);
+
+		final double pathFieldTextFieldWidth = 400;
+		final double marginLeftWindow = 20;
+		final double marginRightWindow = 20;
+		final double marginTopPathItems = 20;
+		final double marginTopCaptionFields = 20;
+
+		pathFieldTextField.setMinWidth(pathFieldTextFieldWidth);
+		pathFieldTextField.setPrefWidth(pathFieldTextFieldWidth);
 		selectFileButton = new Button(MainClass.messages.getString("selectFile"));
 		okButton = new Button(MainClass.messages.getString("ok"));
 		okButton.setDisable(isNewEntry);
@@ -57,26 +66,34 @@ class AddEditSoundManagerItem {
 		cancelButton.setOnAction(_ -> stage.close());
 
 		final VBox vBoxName = new VBox();
-		vBoxName.getChildren().addAll(new Label(MainClass.messages.getString("AddEditSoundManagerItem.name")),
-				nameTextField);
+
+		VBox.setMargin(nameTextField, new Insets(marginTopCaptionFields, marginRightWindow, 0, marginLeftWindow));
+		Label nameLabel = new Label(MainClass.messages.getString("AddEditSoundManagerItem.name"));
+		VBox.setMargin(nameLabel, new Insets(0, marginRightWindow, 0, marginLeftWindow));
+		vBoxName.getChildren().addAll(nameLabel, nameTextField);
 
 		final VBox vBoxPath = new VBox();
-		vBoxPath.getChildren().addAll(new Label(MainClass.messages.getString("path")), pathFieldTextField);
+		Label pathLabel = new Label(MainClass.messages.getString("path"));
+		vBoxPath.getChildren().addAll(pathLabel, pathFieldTextField);
+		VBox.setMargin(pathLabel, new Insets(marginTopPathItems, marginRightWindow, 0, marginLeftWindow));
+		VBox.setMargin(pathFieldTextField, new Insets(marginTopCaptionFields, marginRightWindow, 0, marginLeftWindow));
 
 		final VBox vBoxPathButton = new VBox();
-		vBoxPathButton.getChildren().addAll(new Label(""), selectFileButton);
-		VBox.setMargin(selectFileButton, new Insets(0, 10, 0, 0));
+		Label emptyLabel = new Label("");
+		vBoxPathButton.getChildren().addAll(emptyLabel, selectFileButton);
+		VBox.setMargin(emptyLabel, new Insets(marginTopPathItems, 0, 0, 0));
+		VBox.setMargin(selectFileButton, new Insets(marginTopCaptionFields, marginRightWindow, 0, 0));
 
-		final HBox valuesHBox = new HBox(10);
-		valuesHBox.getChildren().addAll(vBoxName, vBoxPath, vBoxPathButton);
-		HBox.setMargin(vBoxName, new Insets(0, 0, 20, 10));
+		final HBox hBoxPathItems = new HBox();
+		hBoxPathItems.getChildren().addAll(vBoxPath, vBoxPathButton);
 
 		final HBox buttonsHBox = new HBox(10);
 		buttonsHBox.getChildren().addAll(okButton, cancelButton);
-		HBox.setMargin(okButton, new Insets(0, 0, 10, 10));
+		HBox.setMargin(okButton, new Insets(20, 0, 10, marginLeftWindow));
+		HBox.setMargin(cancelButton, new Insets(20, 0, 10, 100));
 
 		final VBox vBox = new VBox();
-		vBox.getChildren().addAll(valuesHBox, buttonsHBox, errorLabel);
+		vBox.getChildren().addAll(vBoxName, hBoxPathItems, buttonsHBox, errorLabel);
 
 		selectFileButton.setOnAction(_ -> {
 

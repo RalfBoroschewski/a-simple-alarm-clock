@@ -23,13 +23,13 @@ class AddEditAlarmManagerItem {
 	private final ComboBox<AlarmSounds.AlarmSoundData> alarmSoundDatasComboBox;
 	private final Button manageSoundsButton;
 	private final Label errorLabel;
-	private final ArrayList<AlarmManager.AlarManagerItem> alarmManagerItems;
+	private final ArrayList<AlarmManager.AlarmManagerItem> alarmManagerItems;
 	private final boolean isNewEntry;
 	private boolean isOkAttribute;
 	private final String name;
 
 	AddEditAlarmManagerItem(final String name, final String time, final AlarmSounds.AlarmSoundData alarmSoundData,
-			final boolean isNewEntry, ArrayList<AlarmManager.AlarManagerItem> alarmManagerItems, Stage ownerStage,
+			final boolean isNewEntry, ArrayList<AlarmManager.AlarmManagerItem> alarmManagerItems, Stage ownerStage,
 			AlarmManager alarmManager) {
 		this.name = name;
 		final Stage stage = new Stage();
@@ -128,7 +128,7 @@ class AddEditAlarmManagerItem {
 
 	boolean testOnNameAlreadyExist() {
 		String currentName = nameTextField.getText();
-		for (AlarmManager.AlarManagerItem item : alarmManagerItems) {
+		for (AlarmManager.AlarmManagerItem item : alarmManagerItems) {
 			if (currentName.equals(item.getName())) {
 				return true;
 			}

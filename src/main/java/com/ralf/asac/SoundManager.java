@@ -31,7 +31,7 @@ class SoundManager {
 	private final Stage stage;
 
 	SoundManager(AddEditAlarmManagerItem addEditAlarmManagerItem, Stage ownerStage,
-			ArrayList<AlarmManager.AlarManagerItem> alarmManagerItems, AlarmManager alarmManager) {
+			ArrayList<AlarmManager.AlarmManagerItem> alarmManagerItems, AlarmManager alarmManager) {
 		soundItems = Preferences.getSounds();
 
 		final ObservableList<MyRow> tableItems = FXCollections.observableArrayList();
@@ -123,7 +123,7 @@ class SoundManager {
 
 	@SuppressWarnings("java:S3776")
 	private void setListener(AddEditAlarmManagerItem addEditAlarmManagerItem,
-			ArrayList<AlarmManager.AlarManagerItem> alarmManagerItems, AlarmManager alarmManager) {
+			ArrayList<AlarmManager.AlarmManagerItem> alarmManagerItems, AlarmManager alarmManager) {
 		editButton.setOnAction(_ -> {
 			if (selectedItem != null) {
 				String selectedName = selectedItem.getName();
@@ -135,7 +135,7 @@ class SoundManager {
 
 				if (addEditSoundManagerItem.isOk()) {
 					boolean hasAChangedItem = false;
-					for (AlarmManager.AlarManagerItem alarmManagerItem : alarmManagerItems) {
+					for (AlarmManager.AlarmManagerItem alarmManagerItem : alarmManagerItems) {
 						if (alarmManagerItem.getAlarmSoundData().getName().equals(selectedName)) {
 
 							alarmManagerItem.setAlarmSoundData(new AlarmSounds.AlarmSoundData(newName, newPath));
@@ -174,7 +174,7 @@ class SoundManager {
 			if (selectedItem == null)
 				return;
 
-			for (AlarmManager.AlarManagerItem alarmManagerItem : alarmManagerItems) {
+			for (AlarmManager.AlarmManagerItem alarmManagerItem : alarmManagerItems) {
 				if (alarmManagerItem.getAlarmSoundData().getName().equals(selectedItem.getItem().name)) {
 					final Alert errorAlert = new Alert(AlertType.ERROR);
 					errorAlert.setTitle("");

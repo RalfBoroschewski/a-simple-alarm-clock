@@ -106,7 +106,16 @@ public class MainClass extends Application {
 			showStoredAlarms();
 		});
 
-		timeDurationField.setOnAction(_ -> evaluateTimeDurationField());
+		timeDurationField.setOnAction(_ -> {
+			String name = alarmsComboBox.getEditor().getText();
+			for (Alarm alarm : alarmsComboBox.getItems()) {
+				if (name.equals(alarm.name)) {
+					alarmsComboBox.getEditor().setText("");
+					break;
+				}
+			}
+			evaluateTimeDurationField();
+		});
 
 		deactivateButton.setVisible(false);
 		deactivateButton.setOnAction(_ -> deactivate());
@@ -117,6 +126,7 @@ public class MainClass extends Application {
 		});
 
 		final Scene scene = new Scene(gridPane);
+		stage.setTitle(messages.getString("MainClass.title"));
 		stage.setScene(scene);
 		stage.show();
 
@@ -133,11 +143,10 @@ public class MainClass extends Application {
 	}
 
 	void showStoredAlarms() {
-		System.out.println("Hallo 4");
-		final ArrayList<AlarmManager.AlarManagerItem> items = Preferences.getAlarms();
+		final ArrayList<AlarmManager.AlarmManagerItem> items = Preferences.getAlarms();
 
 		final ArrayList<Alarm> tmpStoredAlarms = new ArrayList<>();
-		for (AlarmManager.AlarManagerItem item : items) {
+		for (AlarmManager.AlarmManagerItem item : items) {
 			tmpStoredAlarms.add(new Alarm(item.getName(), item.getTime(), item.getAlarmSoundData()));
 		}
 
@@ -153,13 +162,11 @@ public class MainClass extends Application {
 	}
 
 	void clearAlarmsComboBox() {
-		System.out.println("Hallo 3");
 		alarmsComboBox.clear();
 	}
 
 	void deactivate() {
-		if (!alarmsComboBox.isTextFieldEdited())
-			timeDurationField.setText("");
+		timeDurationField.setText("");
 
 		pauseButton.setVisible(false);
 		pauseButton.setText(messages.getString(PAUSE_KEY));
@@ -216,12 +223,10 @@ public class MainClass extends Application {
 
 	@SuppressWarnings("java:S6201")
 	String getName() {
-		System.out.println("Hallo 1 " + alarmsComboBox.getName());
 		return alarmsComboBox.getName();
 	}
 
 	void resetStoredAlarmsVaLue() {
-		System.out.println("Hallo 2");
 		alarmsComboBox.setValue(null);
 	}
 

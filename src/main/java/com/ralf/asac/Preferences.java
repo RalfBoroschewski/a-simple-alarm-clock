@@ -24,10 +24,10 @@ class Preferences {
 	private Preferences() {
 	}
 
-	static void setAlarms(List<AlarmManager.AlarManagerItem> items) {
+	static void setAlarms(List<AlarmManager.AlarmManagerItem> items) {
 		final StringBuilder alarms = new StringBuilder();
 		boolean isFirst = true;
-		for (AlarmManager.AlarManagerItem item : items) {
+		for (AlarmManager.AlarmManagerItem item : items) {
 			final String[] alarmStrings = new String[ALARM_STRING_PARTS_NUMBER];
 
 			for (int index = 0; index < alarmStrings.length; index++) {
@@ -67,8 +67,8 @@ class Preferences {
 		}
 	}
 
-	static ArrayList<AlarmManager.AlarManagerItem> getAlarms() {
-		ArrayList<AlarmManager.AlarManagerItem> items = new ArrayList<>();
+	static ArrayList<AlarmManager.AlarmManagerItem> getAlarms() {
+		ArrayList<AlarmManager.AlarmManagerItem> items = new ArrayList<>();
 		String alarmsString = PREFERENCES_ROOT.get(ALARMS, "");
 
 		String[] alarmsStrings = alarmsString.split(SEPARATOR);
@@ -90,7 +90,7 @@ class Preferences {
 				alarmSoundData = new AlarmSounds.AlarmSoundData(alarmStrings[2], alarmStrings[3]);
 			}
 
-			AlarmManager.AlarManagerItem item = new AlarmManager.AlarManagerItem(alarmStrings[0], alarmStrings[1],
+			AlarmManager.AlarmManagerItem item = new AlarmManager.AlarmManagerItem(alarmStrings[0], alarmStrings[1],
 					alarmSoundData);
 			items.add(item);
 

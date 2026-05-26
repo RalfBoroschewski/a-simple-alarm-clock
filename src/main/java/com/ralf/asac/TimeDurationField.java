@@ -9,18 +9,17 @@ class TimeDurationField extends TextField {
 
 	TimeDurationField() {
 		super();
-		main();
+		init();
 	}
 
 	TimeDurationField(String text) {
 		super(text);
-		main();
+		init();
 	}
 
 	@SuppressWarnings("java:S3776")
-	public void main() {
+	public void init() {
 		final UnaryOperator<TextFormatter.Change> filter = change -> {
-
 			final String newText = change.getControlNewText();
 
 			int numberColons = 0;
@@ -76,5 +75,4 @@ class TimeDurationField extends TextField {
 
 		setTextFormatter(new TextFormatter<>(filter));
 	}
-
 }

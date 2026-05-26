@@ -21,7 +21,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 class AlarmManager {
-	private final ArrayList<AlarManagerItem> items;
+	private final ArrayList<AlarmManagerItem> alarmManagerItems;
 	private final TableView<MyRow> tableView;
 	private MyRow selectedItem;
 	private final ArrayList<SoundManager.SoundManagerItem> soundItems;
@@ -36,11 +36,9 @@ class AlarmManager {
 		stage.initModality(Modality.APPLICATION_MODAL);
 		stage.setTitle(MainClass.messages.getString("AlarmManager.title"));
 
-		items = Preferences.getAlarms();
+		alarmManagerItems = Preferences.getAlarms();
 
 		soundItems = Preferences.getSounds();
-
-		System.out.println("Holla 1 " + soundItems);
 
 		final ObservableList<MyRow> tableItems = FXCollections.observableArrayList();
 		tableView = new TableView<>(tableItems);
@@ -125,18 +123,18 @@ class AlarmManager {
 		editButton.setOnAction(_ -> {
 			if (selectedItem != null) {
 				AddEditAlarmManagerItem addEditAlarmManagerItem = new AddEditAlarmManagerItem(selectedItem.getName(),
-						selectedItem.getTime(), selectedItem.getAlarmSoundData(), false, items, stage, this);
+						selectedItem.getTime(), selectedItem.getAlarmSoundData(), false, alarmManagerItems, stage, this);
 
 				if (addEditAlarmManagerItem.isOk()) {
-					AlarManagerItem item = new AlarManagerItem(addEditAlarmManagerItem.getName(),
+					AlarmManagerItem alarmManagerItem = new AlarmManagerItem(addEditAlarmManagerItem.getName(),
 							addEditAlarmManagerItem.getTime(), addEditAlarmManagerItem.getAlarmSoundData());
-					item.adjustAlarmSoundData(soundItems);
+					alarmManagerItem.adjustAlarmSoundData(soundItems);
 					if (selectedItem != null) {
-						items.set(selectedItem.index, item);
+						alarmManagerItems.set(selectedItem.index, alarmManagerItem);
 					}
 					rebuildListView();
-					selectedItem(item);
-					Preferences.setAlarms(items);
+					selectedItem(alarmManagerItem);
+					Preferences.setAlarms(alarmManagerItems);
 					mainClass.showStoredAlarms();
 
 				}
@@ -155,9 +153,9 @@ class AlarmManager {
 			final Optional<ButtonType> result = alert.showAndWait();
 
 			if (result.isPresent() && result.get() == ButtonType.OK) {
-				items.remove(selectedItem.getItem());
+				alarmManagerItems.remove(selectedItem.getAlarmManagerItem());
 				rebuildListView();
-				Preferences.setAlarms(items);
+				Preferences.setAlarms(alarmManagerItems);
 				mainClass.showStoredAlarms();
 				deleteButton.setDisable(true);
 				editButton.setDisable(true);
@@ -166,25 +164,25 @@ class AlarmManager {
 		});
 
 		addButton.setOnAction(_ -> {
-			AddEditAlarmManagerItem addEditAlarmManagerItem = new AddEditAlarmManagerItem("", "", null, true, items,
+			AddEditAlarmManagerItem addEditAlarmManagerItem = new AddEditAlarmManagerItem("", "", null, true, alarmManagerItems,
 					stage, this);
 			if (addEditAlarmManagerItem.isOk()) {
-				AlarManagerItem item = new AlarManagerItem(addEditAlarmManagerItem.getName(),
+				AlarmManagerItem item = new AlarmManagerItem(addEditAlarmManagerItem.getName(),
 						addEditAlarmManagerItem.getTime(), addEditAlarmManagerItem.getAlarmSoundData());
 				item.adjustAlarmSoundData(soundItems);
-				items.add(item);
+				alarmManagerItems.add(item);
 				rebuildListView();
 				selectedItem(item);
-				Preferences.setAlarms(items);
+				Preferences.setAlarms(alarmManagerItems);
 				mainClass.showStoredAlarms();
 			}
 		});
 	}
 
-	void selectedItem(AlarManagerItem item) {
+	void selectedItem(AlarmManagerItem item) {
 
 		int row = 0;
-		for (AlarManagerItem tmpItem : items) {
+		for (AlarmManagerItem tmpItem : alarmManagerItems) {
 			if (item.name.equals(tmpItem.name)) {
 				tableView.getSelectionModel().select(row);
 				break;
@@ -222,19 +220,19 @@ class AlarmManager {
 	void rebuildListView() {
 		final ArrayList<MyRow> tableData = new ArrayList<>();
 		int index = 0;
-		for (AlarManagerItem item : items) {
+		for (AlarmManagerItem item : alarmManagerItems) {
 			tableData.add(new MyRow(item, index++));
 		}
 		final ObservableList<MyRow> data = FXCollections.observableArrayList(tableData);
 		tableView.setItems(data);
 	}
 
-	static class AlarManagerItem {
+	static class AlarmManagerItem {
 		private final String name;
 		private final String time;
 		private AlarmSounds.AlarmSoundData alarmSoundData;
 
-		AlarManagerItem(final String name, final String time, final AlarmSounds.AlarmSoundData alarmSoundData) {
+		AlarmManagerItem(final String name, final String time, final AlarmSounds.AlarmSoundData alarmSoundData) {
 			this.name = name;
 			this.time = time;
 			this.alarmSoundData = alarmSoundData;
@@ -285,39 +283,39 @@ class AlarmManager {
 	}
 
 	public static class MyRow {
-		final AlarManagerItem item;
+		final AlarmManagerItem alarmManagerItem;
 		private final Integer index;
 
 		@SuppressWarnings("exports")
-		public MyRow(AlarManagerItem item, Integer index) {
-			this.item = item;
+		public MyRow(AlarmManagerItem item, Integer index) {
+			this.alarmManagerItem = item;
 			this.index = index;
 		}
 
 		public String getName() {
-			return item.name;
+			return alarmManagerItem.name;
 		}
 
 		public String getTime() {
-			return item.time;
+			return alarmManagerItem.time;
 		}
 
 		@SuppressWarnings("exports")
 		public AlarmSounds.AlarmSoundData getAlarmSoundData() {
-			return item.alarmSoundData;
+			return alarmManagerItem.alarmSoundData;
 		}
 
 		public Integer getIndex() {
 			return index;
 		}
 
-		AlarManagerItem getItem() {
-			return item;
+		AlarmManagerItem getAlarmManagerItem() {
+			return alarmManagerItem;
 		}
 
 		@Override
 		public String toString() {
-			return "column1: " + item.name + " column2; " + item.time + " column3; " + item.alarmSoundData.getName();
+			return "column1: " + alarmManagerItem.name + " column2; " + alarmManagerItem.time + " column3; " + alarmManagerItem.alarmSoundData.getName();
 		}
 	}
 
