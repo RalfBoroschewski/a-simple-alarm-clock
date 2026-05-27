@@ -4,7 +4,7 @@ public class Asac {
 
 	static final String DEFAULT_SOUND_FILE = "default.mp3";
 
-	public static void main(String[] args) {
+	public static void main(final String[] args) {
 		MainClass.main(args);
 	}
 }

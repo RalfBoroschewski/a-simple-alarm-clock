@@ -53,13 +53,13 @@ class AlarmSounds {
 		private final String path;
 		private final boolean isResourceValue;
 
-		AlarmSoundData(String name) {
+		AlarmSoundData(final String name) {
 			this.name = name;
 			this.path = null;
 			isResourceValue = true;
 		}
 
-		AlarmSoundData(String name, String path) {
+		AlarmSoundData(final String name, final String path) {
 			this.name = name;
 			this.path = path;
 			isResourceValue = false;

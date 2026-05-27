@@ -12,7 +12,7 @@ class TimeDurationField extends TextField {
 		init();
 	}
 
-	TimeDurationField(String text) {
+	TimeDurationField(final String text) {
 		super(text);
 		init();
 	}

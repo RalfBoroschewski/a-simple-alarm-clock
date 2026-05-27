@@ -74,7 +74,7 @@ class AlarmManager {
 
 		final GridPane gridPane = new GridPane();
 
-		Insets insets = new Insets(0, 0, 10, 10);
+		final Insets insets = new Insets(0, 0, 10, 10);
 
 		int positionX = 0;
 		int positionY = 0;
@@ -119,14 +119,15 @@ class AlarmManager {
 	}
 
 	@SuppressWarnings("java:S3776")
-	private void setListener(Stage stage, MainClass mainClass) {
+	private void setListener(final Stage stage, final MainClass mainClass) {
 		editButton.setOnAction(_ -> {
 			if (selectedItem != null) {
-				AddEditAlarmManagerItem addEditAlarmManagerItem = new AddEditAlarmManagerItem(selectedItem.getName(),
-						selectedItem.getTime(), selectedItem.getAlarmSoundData(), false, alarmManagerItems, stage, this);
+				final AddEditAlarmManagerItem addEditAlarmManagerItem = new AddEditAlarmManagerItem(
+						selectedItem.getName(), selectedItem.getTime(), selectedItem.getAlarmSoundData(), false,
+						alarmManagerItems, stage, this);
 
 				if (addEditAlarmManagerItem.isOk()) {
-					AlarmManagerItem alarmManagerItem = new AlarmManagerItem(addEditAlarmManagerItem.getName(),
+					final AlarmManagerItem alarmManagerItem = new AlarmManagerItem(addEditAlarmManagerItem.getName(),
 							addEditAlarmManagerItem.getTime(), addEditAlarmManagerItem.getAlarmSoundData());
 					alarmManagerItem.adjustAlarmSoundData(soundItems);
 					if (selectedItem != null) {
@@ -164,10 +165,10 @@ class AlarmManager {
 		});
 
 		addButton.setOnAction(_ -> {
-			AddEditAlarmManagerItem addEditAlarmManagerItem = new AddEditAlarmManagerItem("", "", null, true, alarmManagerItems,
-					stage, this);
+			AddEditAlarmManagerItem addEditAlarmManagerItem = new AddEditAlarmManagerItem("", "", null, true,
+					alarmManagerItems, stage, this);
 			if (addEditAlarmManagerItem.isOk()) {
-				AlarmManagerItem item = new AlarmManagerItem(addEditAlarmManagerItem.getName(),
+				final AlarmManagerItem item = new AlarmManagerItem(addEditAlarmManagerItem.getName(),
 						addEditAlarmManagerItem.getTime(), addEditAlarmManagerItem.getAlarmSoundData());
 				item.adjustAlarmSoundData(soundItems);
 				alarmManagerItems.add(item);
@@ -179,7 +180,7 @@ class AlarmManager {
 		});
 	}
 
-	void selectedItem(AlarmManagerItem item) {
+	void selectedItem(final AlarmManagerItem item) {
 
 		int row = 0;
 		for (AlarmManagerItem tmpItem : alarmManagerItems) {
@@ -248,7 +249,7 @@ class AlarmManager {
 			}
 		}
 
-		boolean checkWhetherAlarmExists(final String name, ArrayList<SoundManager.SoundManagerItem> soundItems) {
+		boolean checkWhetherAlarmExists(final String name, final ArrayList<SoundManager.SoundManagerItem> soundItems) {
 			if (soundItems != null) {
 				for (SoundManager.SoundManagerItem soundItem : soundItems) {
 					if (name.equals(soundItem.getName())) {
@@ -287,7 +288,7 @@ class AlarmManager {
 		private final Integer index;
 
 		@SuppressWarnings("exports")
-		public MyRow(AlarmManagerItem item, Integer index) {
+		public MyRow(final AlarmManagerItem item, final Integer index) {
 			this.alarmManagerItem = item;
 			this.index = index;
 		}
@@ -315,7 +316,8 @@ class AlarmManager {
 
 		@Override
 		public String toString() {
-			return "column1: " + alarmManagerItem.name + " column2; " + alarmManagerItem.time + " column3; " + alarmManagerItem.alarmSoundData.getName();
+			return "column1: " + alarmManagerItem.name + " column2; " + alarmManagerItem.time + " column3; "
+					+ alarmManagerItem.alarmSoundData.getName();
 		}
 	}
 

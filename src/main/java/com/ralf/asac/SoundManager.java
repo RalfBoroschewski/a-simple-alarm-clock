@@ -30,8 +30,8 @@ class SoundManager {
 	private final Button addButton;
 	private final Stage stage;
 
-	SoundManager(AddEditAlarmManagerItem addEditAlarmManagerItem, Stage ownerStage,
-			ArrayList<AlarmManager.AlarmManagerItem> alarmManagerItems, AlarmManager alarmManager) {
+	SoundManager(final AddEditAlarmManagerItem addEditAlarmManagerItem, final Stage ownerStage,
+			final ArrayList<AlarmManager.AlarmManagerItem> alarmManagerItems, final AlarmManager alarmManager) {
 		soundItems = Preferences.getSounds();
 
 		final ObservableList<MyRow> tableItems = FXCollections.observableArrayList();
@@ -60,7 +60,7 @@ class SoundManager {
 		addButton.setPrefWidth(widthButtons);
 		addButton.setMinWidth(widthButtons);
 
-		var okButton = new Button(MainClass.messages.getString("ok"));
+		final var okButton = new Button(MainClass.messages.getString("ok"));
 		okButton.setPrefWidth(widthButtons);
 		okButton.setMinWidth(widthButtons);
 
@@ -122,16 +122,16 @@ class SoundManager {
 	}
 
 	@SuppressWarnings("java:S3776")
-	private void setListener(AddEditAlarmManagerItem addEditAlarmManagerItem,
-			ArrayList<AlarmManager.AlarmManagerItem> alarmManagerItems, AlarmManager alarmManager) {
+	private void setListener(final AddEditAlarmManagerItem addEditAlarmManagerItem,
+			final ArrayList<AlarmManager.AlarmManagerItem> alarmManagerItems, final AlarmManager alarmManager) {
 		editButton.setOnAction(_ -> {
 			if (selectedItem != null) {
-				String selectedName = selectedItem.getName();
-				AddEditSoundManagerItem addEditSoundManagerItem = new AddEditSoundManagerItem(selectedName,
+				final String selectedName = selectedItem.getName();
+				final AddEditSoundManagerItem addEditSoundManagerItem = new AddEditSoundManagerItem(selectedName,
 						selectedItem.getPath(), false, soundItems, stage);
 
-				String newName = addEditSoundManagerItem.getName();
-				String newPath = addEditSoundManagerItem.getPath();
+				final String newName = addEditSoundManagerItem.getName();
+				final String newPath = addEditSoundManagerItem.getPath();
 
 				if (addEditSoundManagerItem.isOk()) {
 					boolean hasAChangedItem = false;
@@ -162,7 +162,8 @@ class SoundManager {
 					soundItems, stage);
 
 			if (addEditSoundManagerItem.isOk()) {
-				final SoundManagerItem item = new SoundManagerItem(addEditSoundManagerItem.getName(), addEditSoundManagerItem.getPath());
+				final SoundManagerItem item = new SoundManagerItem(addEditSoundManagerItem.getName(),
+						addEditSoundManagerItem.getPath());
 				soundItems.add(item);
 				rebuildListView();
 				Preferences.setSounds(soundItems);
@@ -207,10 +208,12 @@ class SoundManager {
 
 	@SuppressWarnings("unchecked")
 	void buildTableView() {
-		TableColumn<MyRow, String> tableColumn1 = new TableColumn<>(MainClass.messages.getString("SoundManager.name"));
+		final TableColumn<MyRow, String> tableColumn1 = new TableColumn<>(
+				MainClass.messages.getString("SoundManager.name"));
 		tableColumn1.setCellValueFactory(new PropertyValueFactory<>("name"));
 
-		TableColumn<MyRow, Integer> tableColumn2 = new TableColumn<>(MainClass.messages.getString("SoundManager.path"));
+		final TableColumn<MyRow, Integer> tableColumn2 = new TableColumn<>(
+				MainClass.messages.getString("SoundManager.path"));
 		tableColumn2.setCellValueFactory(new PropertyValueFactory<>("path"));
 
 		tableView.getColumns().addAll(tableColumn1, tableColumn2);

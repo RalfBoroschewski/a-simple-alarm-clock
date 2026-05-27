@@ -24,7 +24,7 @@ class Preferences {
 	private Preferences() {
 	}
 
-	static void setAlarms(List<AlarmManager.AlarmManagerItem> items) {
+	static void setAlarms(final List<AlarmManager.AlarmManagerItem> items) {
 		final StringBuilder alarms = new StringBuilder();
 		boolean isFirst = true;
 		for (AlarmManager.AlarmManagerItem item : items) {
@@ -36,7 +36,7 @@ class Preferences {
 			alarmStrings[0] = item.getName();
 			alarmStrings[1] = item.getTime();
 
-			AlarmSounds.AlarmSoundData alarmSoundData = item.getAlarmSoundData();
+			final AlarmSounds.AlarmSoundData alarmSoundData = item.getAlarmSoundData();
 			if (alarmSoundData != null) {
 				alarmStrings[2] = alarmSoundData.getName();
 				alarmStrings[3] = alarmSoundData.getPath();
@@ -69,14 +69,14 @@ class Preferences {
 
 	static ArrayList<AlarmManager.AlarmManagerItem> getAlarms() {
 		ArrayList<AlarmManager.AlarmManagerItem> items = new ArrayList<>();
-		String alarmsString = PREFERENCES_ROOT.get(ALARMS, "");
+		final String alarmsString = PREFERENCES_ROOT.get(ALARMS, "");
 
-		String[] alarmsStrings = alarmsString.split(SEPARATOR);
+		final String[] alarmsStrings = alarmsString.split(SEPARATOR);
 
 		int alarmStringsOffset = 0;
 
 		while (alarmStringsOffset < alarmsStrings.length - 1) {
-			String[] alarmStrings = new String[ALARM_STRING_PARTS_NUMBER];
+			final String[] alarmStrings = new String[ALARM_STRING_PARTS_NUMBER];
 			for (int index = 0; index < alarmStrings.length; index++) {
 				alarmStrings[index] = alarmsStrings[index + alarmStringsOffset];
 			}
@@ -101,7 +101,7 @@ class Preferences {
 
 	}
 
-	static void setSounds(List<SoundManager.SoundManagerItem> items) {
+	static void setSounds(final List<SoundManager.SoundManagerItem> items) {
 		final StringBuilder alarms = new StringBuilder();
 		boolean isFirst = true;
 		for (SoundManager.SoundManagerItem item : items) {
@@ -142,7 +142,7 @@ class Preferences {
 		int alarmStringsOffset = 0;
 
 		while (alarmStringsOffset < alarmsStrings.length - 1) {
-			String[] alarmStrings = new String[ALARM_SOUND_STRING_PARTS_NUMBER];
+			final String[] alarmStrings = new String[ALARM_SOUND_STRING_PARTS_NUMBER];
 			for (int index = 0; index < alarmStrings.length; index++) {
 				alarmStrings[index] = alarmsStrings[index + alarmStringsOffset];
 			}

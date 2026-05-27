@@ -29,8 +29,8 @@ class AddEditAlarmManagerItem {
 	private final String name;
 
 	AddEditAlarmManagerItem(final String name, final String time, final AlarmSounds.AlarmSoundData alarmSoundData,
-			final boolean isNewEntry, ArrayList<AlarmManager.AlarmManagerItem> alarmManagerItems, Stage ownerStage,
-			AlarmManager alarmManager) {
+			final boolean isNewEntry, final ArrayList<AlarmManager.AlarmManagerItem> alarmManagerItems,
+			final Stage ownerStage, final AlarmManager alarmManager) {
 		this.name = name;
 		final Stage stage = new Stage();
 		this.isNewEntry = isNewEntry;
@@ -107,7 +107,7 @@ class AddEditAlarmManagerItem {
 	void checkTextFields() {
 		boolean entryAlreadyExists = false;
 
-		String currentName = nameTextField.getText();
+		final String currentName = nameTextField.getText();
 		if (isNewEntry) {
 			entryAlreadyExists = testOnNameAlreadyExist();
 		} else {
@@ -127,7 +127,7 @@ class AddEditAlarmManagerItem {
 	}
 
 	boolean testOnNameAlreadyExist() {
-		String currentName = nameTextField.getText();
+		final String currentName = nameTextField.getText();
 		for (AlarmManager.AlarmManagerItem item : alarmManagerItems) {
 			if (currentName.equals(item.getName())) {
 				return true;
@@ -137,7 +137,7 @@ class AddEditAlarmManagerItem {
 	}
 
 	void buildAlarmsComboBox() {
-		List<AlarmSounds.AlarmSoundData> list = new AlarmSounds().getAlarmSoundDatas();
+		final List<AlarmSounds.AlarmSoundData> list = new AlarmSounds().getAlarmSoundDatas();
 
 		alarmSoundDatasComboBox.getItems().clear();
 		alarmSoundDatasComboBox.getItems().addAll(list);

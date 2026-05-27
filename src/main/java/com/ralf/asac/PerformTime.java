@@ -21,7 +21,7 @@ class PerformTime implements EventHandler<javafx.event.ActionEvent> {
 	}
 
 	@Override
-	public void handle(ActionEvent event) {
+	public void handle(final ActionEvent event) {
 		mainClass.deactivate();
 
 		mainClass.oldPerformTime = this;

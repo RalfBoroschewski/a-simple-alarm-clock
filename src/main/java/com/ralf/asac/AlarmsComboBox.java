@@ -8,11 +8,11 @@ public class AlarmsComboBox extends ComboBox<Alarm> {
 	private Alarm storedAlarm;
 
 	@SuppressWarnings("java:S6201")
-	AlarmsComboBox(MainClass mainClass, TimeDurationField timeDurationField) {
+	AlarmsComboBox(final MainClass mainClass, final TimeDurationField timeDurationField) {
 		setEditable(true);
 
 		setOnAction(_ -> {
-			Object value = getValue();
+			final Object value = getValue();
 			if (value instanceof Alarm) {
 				storedAlarm = (Alarm) value;
 				if (storedAlarm != null) {
@@ -31,11 +31,11 @@ public class AlarmsComboBox extends ComboBox<Alarm> {
 		return storedAlarm;
 	}
 
-	void setStoredAlarm(Alarm storedAlarm) {
+	void setStoredAlarm(final Alarm storedAlarm) {
 		this.storedAlarm = storedAlarm;
 	}
 
-	private void setConverter(AlarmsComboBox alarmsComboBox, TimeDurationField timeDurationField) {
+	private void setConverter(final AlarmsComboBox alarmsComboBox, final TimeDurationField timeDurationField) {
 		setConverter(new StringConverter<Alarm>() {
 
 			@Override

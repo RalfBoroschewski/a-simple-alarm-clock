@@ -28,7 +28,7 @@ class AddEditSoundManagerItem {
 	private boolean isOkAttribute;
 
 	AddEditSoundManagerItem(final String name, final String path, final boolean isNewEntry,
-			ArrayList<SoundManager.SoundManagerItem> items, Stage ownerStage) {
+			final ArrayList<SoundManager.SoundManagerItem> items, final Stage ownerStage) {
 		final Stage stage = new Stage();
 		this.name = name;
 		this.isNewEntry = isNewEntry;
@@ -125,7 +125,7 @@ class AddEditSoundManagerItem {
 
 		boolean entryAlreadyExists = testOnNameAlreadyExist();
 
-		String currentName = nameTextField.getText();
+		final String currentName = nameTextField.getText();
 		if (isNewEntry) {
 			if (entryAlreadyExists) {
 				setErrorLabel(MainClass.messages.getString("AddEditSoundManagerItem.entry.already.exists"));
@@ -146,7 +146,7 @@ class AddEditSoundManagerItem {
 		}
 	}
 
-	private void setErrorLabel(String errorText) {
+	private void setErrorLabel(final String errorText) {
 		if (errorText != null) {
 			errorLabel.setText(errorText);
 			errorLabel.setVisible(true);
@@ -158,8 +158,8 @@ class AddEditSoundManagerItem {
 	}
 
 	private String checkFileName() {
-		String text = pathFieldTextField.getText().strip();
-		File file = new File(text);
+		final String text = pathFieldTextField.getText().strip();
+		final File file = new File(text);
 
 		if (!file.exists()) {
 			return MainClass.messages.getString("AddEditSoundManagerItem.file.does.not.exists");

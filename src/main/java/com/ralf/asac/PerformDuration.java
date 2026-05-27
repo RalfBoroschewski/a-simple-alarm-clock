@@ -11,13 +11,13 @@ class PerformDuration implements EventHandler<ActionEvent> {
 	private final MainClass mainClass;
 	private MyWorker myWorker;
 
-	PerformDuration(long minutes, MainClass mainClass) {
+	PerformDuration(final long minutes, final MainClass mainClass) {
 		this.minutes = minutes;
 		this.mainClass = mainClass;
 	}
 
 	@Override
-	public void handle(ActionEvent event) {
+	public void handle(final ActionEvent event) {
 		mainClass.deactivate();
 		mainClass.setVisibilityPauseButton(true);
 
@@ -87,7 +87,7 @@ class PerformDuration implements EventHandler<ActionEvent> {
 	}
 
 	@SuppressWarnings("java:S2142")
-	void sleep(long milliSecond) {
+	void sleep(final long milliSecond) {
 		try {
 			Thread.sleep(milliSecond);
 		} catch (InterruptedException exception) {

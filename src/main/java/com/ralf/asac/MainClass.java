@@ -37,7 +37,7 @@ public class MainClass extends Application {
 	static final ResourceBundle messages = ResourceBundle.getBundle("messages", Locale.getDefault());
 	static final String PAUSE_KEY = "MainClass.pause";
 
-	public static void main(String[] args) {
+	static void main(final String[] args) {
 		launch(args);
 	}
 
@@ -49,7 +49,7 @@ public class MainClass extends Application {
 
 		setIcon(false);
 
-		Pane pane = new Pane();
+		final Pane pane = new Pane();
 
 		pane.getChildren();
 
@@ -134,8 +134,8 @@ public class MainClass extends Application {
 
 		final double stageWidth = stage.getWidth();
 		final double stageHeight = stage.getHeight();
-		double windowsPositionX = (primScreenBounds.getWidth() - stageWidth) / 2;
-		double windowsPositionY = (primScreenBounds.getHeight() - stageHeight) / 2;
+		final double windowsPositionX = (primScreenBounds.getWidth() - stageWidth) / 2;
+		final double windowsPositionY = (primScreenBounds.getHeight() - stageHeight) / 2;
 		stage.setX(windowsPositionX);
 		stage.setY(windowsPositionY);
 
@@ -208,14 +208,14 @@ public class MainClass extends Application {
 			final int colonIndex = timeDuration.indexOf(':');
 			if (colonIndex < 0) {
 				final long minute = Long.parseLong(timeDuration);
-				PerformDuration performDuration = new PerformDuration(minute, this);
+				final PerformDuration performDuration = new PerformDuration(minute, this);
 				performDuration.handle(null);
 			} else {
 				final String hourString = timeDuration.substring(0, colonIndex);
 				final String minuteString = timeDuration.substring(colonIndex + 1);
 				final int hour = Integer.parseInt(hourString);
 				final int minute = Integer.parseInt(minuteString);
-				PerformTime performTime = new PerformTime(hour, minute, this);
+				final PerformTime performTime = new PerformTime(hour, minute, this);
 				performTime.handle(null);
 			}
 		}
@@ -230,12 +230,12 @@ public class MainClass extends Application {
 		alarmsComboBox.setValue(null);
 	}
 
-	void setIcon(boolean isActive) {
+	void setIcon(final boolean isActive) {
 
 		final URL url = ClassLoader.getSystemResource(isActive ? "alarmActive.png" : "alarm.png");
 		Image image = null;
 		try {
-			InputStream inputStream = url.openStream();
+			final InputStream inputStream = url.openStream();
 			image = new Image(inputStream);
 		} catch (IOException e) {
 			e.printStackTrace();

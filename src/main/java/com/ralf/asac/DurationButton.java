@@ -11,7 +11,7 @@ import javafx.scene.control.SeparatorMenuItem;
 
 class DurationButton extends Button {
 
-	DurationButton(MainClass mainClass) {
+	DurationButton(final MainClass mainClass) {
 		super(MainClass.messages.getString("DurationButton.set.duration"));
 		final ContextMenu contextMenu = new ContextMenu();
 
