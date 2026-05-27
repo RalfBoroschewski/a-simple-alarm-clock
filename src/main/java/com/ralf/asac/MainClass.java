@@ -262,7 +262,7 @@ public class MainClass extends Application {
 	void deactivatePauseButton() {
 		Platform.runLater(() -> {
 			pauseButton.setVisible(false);
-			pauseButton.setText("Pause");
+			pauseButton.setText(messages.getString(PAUSE_KEY));
 		});
 	}
 
