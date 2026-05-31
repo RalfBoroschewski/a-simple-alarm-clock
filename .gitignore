@@ -4,8 +4,6 @@
 .project	
 /target/
 *.log
-
-
-
-https://mixkit.co/free-sound-effects/alarm/
+dependency-reduced-pom.xml
 /.project
+*.odt#

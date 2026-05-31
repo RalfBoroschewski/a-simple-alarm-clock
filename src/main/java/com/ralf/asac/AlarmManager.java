@@ -240,16 +240,19 @@ class AlarmManager {
 		}
 
 		private void adjustAlarmSoundData(ArrayList<SoundManager.SoundManagerItem> soundItems) {
-			new Exception().printStackTrace();
-
-			boolean hasExistingSound = checkWhetherAlarmExists(alarmSoundData.getName(), soundItems);
-
-			if (!hasExistingSound || alarmSoundData.getPath() == null || alarmSoundData.getPath().isBlank()) {
+			if (alarmSoundData == null) {
 				this.alarmSoundData = new AlarmSounds.AlarmSoundData(MainClass.messages.getString("path.default"));
+			} else {
+				boolean hasExistingSound = checkWhetherAlarmExists(alarmSoundData.getName(), soundItems);
+
+				if (!hasExistingSound || alarmSoundData.getPath() == null || alarmSoundData.getPath().isBlank()) {
+					this.alarmSoundData = new AlarmSounds.AlarmSoundData(MainClass.messages.getString("path.default"));
+				}
 			}
 		}
 
-		boolean checkWhetherAlarmExists(final String name, final ArrayList<SoundManager.SoundManagerItem> soundItems) {
+		private boolean checkWhetherAlarmExists(final String name,
+				final ArrayList<SoundManager.SoundManagerItem> soundItems) {
 			if (soundItems != null) {
 				for (SoundManager.SoundManagerItem soundItem : soundItems) {
 					if (name.equals(soundItem.getName())) {

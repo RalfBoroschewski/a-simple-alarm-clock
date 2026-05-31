@@ -62,8 +62,8 @@ class Preferences {
 		PREFERENCES_ROOT.put(ALARMS, alarms.toString());
 		try {
 			PREFERENCES_ROOT.flush();
-		} catch (BackingStoreException e) {
-			e.printStackTrace();
+		} catch (BackingStoreException exception) {
+			exception.printStackTrace();
 		}
 	}
 

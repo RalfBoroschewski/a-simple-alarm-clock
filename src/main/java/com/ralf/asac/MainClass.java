@@ -23,13 +23,13 @@ import javafx.util.Duration;
 public class MainClass extends Application {
 	private Stage stage;
 
-	private AlarmsComboBox alarmsComboBox;
-	private TimeDurationField timeDurationField;
+	private final AlarmsComboBox alarmsComboBox;
+	private final TimeDurationField timeDurationField;
 	private boolean timeDurationFieldIsSetInternal;
 	PerformTime oldPerformTime;
 	PerformDuration oldPerformDuration;
-	private Button deactivateButton;
-	private Button pauseButton;
+	private final Button deactivateButton;
+	private final Button pauseButton;
 	boolean pauseButtonIsPause;
 
 	BellIcon bellIcon;
@@ -39,6 +39,13 @@ public class MainClass extends Application {
 
 	static void main(final String[] args) {
 		launch(args);
+	}
+
+	public MainClass() {
+		timeDurationField = new TimeDurationField();
+		deactivateButton = new Button(messages.getString("MainClass.deactivate"));
+		pauseButton = new Button(messages.getString(PAUSE_KEY));
+		alarmsComboBox = new AlarmsComboBox(this, timeDurationField);
 	}
 
 	@SuppressWarnings({ "exports", "java:S3776" })
@@ -56,12 +63,8 @@ public class MainClass extends Application {
 		final Button alarmManagerButton = new Button(messages.getString("MainClass.alarm.manager"));
 		final DurationButton durationButton = new DurationButton(this);
 		final TimeButton timeButton = new TimeButton(this);
-		timeDurationField = new TimeDurationField();
-		deactivateButton = new Button(messages.getString("MainClass.deactivate"));
-		pauseButton = new Button(messages.getString(PAUSE_KEY));
 		pauseButton.setVisible(false);
 
-		alarmsComboBox = new AlarmsComboBox(this, timeDurationField);
 		showStoredAlarms();
 
 		final double width = Double.parseDouble(messages.getString("MainClass.buttons.width"));
@@ -118,7 +121,10 @@ public class MainClass extends Application {
 		});
 
 		deactivateButton.setVisible(false);
-		deactivateButton.setOnAction(_ -> deactivate());
+		deactivateButton.setOnAction(_ -> {
+			deactivate();
+			alarmsComboBox.setValue(null);
+		});
 
 		pauseButton.setOnAction(_ -> {
 			pauseButton.setText(messages.getString(pauseButtonIsPause ? PAUSE_KEY : "MainClass.continue"));

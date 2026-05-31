@@ -29,7 +29,7 @@ class AlarmSounds {
 			final ResourceList resourceList = scanResult.getAllResources();
 			final List<String> paths = resourceList.getPaths();
 			for (String path : paths) {
-				if (testExtention(path, ".mp3") || testExtention(path, ".wav") || testExtention(path, ".aac")) {
+				if (testExtention(path, ".wav")) {
 					if (path.equals(Asac.DEFAULT_SOUND_FILE)) {
 						path = MainClass.messages.getString("path.default");
 					}
