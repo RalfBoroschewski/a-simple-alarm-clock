@@ -26,7 +26,8 @@ class DurationButton extends Button {
 					minutesString = MainClass.messages.getString("DurationButton.minutes");
 				}
 
-				final MenuItem menuItem = new MenuItem(minute + minutesString);
+				final String margin = "            ";
+				final MenuItem menuItem = new MenuItem("\u0080" + margin + minute + minutesString + margin);
 				menuItem.setOnAction(new PerformDuration(minute, mainClass));
 				contextMenu.getItems().add(menuItem);
 			} else {
