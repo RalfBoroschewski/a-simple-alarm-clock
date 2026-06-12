@@ -31,15 +31,18 @@ class TimeButton extends Button {
 
 		final ContextMenu timePopup = new ContextMenu();
 
+		final String marginHour = "            ";
+		final String marginMinute = "       ";
+
 		for (int hour = hourNow; hour < hourNow + 24; hour++) {
 
-			final Menu hourMenu = new Menu((hour % 24) + ":00");
+			final Menu hourMenu = new Menu("\u0080" + marginHour + (hour % 24) + ":00" + marginHour);
 
 			for (int index = startIndex; index < 12; index++) {
 				final int minute = index * 5;
 				String minuteString = "0" + minute;
 				minuteString = minuteString.substring(minuteString.length() - 2);
-				final MenuItem menuItem = new MenuItem(minuteString);
+				final MenuItem menuItem = new MenuItem("\u0080" + marginMinute + minuteString + marginMinute);
 				menuItem.setOnAction(new PerformTime(hour % 24, minute, mainClass));
 				hourMenu.getItems().add(menuItem);
 			}
