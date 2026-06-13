@@ -64,7 +64,7 @@ class AlarmManager {
 		addButton.setPrefWidth(widthButtons);
 		addButton.setMinWidth(widthButtons);
 
-		final var okButton = new Button(MainClass.messages.getString("ok"));
+		final Button okButton = new Button(MainClass.messages.getString("ok"));
 		okButton.setPrefWidth(widthButtons);
 		okButton.setMinWidth(widthButtons);
 
