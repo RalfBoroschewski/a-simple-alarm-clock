@@ -11,7 +11,7 @@ public class AlarmsComboBox extends ComboBox<Alarm> {
 	AlarmsComboBox(final MainClass mainClass, final TimeDurationField timeDurationField) {
 		setEditable(true);
 
-		setOnAction(_ -> {
+		setOnAction(event -> {
 			final Object value = getValue();
 			if (value instanceof Alarm) {
 				storedAlarm = (Alarm) value;

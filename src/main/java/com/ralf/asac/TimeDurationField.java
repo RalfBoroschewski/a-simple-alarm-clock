@@ -61,7 +61,7 @@ class TimeDurationField extends TextField {
 					if (!newText.isEmpty()) {
 						try {
 							Long.parseLong(newText);
-						} catch (NumberFormatException _) {
+						} catch (NumberFormatException exception) {
 							return null;
 						}
 					}

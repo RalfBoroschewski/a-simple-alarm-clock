@@ -58,12 +58,12 @@ class AddEditSoundManagerItem {
 
 		final Button cancelButton = new Button(MainClass.messages.getString("cancel"));
 
-		okButton.setOnAction(_ -> {
+		okButton.setOnAction(event -> {
 			isOkAttribute = true;
 			stage.close();
 		});
 
-		cancelButton.setOnAction(_ -> stage.close());
+		cancelButton.setOnAction(event -> stage.close());
 
 		final VBox vBoxName = new VBox();
 
@@ -95,7 +95,7 @@ class AddEditSoundManagerItem {
 		final VBox vBox = new VBox();
 		vBox.getChildren().addAll(vBoxName, hBoxPathItems, buttonsHBox, errorLabel);
 
-		selectFileButton.setOnAction(_ -> {
+		selectFileButton.setOnAction(event -> {
 
 			final ExtensionFilter filter = new ExtensionFilter("Audio Files", "*.wav");
 
@@ -111,8 +111,8 @@ class AddEditSoundManagerItem {
 
 		});
 
-		nameTextField.setOnKeyReleased(_ -> checkTextFields());
-		pathFieldTextField.setOnKeyReleased(_ -> checkTextFields());
+		nameTextField.setOnKeyReleased(event -> checkTextFields());
+		pathFieldTextField.setOnKeyReleased(event -> checkTextFields());
 
 		stage.initModality(Modality.APPLICATION_MODAL);
 		stage.initOwner(ownerStage);

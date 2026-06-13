@@ -70,17 +70,17 @@ class BellIcon {
 				button.setText(MainClass.messages.getString("BellIcon.dismiss"));
 			}
 
-			button.setOnAction(_ -> {
+			button.setOnAction(event -> {
 				audioOutput.stopPlaying();
 				stage.close();
 			});
 
-			button.setOnKeyReleased(_ -> {
+			button.setOnKeyReleased(event -> {
 				audioOutput.stopPlaying();
 				stage.close();
 			});
 
-			stage.setOnCloseRequest(_ -> audioOutput.stopPlaying());
+			stage.setOnCloseRequest(event -> audioOutput.stopPlaying());
 
 			final Scene scene = new Scene(vBox);
 			stage.setScene(scene);

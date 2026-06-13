@@ -13,7 +13,7 @@ class TimeButton extends Button {
 
 	TimeButton(MainClass mainClass) {
 		super(MainClass.messages.getString("TimeButton.set.time"));
-		this.setOnAction(_ -> buildTimePopup(mainClass).show(this, Side.BOTTOM, 0, 0));
+		this.setOnAction(event -> buildTimePopup(mainClass).show(this, Side.BOTTOM, 0, 0));
 	}
 
 	ContextMenu buildTimePopup(final MainClass mainClass) {

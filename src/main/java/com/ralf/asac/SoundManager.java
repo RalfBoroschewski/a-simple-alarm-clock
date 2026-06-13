@@ -42,7 +42,8 @@ class SoundManager {
 
 		rebuildListView();
 
-		tableView.getSelectionModel().selectedItemProperty().addListener((_, _, newValue) -> selectedItem = newValue);
+		tableView.getSelectionModel().selectedItemProperty()
+				.addListener((observable, oldValue, newValue) -> selectedItem = newValue);
 
 		final double widthButtons = 100;
 
@@ -102,7 +103,7 @@ class SoundManager {
 		gridPane.add(okButton, positionX, positionY, 1, 1);
 		GridPane.setMargin(okButton, insets);
 
-		tableView.getSelectionModel().selectedItemProperty().addListener(_ -> {
+		tableView.getSelectionModel().selectedItemProperty().addListener(event -> {
 			deleteButton.setDisable(false);
 			editButton.setDisable(false);
 		});
@@ -117,14 +118,14 @@ class SoundManager {
 
 		tableView.prefWidthProperty().bind(scene.widthProperty().add(600));
 
-		okButton.setOnAction(_ -> stage.hide());
+		okButton.setOnAction(event -> stage.hide());
 		stage.showAndWait();
 	}
 
 	@SuppressWarnings("java:S3776")
 	private void setListener(final AddEditAlarmManagerItem addEditAlarmManagerItem,
 			final ArrayList<AlarmManager.AlarmManagerItem> alarmManagerItems, final AlarmManager alarmManager) {
-		editButton.setOnAction(_ -> {
+		editButton.setOnAction(event -> {
 			if (selectedItem != null) {
 				final String selectedName = selectedItem.getName();
 				final AddEditSoundManagerItem addEditSoundManagerItem = new AddEditSoundManagerItem(selectedName,
@@ -157,7 +158,7 @@ class SoundManager {
 			}
 		});
 
-		addButton.setOnAction(_ -> {
+		addButton.setOnAction(event -> {
 			final AddEditSoundManagerItem addEditSoundManagerItem = new AddEditSoundManagerItem("", "", true,
 					soundItems, stage);
 
@@ -171,7 +172,7 @@ class SoundManager {
 			}
 		});
 
-		deleteButton.setOnAction(_ -> {
+		deleteButton.setOnAction(event -> {
 			if (selectedItem == null)
 				return;
 
@@ -220,7 +221,7 @@ class SoundManager {
 
 		rebuildListView();
 
-		tableView.getSelectionModel().selectedItemProperty().addListener((_, _, newValue) -> {
+		tableView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
 			if (newValue != null) {
 				selectedItem = newValue;
 			}

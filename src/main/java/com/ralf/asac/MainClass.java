@@ -104,12 +104,12 @@ public class MainClass extends Application {
 
 		gridPane.add(pauseButton, positionX, positionY, 1, 1);
 
-		alarmManagerButton.setOnAction(_ -> {
+		alarmManagerButton.setOnAction(event -> {
 			new AlarmManager(this);
 			showStoredAlarms();
 		});
 
-		timeDurationField.setOnAction(_ -> {
+		timeDurationField.setOnAction(event -> {
 			String name = alarmsComboBox.getEditor().getText();
 			for (Alarm alarm : alarmsComboBox.getItems()) {
 				if (name.equals(alarm.name)) {
@@ -121,12 +121,12 @@ public class MainClass extends Application {
 		});
 
 		deactivateButton.setVisible(false);
-		deactivateButton.setOnAction(_ -> {
+		deactivateButton.setOnAction(event -> {
 			deactivate();
 			alarmsComboBox.setValue(null);
 		});
 
-		pauseButton.setOnAction(_ -> {
+		pauseButton.setOnAction(event -> {
 			pauseButton.setText(messages.getString(pauseButtonIsPause ? PAUSE_KEY : "MainClass.continue"));
 			pauseButtonIsPause = !pauseButtonIsPause;
 		});
@@ -145,7 +145,7 @@ public class MainClass extends Application {
 		stage.setX(windowsPositionX);
 		stage.setY(windowsPositionY);
 
-		stage.setOnCloseRequest(_ -> deactivate());
+		stage.setOnCloseRequest(event -> deactivate());
 	}
 
 	void showStoredAlarms() {

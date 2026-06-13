@@ -35,7 +35,7 @@ class DurationButton extends Button {
 			}
 		}
 
-		this.setOnAction(_ -> contextMenu.show(this, Side.BOTTOM, 0, 0));
+		this.setOnAction(event -> contextMenu.show(this, Side.BOTTOM, 0, 0));
 
 	}
 

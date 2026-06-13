@@ -53,13 +53,13 @@ class AddEditAlarmManagerItem {
 		errorLabel.setTextFill(Color.RED);
 		errorLabel.setVisible(false);
 
-		manageSoundsButton.setOnAction(_ -> new SoundManager(this, stage, alarmManagerItems, alarmManager));
+		manageSoundsButton.setOnAction(event -> new SoundManager(this, stage, alarmManagerItems, alarmManager));
 
-		okButton.setOnAction(_ -> {
+		okButton.setOnAction(event -> {
 			isOkAttribute = true;
 			stage.close();
 		});
-		cancelButton.setOnAction(_ -> stage.close());
+		cancelButton.setOnAction(event -> stage.close());
 
 		final VBox vBoxName = new VBox();
 		vBoxName.getChildren().addAll(new Label(MainClass.messages.getString("AddEditAlarmManagerItem.name")),
@@ -94,8 +94,8 @@ class AddEditAlarmManagerItem {
 		final VBox vBox = new VBox();
 		vBox.getChildren().addAll(valuesHBox, alarmSoundsCaption, alarms, buttonsHBox, errorLabel);
 
-		nameTextField.setOnKeyReleased(_ -> checkTextFields());
-		timeTextField.setOnKeyReleased(_ -> checkTextFields());
+		nameTextField.setOnKeyReleased(event -> checkTextFields());
+		timeTextField.setOnKeyReleased(event -> checkTextFields());
 
 		stage.initModality(Modality.APPLICATION_MODAL);
 		stage.initOwner(ownerStage);
