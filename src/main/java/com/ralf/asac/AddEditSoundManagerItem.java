@@ -97,7 +97,7 @@ class AddEditSoundManagerItem {
 
 		selectFileButton.setOnAction(event -> {
 
-			final ExtensionFilter filter = new ExtensionFilter("Audio Files", "*.wav");
+			final ExtensionFilter filter = new ExtensionFilter("Audio Files", "*.wav", "*.mp3", "*.aac");
 
 			final FileChooser fileChooserOpen = new FileChooser();
 			fileChooserOpen.setTitle(MainClass.messages.getString("AddEditSoundManagerItem.select.audio.file"));
@@ -169,7 +169,7 @@ class AddEditSoundManagerItem {
 			return MainClass.messages.getString("AddEditSoundManagerItem.file.is.not.a.file");
 		}
 
-		if (text.endsWith(".wav")) {
+		if (text.endsWith(".wav") | text.endsWith(".mp3") | text.endsWith(".aac")) {
 			return null;
 		}
 		return MainClass.messages.getString("AddEditSoundManagerItem.file.is.not.a.sound.file");
