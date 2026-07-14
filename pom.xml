@@ -24,32 +24,72 @@
 		<dependency>
 			<groupId>org.openjfx</groupId>
 			<artifactId>javafx-controls</artifactId>
-			<version>23.0.2</version>
+			<version>${javafx.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.openjfx</groupId>
 			<artifactId>javafx-media</artifactId>
-			<version>23.0.2</version>
+			<version>${javafx.version}</version>
 		</dependency>
 
 
 		<dependency>
 			<groupId>org.openjfx</groupId>
 			<artifactId>javafx-controls</artifactId>
-			<version>23.0.2</version>
+			<version>${javafx.version}</version>
+			<classifier>linux</classifier>
+		</dependency>
+		<dependency>
+			<groupId>org.openjfx</groupId>
+			<artifactId>javafx-media</artifactId>
+			<version>${javafx.version}</version>
+			<classifier>linux</classifier>
+		</dependency>
+		<dependency>
+			<groupId>org.openjfx</groupId>
+			<artifactId>javafx-graphics</artifactId>
+			<version>${javafx.version}</version>
+			<classifier>linux</classifier>
+		</dependency>
+
+
+		<dependency>
+			<groupId>org.openjfx</groupId>
+			<artifactId>javafx-controls</artifactId>
+			<version>${javafx.version}</version>
 			<classifier>win</classifier>
 		</dependency>
 		<dependency>
 			<groupId>org.openjfx</groupId>
 			<artifactId>javafx-media</artifactId>
-			<version>23.0.2</version>
+			<version>${javafx.version}</version>
 			<classifier>win</classifier>
 		</dependency>
 		<dependency>
 			<groupId>org.openjfx</groupId>
 			<artifactId>javafx-graphics</artifactId>
-			<version>23.0.2</version>
+			<version>${javafx.version}</version>
 			<classifier>win</classifier>
+		</dependency>
+
+
+		<dependency>
+			<groupId>org.openjfx</groupId>
+			<artifactId>javafx-controls</artifactId>
+			<version>${javafx.version}</version>
+			<classifier>mac</classifier>
+		</dependency>
+		<dependency>
+			<groupId>org.openjfx</groupId>
+			<artifactId>javafx-media</artifactId>
+			<version>${javafx.version}</version>
+			<classifier>mac</classifier>
+		</dependency>
+		<dependency>
+			<groupId>org.openjfx</groupId>
+			<artifactId>javafx-graphics</artifactId>
+			<version>${javafx.version}</version>
+			<classifier>mac</classifier>
 		</dependency>
 		
 
@@ -152,61 +192,6 @@
 					</execution>
 				</executions>
 			</plugin>
-
-
-
-
-<!--
-
-
-            <plugin>
-                <groupId>org.openjfx</groupId>
-                <artifactId>javafx-maven-plugin</artifactId>
-                <version>0.0.8</version>
-                <configuration>
-                    <mainClass>${main.class}</mainClass>
-                    <launcher>asac</launcher>
-                    <jlinkImageName>${jlink.image.name}</jlinkImageName>
-                    <stripDebug>true</stripDebug>
-                    <noHeaderFiles>true</noHeaderFiles>
-                    <noManPages>true</noManPages>
-                    <addModules>javafx.controls,javafx.media</addModules>
-                </configuration>
-            </plugin>
-
-<plugin>
-    <groupId>org.panteleyev</groupId>
-    <artifactId>jpackage-maven-plugin</artifactId>
-    <version>1.6.0</version>
-    <configuration>
-        <name>Asac</name>
-        <appVersion>${project.version}</appVersion>
-        <vendor>Ralf</vendor>
-        <destination>${project.build.directory}/jpackage</destination>
-        <module>${main.module}/${main.class}</module>
-        <runtimeImage>${project.build.directory}/${jlink.image.name}</runtimeImage>
-        <type>IMAGE</type>
-        <winConsole>true</winConsole>
-        <winShortcut>true</winShortcut>
-        <winMenu>true</winMenu>
-        <icon>${project.basedir}/src/main/resources/asac.ico</icon>
-    </configuration>
-
-</plugin>
-
-
--->
-
-
-
-
-
-
-
-
-
-
-
 
 			<plugin>
 				<groupId>com.akathist.maven.plugins.launch4j</groupId>
