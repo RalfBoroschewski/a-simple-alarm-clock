@@ -169,7 +169,7 @@ class AddEditSoundManagerItem {
 			return MainClass.messages.getString("AddEditSoundManagerItem.file.is.not.a.file");
 		}
 
-		if (text.endsWith(".wav") | text.endsWith(".mp3") | text.endsWith(".aac")) {
+		if (text.endsWith(".wav") || text.endsWith(".mp3") || text.endsWith(".aac")) {
 			return null;
 		}
 		return MainClass.messages.getString("AddEditSoundManagerItem.file.is.not.a.sound.file");
