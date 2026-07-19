@@ -130,7 +130,7 @@ class AlarmManager {
 				if (addEditAlarmManagerItem.isOk()) {
 					final AlarmManagerItem alarmManagerItem = new AlarmManagerItem(addEditAlarmManagerItem.getName(),
 							addEditAlarmManagerItem.getTime(), addEditAlarmManagerItem.getAlarmSoundData());
-					alarmManagerItem.adjustAlarmSoundData(soundItems);
+					alarmManagerItem.adjustAlarmSoundData(soundItems, false);
 					if (selectedItem != null) {
 						alarmManagerItems.set(selectedItem.index, alarmManagerItem);
 					}
@@ -171,7 +171,7 @@ class AlarmManager {
 			if (addEditAlarmManagerItem.isOk()) {
 				final AlarmManagerItem item = new AlarmManagerItem(addEditAlarmManagerItem.getName(),
 						addEditAlarmManagerItem.getTime(), addEditAlarmManagerItem.getAlarmSoundData());
-				item.adjustAlarmSoundData(soundItems);
+				item.adjustAlarmSoundData(soundItems, true);
 				alarmManagerItems.add(item);
 				rebuildListView();
 				selectedItem(item);
@@ -240,12 +240,12 @@ class AlarmManager {
 			this.alarmSoundData = alarmSoundData;
 		}
 
-		private void adjustAlarmSoundData(ArrayList<SoundManager.SoundManagerItem> soundItems) {
+		private void adjustAlarmSoundData(final ArrayList<SoundManager.SoundManagerItem> soundItems,
+				final boolean isAdd) {
 			if (alarmSoundData == null) {
 				this.alarmSoundData = new AlarmSounds.AlarmSoundData(MainClass.messages.getString("path.default"));
 			} else {
-				boolean hasExistingSound = checkWhetherAlarmExists(alarmSoundData.getName(), soundItems);
-
+				boolean hasExistingSound = isAdd || checkWhetherAlarmExists(alarmSoundData.getName(), soundItems);
 				if (!hasExistingSound || alarmSoundData.getPath() == null || alarmSoundData.getPath().isBlank()) {
 					this.alarmSoundData = new AlarmSounds.AlarmSoundData(MainClass.messages.getString("path.default"));
 				}
@@ -282,8 +282,16 @@ class AlarmManager {
 
 		@Override
 		public String toString() {
-			return "Name: " + name + " Time: " + time + " Sound name: " + alarmSoundData.getName() + " Sound path: "
-					+ alarmSoundData.getPath();
+			final String soundName;
+			final String soundPath;
+			if (alarmSoundData == null) {
+				soundName = "null";
+				soundPath = "null";
+			} else {
+				soundName = alarmSoundData.getName();
+				soundPath = alarmSoundData.getPath();
+			}
+			return "Name: " + name + " Time: " + time + " Sound name: " + soundName + " Sound path: " + soundPath;
 		}
 	}
 
@@ -320,9 +328,24 @@ class AlarmManager {
 
 		@Override
 		public String toString() {
-			return "column1: " + alarmManagerItem.name + " column2; " + alarmManagerItem.time + " column3; "
-					+ alarmManagerItem.alarmSoundData.getName();
+			final String column1;
+			final String column2;
+			final String column3;
+
+			if (alarmManagerItem == null) {
+				column1 = null;
+				column2 = null;
+				column3 = null;
+			} else {
+				column1 = alarmManagerItem.name;
+				column2 = alarmManagerItem.time;
+				if (alarmManagerItem.alarmSoundData == null) {
+					column3 = "null";
+				} else {
+					column3 = alarmManagerItem.alarmSoundData.getName();
+				}
+			}
+			return "column1: " + column1 + " column2; " + column2 + " column3; " + column3;
 		}
 	}
-
 }

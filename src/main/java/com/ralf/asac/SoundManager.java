@@ -290,7 +290,12 @@ class SoundManager {
 
 		@Override
 		public String toString() {
-			return "column1: " + item.name + " column2; " + item.path;
+			if (item != null) {
+				return "column1: " + item.name + " column2; " + item.path;
+			} else {
+				return "column1: null; column2: null ";
+			}
+
 		}
 	}
 }
