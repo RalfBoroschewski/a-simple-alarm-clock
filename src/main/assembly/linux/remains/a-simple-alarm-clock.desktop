@@ -1,0 +1,10 @@
+[Desktop Entry]
+Categories=Utility;Accessibility;
+Encoding=UTF-8
+Exec=/usr/share/a-simple-alarm-clock/a-simple-alarm-clock.sh
+GenericName=a-simple-alarm-clock
+Icon=/usr/share/a-simple-alarm-clock/alarm.png
+Name=a-simple-alarm-clock
+Terminal=0
+Type=Application
+Version=1.0
