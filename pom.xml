@@ -34,6 +34,13 @@
 			<groupId>org.openjfx</groupId>
 			<artifactId>javafx-controls</artifactId>
 			<version>23.0.2</version>
+			<classifier>mac</classifier>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.openjfx</groupId>
+			<artifactId>javafx-controls</artifactId>
+			<version>23.0.2</version>
 			<classifier>linux</classifier>
 		</dependency>
 		
@@ -55,6 +62,13 @@
 			<groupId>org.openjfx</groupId>
 			<artifactId>javafx-media</artifactId>
 			<version>23.0.2</version>
+			<classifier>mac</classifier>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.openjfx</groupId>
+			<artifactId>javafx-media</artifactId>
+			<version>23.0.2</version>
 			<classifier>linux</classifier>
 		</dependency>
 
@@ -65,29 +79,6 @@
 			<classifier>win</classifier>
 		</dependency>
 
-		<dependency>
-			<groupId>org.openjfx</groupId>
-			<artifactId>javafx-graphics</artifactId>
-			<version>23.0.2</version>
-			<classifier>linux</classifier>
-		</dependency>
-
-		<!-- Plattform-spezifische Native-Libs – nur fürs Fat-JAR relevant -->
-		
-		
-		<!--
-		<dependency>
-			<groupId>org.openjfx</groupId>
-			<artifactId>javafx-graphics</artifactId>
-			<version>23.0.2</version>
-			<classifier>win</classifier>
-		</dependency>
-		<dependency>
-			<groupId>org.openjfx</groupId>
-			<artifactId>javafx-graphics</artifactId>
-			<version>23.0.2</version>
-			<classifier>linux</classifier>
-		</dependency>
 		<dependency>
 			<groupId>org.openjfx</groupId>
 			<artifactId>javafx-graphics</artifactId>
@@ -95,33 +86,6 @@
 			<classifier>mac</classifier>
 		</dependency>
 
-
-		<dependency>
-			<groupId>io.github.classgraph</groupId>
-			<artifactId>classgraph</artifactId>
-			<version>4.8.184</version>
-			<scope>compile</scope>
-		</dependency>
-
-
-		<dependency>
-			<groupId>org.openjfx</groupId>
-			<artifactId>javafx-controls</artifactId>
-			<version>23.0.2</version>
-		</dependency>
-		<dependency>
-			<groupId>org.openjfx</groupId>
-			<artifactId>javafx-media</artifactId>
-			<version>23.0.2</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.openjfx</groupId>
-			<artifactId>javafx-graphics</artifactId>
-			<version>23.0.2</version>
-		</dependency>
-
-
 		<dependency>
 			<groupId>org.openjfx</groupId>
 			<artifactId>javafx-graphics</artifactId>
@@ -129,15 +93,7 @@
 			<classifier>linux</classifier>
 		</dependency>
 
-		<dependency>
-			<groupId>org.openjfx</groupId>
-			<artifactId>javafx-graphics</artifactId>
-			<version>23.0.2</version>
-			<classifier>win</classifier>
-		</dependency>
 
-
--->
 		<dependency>
 			<groupId>io.github.classgraph</groupId>
 			<artifactId>classgraph</artifactId>
