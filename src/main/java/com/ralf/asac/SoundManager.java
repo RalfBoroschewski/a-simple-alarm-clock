@@ -30,8 +30,8 @@ class SoundManager {
 	private final Button addButton;
 	private final Stage stage;
 
-	SoundManager(final AddEditAlarmManagerItem addEditAlarmManagerItem, final Stage ownerStage,
-			final ArrayList<AlarmManager.AlarmManagerItem> alarmManagerItems, final AlarmManager alarmManager) {
+	SoundManager(final Stage ownerStage, final ArrayList<AlarmManager.AlarmManagerItem> alarmManagerItems,
+			final AlarmManager alarmManager) {
 		soundItems = Preferences.getSounds();
 
 		final ObservableList<MyRow> tableItems = FXCollections.observableArrayList();
@@ -108,7 +108,7 @@ class SoundManager {
 			editButton.setDisable(false);
 		});
 
-		setListener(addEditAlarmManagerItem, alarmManagerItems, alarmManager);
+		setListener(alarmManagerItems, alarmManager);
 
 		final Scene scene = new Scene(gridPane);
 		stage.setScene(scene);
@@ -123,8 +123,8 @@ class SoundManager {
 	}
 
 	@SuppressWarnings("java:S3776")
-	private void setListener(final AddEditAlarmManagerItem addEditAlarmManagerItem,
-			final ArrayList<AlarmManager.AlarmManagerItem> alarmManagerItems, final AlarmManager alarmManager) {
+	private void setListener(final ArrayList<AlarmManager.AlarmManagerItem> alarmManagerItems,
+			final AlarmManager alarmManager) {
 		editButton.setOnAction(event -> {
 			if (selectedItem != null) {
 				final String selectedName = selectedItem.getName();
@@ -152,7 +152,7 @@ class SoundManager {
 					soundItems.set(selectedItem.index, item);
 					rebuildListView();
 					Preferences.setSounds(soundItems);
-					addEditAlarmManagerItem.buildAlarmsComboBox();
+					// addEditAlarmManagerItem.buildAlarmsComboBox();
 					alarmManager.rebuildListView();
 				}
 			}
@@ -168,7 +168,7 @@ class SoundManager {
 				soundItems.add(item);
 				rebuildListView();
 				Preferences.setSounds(soundItems);
-				addEditAlarmManagerItem.buildAlarmsComboBox();
+				// addEditAlarmManagerItem.buildAlarmsComboBox();
 			}
 		});
 
@@ -210,7 +210,7 @@ class SoundManager {
 				soundItems.remove(selectedItem.getItem());
 				rebuildListView();
 				Preferences.setSounds(soundItems);
-				addEditAlarmManagerItem.buildAlarmsComboBox();
+				// addEditAlarmManagerItem.buildAlarmsComboBox();
 				deleteButton.setDisable(true);
 				editButton.setDisable(true);
 			}

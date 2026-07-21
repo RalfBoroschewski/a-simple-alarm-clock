@@ -33,6 +33,7 @@ class AlarmManager {
 	private final Button editButton;
 	private final Button addButton;
 	private final Button deleteButton;
+	private final Button manageSoundsButton;
 	private final Button defaultSoundButton;
 
 	@SuppressWarnings("java:S106")
@@ -57,6 +58,8 @@ class AlarmManager {
 		final double widthButtons = Double.parseDouble(MainClass.messages.getString("buttonwidth"));
 		final double widthDefaultSoundButton = Double
 				.parseDouble(MainClass.messages.getString("AlarmManager.default.sound.button.width"));
+		final double widthManageSoundButton = Double
+				.parseDouble(MainClass.messages.getString("AlarmManager.manage.sound.button.width"));
 
 		editButton = new Button(MainClass.messages.getString("edit"));
 		editButton.setDisable(true);
@@ -71,6 +74,10 @@ class AlarmManager {
 		addButton = new Button(MainClass.messages.getString("add"));
 		addButton.setPrefWidth(widthButtons);
 		addButton.setMinWidth(widthButtons);
+
+		manageSoundsButton = new Button(MainClass.messages.getString("AlarmManager.manage.sounds"));
+		manageSoundsButton.setPrefWidth(widthManageSoundButton);
+		manageSoundsButton.setMinWidth(widthManageSoundButton);
 
 		defaultSoundButton = new Button(MainClass.messages.getString("AlarmManager.default.sound.button"));
 		defaultSoundButton.setPrefWidth(widthDefaultSoundButton);
@@ -112,8 +119,11 @@ class AlarmManager {
 		positionX = 1;
 		positionY++;
 
-		gridPane.add(defaultSoundButton, positionX, positionY, 2, 1);
-		GridPane.setMargin(defaultSoundButton, insets);
+		VBox vBox = new VBox(10);
+		vBox.getChildren().addAll(manageSoundsButton, defaultSoundButton);
+
+		gridPane.add(vBox, positionX, positionY, 3, 1);
+		GridPane.setMargin(vBox, new Insets(50, 10, 0, 10));
 
 		positionY++;
 
@@ -196,6 +206,8 @@ class AlarmManager {
 				mainClass.showStoredAlarms();
 			}
 		});
+
+		manageSoundsButton.setOnAction(event -> new SoundManager(stage, alarmManagerItems, this));
 
 		defaultSoundButton.setOnAction(event -> {
 			final Stage stageDefaultSound = new Stage();
