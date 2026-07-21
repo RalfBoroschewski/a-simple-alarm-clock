@@ -176,15 +176,27 @@ class SoundManager {
 			if (selectedItem == null)
 				return;
 
-			for (AlarmManager.AlarmManagerItem alarmManagerItem : alarmManagerItems) {
-				if (alarmManagerItem.getAlarmSoundData().getName().equals(selectedItem.getItem().name)) {
-					final Alert errorAlert = new Alert(AlertType.ERROR);
-					errorAlert.setTitle("");
-					errorAlert.setHeaderText(MainClass.messages.getString("SoundManager.deleting.error"));
-					errorAlert.setContentText(null);
-					errorAlert.showAndWait();
-					return;
+			AlarmSounds.AlarmSoundData defaultSound = Preferences.getDefaultSound();
+			boolean isInUse = false;
+			if (defaultSound.getName().equals(selectedItem.getItem().name)) {
+				isInUse = true;
+			}
+
+			if (!isInUse) {
+				for (AlarmManager.AlarmManagerItem alarmManagerItem : alarmManagerItems) {
+					if (alarmManagerItem.getAlarmSoundData().getName().equals(selectedItem.getItem().name)) {
+						isInUse = true;
+					}
 				}
+			}
+
+			if (isInUse) {
+				final Alert errorAlert = new Alert(AlertType.ERROR);
+				errorAlert.setTitle("");
+				errorAlert.setHeaderText(MainClass.messages.getString("SoundManager.deleting.error"));
+				errorAlert.setContentText(null);
+				errorAlert.showAndWait();
+				return;
 			}
 
 			final Alert confirmationAlert = new Alert(AlertType.CONFIRMATION);

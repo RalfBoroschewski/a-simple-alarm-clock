@@ -6,124 +6,142 @@
 	<groupId>com.ralf</groupId>
 	<artifactId>a-simple-alarm-clock</artifactId>
 	<version>1.0-SNAPSHOT</version>
+	<name>ASAC</name>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.compiler.source>9</maven.compiler.source>
-		<maven.compiler.target>9</maven.compiler.target>
+		<maven.compiler.source>17</maven.compiler.source>
+		<maven.compiler.target>17</maven.compiler.target>
 		<javafx.version>23.0.2</javafx.version>
+		<mainClass>com.ralf.asac.Asac</mainClass>
 	</properties>
 
 	<dependencies>
-		<dependency>
-			<groupId>org.openjfx</groupId>
-			<artifactId>javafx-controls</artifactId>
-			<version>${javafx.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.openjfx</groupId>
-			<artifactId>javafx-media</artifactId>
-			<version>${javafx.version}</version>
-		</dependency>
-
-
-		<dependency>
-			<groupId>org.openjfx</groupId>
-			<artifactId>javafx-controls</artifactId>
-			<version>${javafx.version}</version>
-			<classifier>linux</classifier>
-		</dependency>
-		<dependency>
-			<groupId>org.openjfx</groupId>
-			<artifactId>javafx-media</artifactId>
-			<version>${javafx.version}</version>
-			<classifier>linux</classifier>
-		</dependency>
-		<dependency>
-			<groupId>org.openjfx</groupId>
-			<artifactId>javafx-graphics</artifactId>
-			<version>${javafx.version}</version>
-			<classifier>linux</classifier>
-		</dependency>
-
-
-		<dependency>
-			<groupId>org.openjfx</groupId>
-			<artifactId>javafx-controls</artifactId>
-			<version>${javafx.version}</version>
-			<classifier>win</classifier>
-		</dependency>
-		<dependency>
-			<groupId>org.openjfx</groupId>
-			<artifactId>javafx-media</artifactId>
-			<version>${javafx.version}</version>
-			<classifier>win</classifier>
-		</dependency>
-		<dependency>
-			<groupId>org.openjfx</groupId>
-			<artifactId>javafx-graphics</artifactId>
-			<version>${javafx.version}</version>
-			<classifier>win</classifier>
-		</dependency>
-
-
-		<dependency>
-			<groupId>org.openjfx</groupId>
-			<artifactId>javafx-controls</artifactId>
-			<version>${javafx.version}</version>
-			<classifier>mac</classifier>
-		</dependency>
-		<dependency>
-			<groupId>org.openjfx</groupId>
-			<artifactId>javafx-media</artifactId>
-			<version>${javafx.version}</version>
-			<classifier>mac</classifier>
-		</dependency>
-		<dependency>
-			<groupId>org.openjfx</groupId>
-			<artifactId>javafx-graphics</artifactId>
-			<version>${javafx.version}</version>
-			<classifier>mac</classifier>
-		</dependency>
-		
 
 		<dependency>
 			<groupId>io.github.classgraph</groupId>
 			<artifactId>classgraph</artifactId>
 			<version>4.8.184</version>
-			<scope>compile</scope>
 		</dependency>
+
 	</dependencies>
+
+	<profiles>
+
+		<!-- Windows native libraries -->
+		<profile>
+			<id>windows</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+				<os>
+					<family>windows</family>
+				</os>
+			</activation>
+			<dependencies>
+				<dependency>
+					<groupId>org.openjfx</groupId>
+					<artifactId>javafx-graphics</artifactId>
+					<version>${javafx.version}</version>
+					<classifier>win</classifier>
+				</dependency>
+				<dependency>
+					<groupId>org.openjfx</groupId>
+					<artifactId>javafx-controls</artifactId>
+					<version>${javafx.version}</version>
+					<classifier>win</classifier>
+				</dependency>
+				<dependency>
+					<groupId>org.openjfx</groupId>
+					<artifactId>javafx-media</artifactId>
+					<version>${javafx.version}</version>
+					<classifier>win</classifier>
+				</dependency>
+			</dependencies>
+		</profile>
+
+		<profile>
+			<id>linux</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+				<os>
+					<family>unix</family>
+					<name>Linux</name>
+				</os>
+			</activation>
+			<dependencies>
+				<dependency>
+					<groupId>org.openjfx</groupId>
+					<artifactId>javafx-graphics</artifactId>
+					<version>${javafx.version}</version>
+					<classifier>linux</classifier>
+				</dependency>
+				<dependency>
+					<groupId>org.openjfx</groupId>
+					<artifactId>javafx-controls</artifactId>
+					<version>${javafx.version}</version>
+					<classifier>linux</classifier>
+				</dependency>
+				<dependency>
+					<groupId>org.openjfx</groupId>
+					<artifactId>javafx-media</artifactId>
+					<version>${javafx.version}</version>
+					<classifier>linux</classifier>
+				</dependency>
+			</dependencies>
+		</profile>
+
+
+		<!-- macOS native libraries -->
+		<profile>
+			<id>mac</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+				<os>
+					<family>mac</family>
+				</os>
+			</activation>
+			<dependencies>
+				<dependency>
+					<groupId>org.openjfx</groupId>
+					<artifactId>javafx-graphics</artifactId>
+					<version>${javafx.version}</version>
+					<classifier>mac</classifier>
+				</dependency>
+				<dependency>
+					<groupId>org.openjfx</groupId>
+					<artifactId>javafx-controls</artifactId>
+					<version>${javafx.version}</version>
+					<classifier>mac</classifier>
+				</dependency>
+				<dependency>
+					<groupId>org.openjfx</groupId>
+					<artifactId>javafx-media</artifactId>
+					<version>${javafx.version}</version>
+					<classifier>mac</classifier>
+				</dependency>
+			</dependencies>
+		</profile>
+
+
+	</profiles>
 
 	<build>
 		<plugins>
-
+			<!-- Compiler -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.11.0</version>
-      		</plugin>
-		
-		
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>3.3.0</version>
+				<version>3.13.0</version>
 				<configuration>
-					<archive>
-						<manifest>
-							<addClasspath>true</addClasspath>
-							<mainClass>com.ralf.asac.Asac</mainClass>
-
-						</manifest>
-					</archive>
+					<release>17</release>
 				</configuration>
 			</plugin>
 
+			<!-- Shade Plugin: Fat-JAR -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>
-				<version>3.5.1</version>
+				<version>3.6.0</version>
 				<executions>
 					<execution>
 						<phase>package</phase>
@@ -134,32 +152,29 @@
 							<transformers>
 								<transformer
 									implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-									<mainClass>com.ralf.asac.Asac</mainClass>
-
+									<mainClass>${mainClass}</mainClass>
 									<manifestEntries>
 										<Enable-Native-Access>ALL-UNNAMED</Enable-Native-Access>
 									</manifestEntries>
-
 								</transformer>
 							</transformers>
 							<filters>
 								<filter>
-									<artifact>org.openjfx:javafx-controls</artifact>
-									<includes>
-										<include>**</include>
-									</includes>
-								</filter>
-								<filter>
-									<artifact>org.openjfx:javafx-media</artifact>
-									<includes>
-										<include>**</include>
-									</includes>
+									<artifact>*:*</artifact>
+									<excludes>
+										<exclude>module-info.class</exclude>
+										<exclude>META-INF/*.SF</exclude>
+										<exclude>META-INF/*.DSA</exclude>
+										<exclude>META-INF/*.RSA</exclude>
+									</excludes>
 								</filter>
 							</filters>
+							<createDependencyReducedPom>false</createDependencyReducedPom>
 						</configuration>
 					</execution>
 				</executions>
 			</plugin>
+
 
 			<plugin>
 				<groupId>com.akathist.maven.plugins.launch4j</groupId>
@@ -173,8 +188,9 @@
 							<goal>launch4j</goal>
 						</goals>
 						<configuration>
-							<headerType>console</headerType>
-							<jar>${project.build.directory}/${project.artifactId}-${project.version}.jar</jar>
+							<headerType>gui</headerType>
+							<jar>
+								${project.build.directory}/${project.artifactId}-${project.version}.jar</jar>
 							<outfile>${project.build.directory}/asac.exe</outfile>
 							<downloadUrl>http://java.com/download</downloadUrl>
 							<classPath>
@@ -184,8 +200,8 @@
 							</classPath>
 							<icon>${project.basedir}/src/main/resources/asac.ico</icon>
 							<jre>
-							<!--	<path>${java.home}\bin</path>	-->			<!-- Version 1 -->
-									<path>%JAVA_HOME%\bin</path> 	<!-- Version 2 -->
+								<!--	<path>${java.home}\bin</path>	-->			<!-- Version 1 -->
+								<path>%JAVA_HOME%\bin</path> 	<!-- Version 2 -->
 							</jre>
 							<versionInfo>
 								<fileVersion>1.0.0.0</fileVersion>
@@ -203,7 +219,6 @@
 					</execution>
 				</executions>
 			</plugin>
-
 
 		</plugins>
 	</build>

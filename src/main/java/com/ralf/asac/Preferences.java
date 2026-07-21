@@ -17,11 +17,23 @@ class Preferences {
 
 	private static final String ALARMS = "alarms";
 	private static final String SOUNDS = "sounds";
+	private static final String DEFAULT_SOUND_NAME = "default sound name";
+	private static final String DEFAULT_SOUND_PATH = "default sound path";
+	private static final String DEFAULT_SOUND_IS_RESOURCE = "default sound is resource";
 
 	private static final int ALARM_STRING_PARTS_NUMBER = 20;
 	private static final int ALARM_SOUND_STRING_PARTS_NUMBER = 10;
 
 	private Preferences() {
+	}
+
+	@SuppressWarnings("java:S4507")
+	private static void flush() {
+		try {
+			PREFERENCES_ROOT.flush();
+		} catch (BackingStoreException exception) {
+			exception.printStackTrace();
+		}
 	}
 
 	static void setAlarms(final List<AlarmManager.AlarmManagerItem> items) {
@@ -60,11 +72,9 @@ class Preferences {
 			isFirst = false;
 		}
 		PREFERENCES_ROOT.put(ALARMS, alarms.toString());
-		try {
-			PREFERENCES_ROOT.flush();
-		} catch (BackingStoreException exception) {
-			exception.printStackTrace();
-		}
+
+		flush();
+
 	}
 
 	static ArrayList<AlarmManager.AlarmManagerItem> getAlarms() {
@@ -81,7 +91,7 @@ class Preferences {
 				alarmStrings[index] = alarmsStrings[index + alarmStringsOffset];
 			}
 
-			boolean isResource = alarmStrings[4].equals("1");
+			final boolean isResource = alarmStrings[4].equals("1");
 
 			AlarmSounds.AlarmSoundData alarmSoundData;
 			if (isResource) {
@@ -126,11 +136,8 @@ class Preferences {
 			isFirst = false;
 		}
 		PREFERENCES_ROOT.put(SOUNDS, alarms.toString());
-		try {
-			PREFERENCES_ROOT.flush();
-		} catch (BackingStoreException exception) {
-			exception.printStackTrace();
-		}
+
+		flush();
 	}
 
 	static ArrayList<SoundManager.SoundManagerItem> getSounds() {
@@ -158,4 +165,28 @@ class Preferences {
 
 	}
 
+	static void setDefaultSound(final AlarmSounds.AlarmSoundData defaultSound) {
+		PREFERENCES_ROOT.put(DEFAULT_SOUND_NAME, defaultSound.getName());
+		PREFERENCES_ROOT.put(DEFAULT_SOUND_PATH, defaultSound.getPath());
+		PREFERENCES_ROOT.put(DEFAULT_SOUND_IS_RESOURCE, "" + defaultSound.isResource());
+
+		flush();
+	}
+
+	static AlarmSounds.AlarmSoundData getDefaultSound() {
+		final String name = PREFERENCES_ROOT.get(DEFAULT_SOUND_NAME, null);
+		final String path = PREFERENCES_ROOT.get(DEFAULT_SOUND_PATH, null);
+		final String isResourceString = PREFERENCES_ROOT.get(DEFAULT_SOUND_NAME, "");
+
+		final boolean isResource = Boolean.parseBoolean(isResourceString);
+
+		final AlarmSounds.AlarmSoundData alarmSoundData;
+		if (isResource) {
+			alarmSoundData = new AlarmSounds.AlarmSoundData(name);
+		} else {
+			alarmSoundData = new AlarmSounds.AlarmSoundData(name, path);
+		}
+
+		return alarmSoundData;
+	}
 }

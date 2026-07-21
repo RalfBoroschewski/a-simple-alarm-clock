@@ -1,6 +1,7 @@
 package com.ralf.asac;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import javafx.collections.FXCollections;
@@ -11,12 +12,16 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -28,6 +33,7 @@ class AlarmManager {
 	private final Button editButton;
 	private final Button addButton;
 	private final Button deleteButton;
+	private final Button defaultSoundButton;
 
 	@SuppressWarnings("java:S106")
 	AlarmManager(final MainClass mainClass) {
@@ -49,6 +55,8 @@ class AlarmManager {
 				.addListener((observable, oldValue, newValue) -> selectedItem = newValue);
 
 		final double widthButtons = Double.parseDouble(MainClass.messages.getString("buttonwidth"));
+		final double widthDefaultSoundButton = Double
+				.parseDouble(MainClass.messages.getString("AlarmManager.default.sound.button.width"));
 
 		editButton = new Button(MainClass.messages.getString("edit"));
 		editButton.setDisable(true);
@@ -63,6 +71,10 @@ class AlarmManager {
 		addButton = new Button(MainClass.messages.getString("add"));
 		addButton.setPrefWidth(widthButtons);
 		addButton.setMinWidth(widthButtons);
+
+		defaultSoundButton = new Button(MainClass.messages.getString("AlarmManager.default.sound.button"));
+		defaultSoundButton.setPrefWidth(widthDefaultSoundButton);
+		defaultSoundButton.setMinWidth(widthDefaultSoundButton);
 
 		final Button okButton = new Button(MainClass.messages.getString("ok"));
 		okButton.setPrefWidth(widthButtons);
@@ -98,6 +110,11 @@ class AlarmManager {
 		GridPane.setMargin(addButton, new Insets(0, 10, 10, 10));
 
 		positionX = 1;
+		positionY++;
+
+		gridPane.add(defaultSoundButton, positionX, positionY, 2, 1);
+		GridPane.setMargin(defaultSoundButton, insets);
+
 		positionY++;
 
 		gridPane.add(okButton, positionX, positionY, 1, 1);
@@ -179,6 +196,43 @@ class AlarmManager {
 				mainClass.showStoredAlarms();
 			}
 		});
+
+		defaultSoundButton.setOnAction(event -> {
+			final Stage stageDefaultSound = new Stage();
+			stageDefaultSound.setTitle(MainClass.messages.getString("AlarmManager.default.sound.window.title"));
+			final List<AlarmSounds.AlarmSoundData> list = new AlarmSounds().getAlarmSoundDatas();
+
+			Label label = new Label(MainClass.messages.getString("AlarmManager.default.sound.title"));
+
+			ComboBox<AlarmSounds.AlarmSoundData> alarmSounds = new ComboBox<>();
+			alarmSounds.getItems().clear();
+			alarmSounds.getItems().addAll(list);
+
+			alarmSounds.setValue(Preferences.getDefaultSound());
+
+			final Button okButton = new Button(MainClass.messages.getString("ok"));
+			final Button cancelButton = new Button(MainClass.messages.getString("cancel"));
+
+			HBox hBox = new HBox();
+			hBox.getChildren().addAll(okButton, cancelButton);
+
+			final VBox vBox = new VBox();
+			vBox.getChildren().addAll(label, alarmSounds, hBox);
+
+			okButton.setOnAction(event1 -> {
+				Preferences.setDefaultSound(alarmSounds.getValue());
+				stageDefaultSound.close();
+			});
+
+			cancelButton.setOnAction(event1 -> stageDefaultSound.close());
+
+			stageDefaultSound.initModality(Modality.APPLICATION_MODAL);
+			stageDefaultSound.initOwner(stage);
+			final Scene scene = new Scene(vBox);
+			stageDefaultSound.setScene(scene);
+			stageDefaultSound.showAndWait();
+		});
+
 	}
 
 	void selectedItem(final AlarmManagerItem item) {

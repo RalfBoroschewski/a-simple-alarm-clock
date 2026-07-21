@@ -23,7 +23,7 @@ class AudioOutput extends Task<Integer> {
 	}
 
 	@Override
-	@SuppressWarnings({ "java:S2189", "java:S2589", "java:S2142" })
+	@SuppressWarnings({ "java:S2189", "java:S2589", "java:S2142", "java:S4507" })
 	protected Integer call() throws Exception {
 		isRunning = true;
 		while (isRunning) {
