@@ -86,7 +86,7 @@ class PerformDuration implements EventHandler<ActionEvent> {
 
 	}
 
-	@SuppressWarnings("java:S2142")
+	@SuppressWarnings({ "java:S2142", "java:S4507" })
 	void sleep(final long milliSecond) {
 		try {
 			Thread.sleep(milliSecond);

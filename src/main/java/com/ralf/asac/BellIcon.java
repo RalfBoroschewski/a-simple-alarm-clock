@@ -29,6 +29,7 @@ class BellIcon {
 		this.alarmSoundData = alarmSoundData;
 	}
 
+	@SuppressWarnings("java:S4507")
 	void play() {
 		URL url = getURL();
 
@@ -91,6 +92,10 @@ class BellIcon {
 
 	URL getURL() {
 		if (alarmSoundData == null || alarmSoundData.getPath() == null || alarmSoundData.getPath().isBlank()) {
+			AlarmSounds.AlarmSoundData defaultSound = Preferences.getDefaultSound();
+			if (defaultSound.getName() != null) {
+				return getURLbyFilePath(defaultSound.getPath());
+			}
 			return ClassLoader.getSystemResource(Asac.DEFAULT_SOUND_FILE);
 		} else if (alarmSoundData.isResource()) {
 			if (alarmSoundData.getName().equals(MainClass.messages.getString("path.default"))) {
@@ -98,17 +103,23 @@ class BellIcon {
 			}
 			return ClassLoader.getSystemResource(alarmSoundData.getName());
 		} else {
-			final File file = new File(alarmSoundData.getPath());
-			if (!file.isFile()) {
+			return getURLbyFilePath(alarmSoundData.getPath());
+
+		}
+	}
+
+	@SuppressWarnings("java:S4507")
+	URL getURLbyFilePath(String filePath) {
+		final File file = new File(filePath);
+		if (!file.isFile()) {
+			return ClassLoader.getSystemResource(Asac.DEFAULT_SOUND_FILE);
+		} else {
+			final URI uri = file.toURI();
+			try {
+				return uri.toURL();
+			} catch (MalformedURLException exception) {
+				exception.printStackTrace();
 				return ClassLoader.getSystemResource(Asac.DEFAULT_SOUND_FILE);
-			} else {
-				final URI uri = file.toURI();
-				try {
-					return uri.toURL();
-				} catch (MalformedURLException exception) {
-					exception.printStackTrace();
-					return ClassLoader.getSystemResource(Asac.DEFAULT_SOUND_FILE);
-				}
 			}
 		}
 	}

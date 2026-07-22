@@ -21,7 +21,6 @@ class AddEditAlarmManagerItem {
 	private final TimeDurationField timeTextField;
 	private final Button okButton;
 	private final ComboBox<AlarmSounds.AlarmSoundData> alarmSoundDatasComboBox;
-	private final Button manageSoundsButton;
 	private final Label errorLabel;
 	private final ArrayList<AlarmManager.AlarmManagerItem> alarmManagerItems;
 	private final boolean isNewEntry;
@@ -42,7 +41,6 @@ class AddEditAlarmManagerItem {
 		nameTextField = new TextField(name);
 		timeTextField = new TimeDurationField(time);
 		alarmSoundDatasComboBox = new ComboBox<>();
-		manageSoundsButton = new Button(MainClass.messages.getString("AddEditAlarmManagerItem.manage.sounds"));
 
 		okButton = new Button(MainClass.messages.getString("ok"));
 		okButton.setDisable(name.isBlank() || time.isBlank());
@@ -52,8 +50,6 @@ class AddEditAlarmManagerItem {
 		errorLabel = new Label();
 		errorLabel.setTextFill(Color.RED);
 		errorLabel.setVisible(false);
-
-		manageSoundsButton.setOnAction(event -> new SoundManager(this, stage, alarmManagerItems, alarmManager));
 
 		okButton.setOnAction(event -> {
 			isOkAttribute = true;
@@ -89,7 +85,7 @@ class AddEditAlarmManagerItem {
 		alarmSoundDatasComboBox.setValue(alarmSoundData);
 
 		final HBox alarms = new HBox(10);
-		alarms.getChildren().addAll(soundComboBoxVBox, manageSoundsButton);
+		alarms.getChildren().addAll(soundComboBoxVBox);
 
 		final VBox vBox = new VBox();
 		vBox.getChildren().addAll(valuesHBox, alarmSoundsCaption, alarms, buttonsHBox, errorLabel);

@@ -37,7 +37,7 @@ public class MainClass extends Application {
 	static final ResourceBundle messages = ResourceBundle.getBundle("messages", Locale.getDefault());
 	static final String PAUSE_KEY = "MainClass.pause";
 
-	static void main(final String[] args) {
+	static void start(final String[] args) {
 		launch(args);
 	}
 
@@ -236,6 +236,7 @@ public class MainClass extends Application {
 		alarmsComboBox.setValue(null);
 	}
 
+	@SuppressWarnings("java:S4507")
 	void setIcon(final boolean isActive) {
 
 		final URL url = ClassLoader.getSystemResource(isActive ? "alarmActive.png" : "alarm.png");
@@ -243,8 +244,8 @@ public class MainClass extends Application {
 		try {
 			final InputStream inputStream = url.openStream();
 			image = new Image(inputStream);
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (IOException exception) {
+			exception.printStackTrace();
 		}
 
 		if (image != null) {

@@ -30,8 +30,8 @@ class SoundManager {
 	private final Button addButton;
 	private final Stage stage;
 
-	SoundManager(final AddEditAlarmManagerItem addEditAlarmManagerItem, final Stage ownerStage,
-			final ArrayList<AlarmManager.AlarmManagerItem> alarmManagerItems, final AlarmManager alarmManager) {
+	SoundManager(final Stage ownerStage, final ArrayList<AlarmManager.AlarmManagerItem> alarmManagerItems,
+			final AlarmManager alarmManager) {
 		soundItems = Preferences.getSounds();
 
 		final ObservableList<MyRow> tableItems = FXCollections.observableArrayList();
@@ -108,7 +108,7 @@ class SoundManager {
 			editButton.setDisable(false);
 		});
 
-		setListener(addEditAlarmManagerItem, alarmManagerItems, alarmManager);
+		setListener(alarmManagerItems, alarmManager);
 
 		final Scene scene = new Scene(gridPane);
 		stage.setScene(scene);
@@ -123,8 +123,8 @@ class SoundManager {
 	}
 
 	@SuppressWarnings("java:S3776")
-	private void setListener(final AddEditAlarmManagerItem addEditAlarmManagerItem,
-			final ArrayList<AlarmManager.AlarmManagerItem> alarmManagerItems, final AlarmManager alarmManager) {
+	private void setListener(final ArrayList<AlarmManager.AlarmManagerItem> alarmManagerItems,
+			final AlarmManager alarmManager) {
 		editButton.setOnAction(event -> {
 			if (selectedItem != null) {
 				final String selectedName = selectedItem.getName();
@@ -152,7 +152,7 @@ class SoundManager {
 					soundItems.set(selectedItem.index, item);
 					rebuildListView();
 					Preferences.setSounds(soundItems);
-					addEditAlarmManagerItem.buildAlarmsComboBox();
+					// addEditAlarmManagerItem.buildAlarmsComboBox();
 					alarmManager.rebuildListView();
 				}
 			}
@@ -168,7 +168,7 @@ class SoundManager {
 				soundItems.add(item);
 				rebuildListView();
 				Preferences.setSounds(soundItems);
-				addEditAlarmManagerItem.buildAlarmsComboBox();
+				// addEditAlarmManagerItem.buildAlarmsComboBox();
 			}
 		});
 
@@ -176,15 +176,27 @@ class SoundManager {
 			if (selectedItem == null)
 				return;
 
-			for (AlarmManager.AlarmManagerItem alarmManagerItem : alarmManagerItems) {
-				if (alarmManagerItem.getAlarmSoundData().getName().equals(selectedItem.getItem().name)) {
-					final Alert errorAlert = new Alert(AlertType.ERROR);
-					errorAlert.setTitle("");
-					errorAlert.setHeaderText(MainClass.messages.getString("SoundManager.deleting.error"));
-					errorAlert.setContentText(null);
-					errorAlert.showAndWait();
-					return;
+			AlarmSounds.AlarmSoundData defaultSound = Preferences.getDefaultSound();
+			boolean isInUse = false;
+			if (defaultSound.getName().equals(selectedItem.getItem().name)) {
+				isInUse = true;
+			}
+
+			if (!isInUse) {
+				for (AlarmManager.AlarmManagerItem alarmManagerItem : alarmManagerItems) {
+					if (alarmManagerItem.getAlarmSoundData().getName().equals(selectedItem.getItem().name)) {
+						isInUse = true;
+					}
 				}
+			}
+
+			if (isInUse) {
+				final Alert errorAlert = new Alert(AlertType.ERROR);
+				errorAlert.setTitle("");
+				errorAlert.setHeaderText(MainClass.messages.getString("SoundManager.deleting.error"));
+				errorAlert.setContentText(null);
+				errorAlert.showAndWait();
+				return;
 			}
 
 			final Alert confirmationAlert = new Alert(AlertType.CONFIRMATION);
@@ -198,7 +210,7 @@ class SoundManager {
 				soundItems.remove(selectedItem.getItem());
 				rebuildListView();
 				Preferences.setSounds(soundItems);
-				addEditAlarmManagerItem.buildAlarmsComboBox();
+				// addEditAlarmManagerItem.buildAlarmsComboBox();
 				deleteButton.setDisable(true);
 				editButton.setDisable(true);
 			}
