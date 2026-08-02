@@ -1,11 +1,19 @@
 package com.ralf.asac;
 
+import java.awt.AWTException;
+import java.awt.MenuItem;
+import java.awt.PopupMenu;
+import java.awt.SystemTray;
+import java.awt.TrayIcon;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.ResourceBundle;
+
+import javax.imageio.ImageIO;
 
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -36,6 +44,7 @@ public class MainClass extends Application {
 
 	static final ResourceBundle messages = ResourceBundle.getBundle("messages", Locale.getDefault());
 	static final String PAUSE_KEY = "MainClass.pause";
+	static private TrayIcon trayIcon;
 
 	static void start(final String[] args) {
 		launch(args);
@@ -48,7 +57,7 @@ public class MainClass extends Application {
 		alarmsComboBox = new AlarmsComboBox(this, timeDurationField);
 	}
 
-	@SuppressWarnings({ "exports", "java:S3776" })
+	@SuppressWarnings({ "exports", "java:S3776", "unused" })
 	@Override
 	public void start(final Stage stage) throws Exception {
 
@@ -146,6 +155,60 @@ public class MainClass extends Application {
 		stage.setY(windowsPositionY);
 
 		stage.setOnCloseRequest(event -> deactivate());
+
+		stage.iconifiedProperty().addListener((observable, oldValue, newValue) -> {
+			if (newValue != null && newValue
+					&& Preferences.getSystrayMode() == Preferences.SystrayMode.MINIMIZE_TO_SYSTRAY) {
+				URL imageURL = ClassLoader.getSystemResource("alarm.png");
+				BufferedImage image;
+				try {
+//						System.out.println("Java      : " + System.getProperty("java.version"));
+//						System.out.println("OS        : " + System.getProperty("os.name"));
+//						System.out.println("Toolkit   : " + Toolkit.getDefaultToolkit().getClass());
+//						System.out.println("Headless  : " + GraphicsEnvironment.isHeadless());
+//						System.out.println("Tray      : " + SystemTray.isSupported());
+
+					if (trayIcon == null) {
+						image = ImageIO.read(imageURL);
+						PopupMenu popup = new PopupMenu();
+
+						MenuItem item = new MenuItem("Test");
+						item.addActionListener(event -> System.out.println("MENU"));
+						popup.add(item);
+						trayIcon = new TrayIcon(image);
+						trayIcon.setImageAutoSize(true);
+						trayIcon.setPopupMenu(popup);
+					}
+
+					trayIcon.addActionListener(event -> System.out.println("CLICK"));
+
+					try {
+						SystemTray.getSystemTray().add(trayIcon);
+					} catch (AWTException e1) {
+						e1.printStackTrace();
+					}
+
+				} catch (IOException exception) {
+					exception.printStackTrace();
+				}
+
+				System.out.println("Fenster wurde minimiert!");
+			}
+		});
+
+	}
+
+	static boolean hasSystray() {
+
+		if (SystemTray.isSupported()) {
+			String xdgDesktop = System.getenv("XDG_CURRENT_DESKTOP");
+			String kdeSession = System.getenv("KDE_FULL_SESSION");
+			boolean isKde = ("KDE".equalsIgnoreCase(xdgDesktop)) || ("true".equalsIgnoreCase(kdeSession));
+
+			return !isKde;
+		}
+
+		return false;
 	}
 
 	void showStoredAlarms() {

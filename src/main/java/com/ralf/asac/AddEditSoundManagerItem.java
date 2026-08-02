@@ -27,6 +27,7 @@ class AddEditSoundManagerItem {
 	private final ArrayList<SoundManager.SoundManagerItem> items;
 	private boolean isOkAttribute;
 
+	@SuppressWarnings("unused")
 	AddEditSoundManagerItem(final String name, final String path, final boolean isNewEntry,
 			final ArrayList<SoundManager.SoundManagerItem> items, final Stage ownerStage) {
 		final Stage stage = new Stage();

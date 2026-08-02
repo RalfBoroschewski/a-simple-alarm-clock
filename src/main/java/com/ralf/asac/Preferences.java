@@ -20,6 +20,7 @@ class Preferences {
 	private static final String DEFAULT_SOUND_NAME = "default sound name";
 	private static final String DEFAULT_SOUND_PATH = "default sound path";
 	private static final String DEFAULT_SOUND_IS_RESOURCE = "default sound is resource";
+	private static final String SYSTRAY_MODE = "systray mode";
 
 	private static final int ALARM_STRING_PARTS_NUMBER = 20;
 	private static final int ALARM_SOUND_STRING_PARTS_NUMBER = 10;
@@ -189,4 +190,34 @@ class Preferences {
 
 		return alarmSoundData;
 	}
+
+	enum SystrayMode {
+		NOT_IN_SYSTRAY, MINIMIZE_TO_SYSTRAY
+	}
+
+	static void setSystrayMode(final SystrayMode systrayMode) {
+		switch (systrayMode) {
+		case NOT_IN_SYSTRAY:
+			PREFERENCES_ROOT.put(SYSTRAY_MODE, "0");
+			break;
+		case MINIMIZE_TO_SYSTRAY:
+		default:
+			PREFERENCES_ROOT.put(SYSTRAY_MODE, "1");
+			break;
+		}
+
+		flush();
+	}
+
+	static SystrayMode getSystrayMode() {
+		final String modeString = PREFERENCES_ROOT.get(SYSTRAY_MODE, "0");
+		switch (modeString) {
+		case "0":
+			return SystrayMode.NOT_IN_SYSTRAY;
+		case "1":
+		default:
+			return SystrayMode.MINIMIZE_TO_SYSTRAY;
+		}
+	}
+
 }

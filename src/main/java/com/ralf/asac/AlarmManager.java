@@ -12,6 +12,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -35,8 +36,9 @@ class AlarmManager {
 	private final Button deleteButton;
 	private final Button manageSoundsButton;
 	private final Button defaultSoundButton;
+	private final CheckBox minimizeToSystrayCheckBox;
 
-	@SuppressWarnings("java:S106")
+	@SuppressWarnings({ "java:S106", "unused" })
 	AlarmManager(final MainClass mainClass) {
 		final Stage stage = new Stage();
 		stage.initOwner(mainClass.getStage());
@@ -83,6 +85,12 @@ class AlarmManager {
 		defaultSoundButton.setPrefWidth(widthDefaultSoundButton);
 		defaultSoundButton.setMinWidth(widthDefaultSoundButton);
 
+		minimizeToSystrayCheckBox = new CheckBox("AlarmManager.minimize.to.systray");
+		Preferences.SystrayMode systrayMode = Preferences.getSystrayMode();
+		if (systrayMode == Preferences.SystrayMode.MINIMIZE_TO_SYSTRAY) {
+			minimizeToSystrayCheckBox.setSelected(true);
+		}
+
 		final Button okButton = new Button(MainClass.messages.getString("ok"));
 		okButton.setPrefWidth(widthButtons);
 		okButton.setMinWidth(widthButtons);
@@ -125,6 +133,13 @@ class AlarmManager {
 		gridPane.add(vBox, positionX, positionY, 3, 1);
 		GridPane.setMargin(vBox, new Insets(50, 10, 0, 10));
 
+		if (MainClass.hasSystray()) {
+			positionY++;
+
+			gridPane.add(minimizeToSystrayCheckBox, positionX, positionY, 1, 1);
+			GridPane.setMargin(minimizeToSystrayCheckBox, insets);
+		}
+
 		positionY++;
 
 		gridPane.add(okButton, positionX, positionY, 1, 1);
@@ -146,7 +161,7 @@ class AlarmManager {
 		stage.showAndWait();
 	}
 
-	@SuppressWarnings("java:S3776")
+	@SuppressWarnings({ "java:S3776", "unused" })
 	private void setListener(final Stage stage, final MainClass mainClass) {
 		editButton.setOnAction(event -> {
 			if (selectedItem != null) {
@@ -245,6 +260,11 @@ class AlarmManager {
 			stageDefaultSound.showAndWait();
 		});
 
+		minimizeToSystrayCheckBox.setOnAction(event -> Preferences
+				.setSystrayMode(minimizeToSystrayCheckBox.isSelected() ? Preferences.SystrayMode.MINIMIZE_TO_SYSTRAY
+						: Preferences.SystrayMode.NOT_IN_SYSTRAY)
+
+		);
 	}
 
 	void selectedItem(final AlarmManagerItem item) {
@@ -259,7 +279,7 @@ class AlarmManager {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "unused" })
 	void buildTableView() {
 		final TableColumn<MyRow, String> tableColumn1 = new TableColumn<>(
 				MainClass.messages.getString("AlarmManager.name"));

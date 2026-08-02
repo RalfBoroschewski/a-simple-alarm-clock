@@ -29,7 +29,7 @@ class BellIcon {
 		this.alarmSoundData = alarmSoundData;
 	}
 
-	@SuppressWarnings("java:S4507")
+	@SuppressWarnings({ "java:S4507", "unused" })
 	void play() {
 		URL url = getURL();
 
