@@ -62,6 +62,8 @@ class AlarmManager {
 				.parseDouble(MainClass.messages.getString("AlarmManager.default.sound.button.width"));
 		final double widthManageSoundButton = Double
 				.parseDouble(MainClass.messages.getString("AlarmManager.manage.sound.button.width"));
+		final double widthMinimizeToSystrayCheckBox = Double
+				.parseDouble(MainClass.messages.getString("AlarmManager.minimize.to.systray.width"));
 
 		editButton = new Button(MainClass.messages.getString("edit"));
 		editButton.setDisable(true);
@@ -85,10 +87,12 @@ class AlarmManager {
 		defaultSoundButton.setPrefWidth(widthDefaultSoundButton);
 		defaultSoundButton.setMinWidth(widthDefaultSoundButton);
 
-		minimizeToSystrayCheckBox = new CheckBox("AlarmManager.minimize.to.systray");
+		minimizeToSystrayCheckBox = new CheckBox(MainClass.messages.getString("AlarmManager.minimize.to.systray"));
 		Preferences.SystrayMode systrayMode = Preferences.getSystrayMode();
 		if (systrayMode == Preferences.SystrayMode.MINIMIZE_TO_SYSTRAY) {
 			minimizeToSystrayCheckBox.setSelected(true);
+			minimizeToSystrayCheckBox.setPrefWidth(widthMinimizeToSystrayCheckBox);
+			minimizeToSystrayCheckBox.setMinWidth(widthMinimizeToSystrayCheckBox);
 		}
 
 		final Button okButton = new Button(MainClass.messages.getString("ok"));

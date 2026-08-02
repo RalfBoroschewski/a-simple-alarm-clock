@@ -157,7 +157,7 @@ public class MainClass extends Application {
 		stage.setOnCloseRequest(event -> deactivate());
 
 		stage.iconifiedProperty().addListener((observable, oldValue, newValue) -> {
-			if (newValue != null && newValue
+			if (newValue != null && newValue && hasSystray()
 					&& Preferences.getSystrayMode() == Preferences.SystrayMode.MINIMIZE_TO_SYSTRAY) {
 				URL imageURL = ClassLoader.getSystemResource("alarm.png");
 				BufferedImage image;
