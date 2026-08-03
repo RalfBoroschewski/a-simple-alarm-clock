@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.ralf.asac.AlarmManager.AlarmManagerItem;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -89,10 +91,10 @@ class AlarmManager {
 
 		minimizeToSystrayCheckBox = new CheckBox(MainClass.messages.getString("AlarmManager.minimize.to.systray"));
 		Preferences.SystrayMode systrayMode = Preferences.getSystrayMode();
+		minimizeToSystrayCheckBox.setPrefWidth(widthMinimizeToSystrayCheckBox);
+		minimizeToSystrayCheckBox.setMinWidth(widthMinimizeToSystrayCheckBox);
 		if (systrayMode == Preferences.SystrayMode.MINIMIZE_TO_SYSTRAY) {
 			minimizeToSystrayCheckBox.setSelected(true);
-			minimizeToSystrayCheckBox.setPrefWidth(widthMinimizeToSystrayCheckBox);
-			minimizeToSystrayCheckBox.setMinWidth(widthMinimizeToSystrayCheckBox);
 		}
 
 		final Button okButton = new Button(MainClass.messages.getString("ok"));
@@ -137,7 +139,7 @@ class AlarmManager {
 		gridPane.add(vBox, positionX, positionY, 3, 1);
 		GridPane.setMargin(vBox, new Insets(50, 10, 0, 10));
 
-		if (MainClass.hasSystray()) {
+		if (mainClass.hasSystray()) {
 			positionY++;
 
 			gridPane.add(minimizeToSystrayCheckBox, positionX, positionY, 1, 1);

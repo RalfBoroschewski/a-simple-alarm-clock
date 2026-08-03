@@ -8,10 +8,6 @@ module Asac {
 
 	// Requirements for systray
 	requires java.desktop;
-	requires javafx.swing;
-	requires com.dustinredmond.fxtrayicon;
-
-	requires dorkbox.systemtray;
 
 	exports com.ralf.asac;
 }

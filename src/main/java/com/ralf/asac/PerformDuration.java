@@ -44,7 +44,10 @@ class PerformDuration implements EventHandler<ActionEvent> {
 			long step = 1;
 
 			for (int indexMinutes = 0; indexMinutes < minutes; indexMinutes++) {
-				mainClass.setTimeDurationFieldText((minutes - indexMinutes) + "");
+				String time = (minutes - indexMinutes) + "";
+				mainClass.setTimeDurationFieldText(time);
+				mainClass.setSystrayTooltip(time);
+
 				for (int indexSeconds = 0; indexSeconds < 60; indexSeconds += step) {
 					if (mainClass.pauseButtonIsPause) {
 						step = 0;

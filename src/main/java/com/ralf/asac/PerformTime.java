@@ -44,7 +44,9 @@ class PerformTime implements EventHandler<javafx.event.ActionEvent> {
 		String minuteString = "0" + minute;
 		minuteString = minuteString.substring(minuteString.length() - 2);
 
-		mainClass.setTimeDurationFieldText(hourString + ":" + minuteString);
+		String time = hourString + ":" + minuteString;
+		mainClass.setTimeDurationFieldText(time);
+		mainClass.setSystrayTooltip(time);
 
 		myWorker = new MyWorker(desiredMilliSeconds - nowMilliSeconds);
 		new Thread(myWorker).start();

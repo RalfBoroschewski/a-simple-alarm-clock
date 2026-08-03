@@ -1,7 +1,7 @@
 package com.ralf.asac;
 
 import java.awt.AWTException;
-import java.awt.MenuItem;
+import java.awt.Menu;
 import java.awt.PopupMenu;
 import java.awt.SystemTray;
 import java.awt.TrayIcon;
@@ -44,7 +44,10 @@ public class MainClass extends Application {
 
 	static final ResourceBundle messages = ResourceBundle.getBundle("messages", Locale.getDefault());
 	static final String PAUSE_KEY = "MainClass.pause";
-	static private TrayIcon trayIcon;
+
+	private TrayIcon trayIcon;
+	private Menu trayIconDuration;
+	private Menu trayIconTime;
 
 	static void start(final String[] args) {
 		launch(args);
@@ -157,58 +160,115 @@ public class MainClass extends Application {
 		stage.setOnCloseRequest(event -> deactivate());
 
 		stage.iconifiedProperty().addListener((observable, oldValue, newValue) -> {
-			if (newValue != null && newValue && hasSystray()
-					&& Preferences.getSystrayMode() == Preferences.SystrayMode.MINIMIZE_TO_SYSTRAY) {
-				URL imageURL = ClassLoader.getSystemResource("alarm.png");
-				BufferedImage image;
-				try {
-//						System.out.println("Java      : " + System.getProperty("java.version"));
-//						System.out.println("OS        : " + System.getProperty("os.name"));
-//						System.out.println("Toolkit   : " + Toolkit.getDefaultToolkit().getClass());
-//						System.out.println("Headless  : " + GraphicsEnvironment.isHeadless());
-//						System.out.println("Tray      : " + SystemTray.isSupported());
 
-					if (trayIcon == null) {
-						image = ImageIO.read(imageURL);
-						PopupMenu popup = new PopupMenu();
+			System.out.println("Hallo 1 ");
 
-						MenuItem item = new MenuItem("Test");
-						item.addActionListener(event -> System.out.println("MENU"));
-						popup.add(item);
-						trayIcon = new TrayIcon(image);
-						trayIcon.setImageAutoSize(true);
-						trayIcon.setPopupMenu(popup);
+			if (Preferences.getSystrayMode() == Preferences.SystrayMode.NOT_IN_SYSTRAY || trayIcon == null
+					|| trayIconActionListenerCounter-- > 0) {
+				return;
+			}
+
+			System.out.println("Hallo 3 " + newValue);
+			System.out.println("Holla");
+			if (newValue != null && newValue && observable.getValue() && stage.isShowing()) {
+				System.out.println("Hallo 4 " + trayIconActionListenerCounter);
+				System.out.println("Hallo 5 " + observable);
+				System.out.println("Hallo 6 " + oldValue);
+				System.out.println("Hallo 7 " + newValue);
+//				System.out.println("Hallo 9");
+				stage.hide();
+				System.out.println("Fenster wurde minimiert!");
+
+				boolean alreadySet = false;
+				for (TrayIcon currentTrayIcon : SystemTray.getSystemTray().getTrayIcons()) {
+					if (currentTrayIcon == trayIcon) {
+						alreadySet = true;
+						break;
 					}
+				}
 
-					trayIcon.addActionListener(event -> System.out.println("CLICK"));
-
+				if (!alreadySet) {
 					try {
 						SystemTray.getSystemTray().add(trayIcon);
 					} catch (AWTException e1) {
 						e1.printStackTrace();
+						// trayIcon = null;
 					}
-
-				} catch (IOException exception) {
-					exception.printStackTrace();
 				}
-
-				System.out.println("Fenster wurde minimiert!");
 			}
 		});
 
+		Platform.setImplicitExit(false);
+		buildSysTray();
+
 	}
 
-	static boolean hasSystray() {
+	int trayIconActionListenerCounter;
+	int counter;
 
-		if (SystemTray.isSupported()) {
-			String xdgDesktop = System.getenv("XDG_CURRENT_DESKTOP");
-			String kdeSession = System.getenv("KDE_FULL_SESSION");
-			boolean isKde = ("KDE".equalsIgnoreCase(xdgDesktop)) || ("true".equalsIgnoreCase(kdeSession));
+	private void buildSysTray() {
 
-			return !isKde;
+		if (!SystemTray.isSupported()) {
+			return;
 		}
 
-		return false;
+		String xdgDesktop = System.getenv("XDG_CURRENT_DESKTOP");
+		String kdeSession = System.getenv("KDE_FULL_SESSION");
+
+		if ("KDE".equalsIgnoreCase(xdgDesktop) || "true".equalsIgnoreCase(kdeSession)) {
+			return;
+		}
+
+		URL imageURL = ClassLoader.getSystemResource("alarm.png");
+		BufferedImage image;
+		try {
+			image = ImageIO.read(imageURL);
+			trayIcon = new TrayIcon(image);
+			trayIcon.setImageAutoSize(true);
+
+			// private PopupMenu trayIconTime;
+
+			trayIconDuration = new Menu("Duration");
+			trayIconTime = new Menu("Time");
+
+			PopupMenu popupMenu = new PopupMenu();
+			popupMenu.add(trayIconDuration);
+			popupMenu.add(trayIconTime);
+
+			trayIcon.setPopupMenu(popupMenu);
+
+			// popupMenu.
+
+			// trayIcon.addActionListener(event -> System.out.println("MENU CLICK"));
+
+			trayIcon.addActionListener(event -> {
+				System.out.println("Hallo 8");
+				Platform.runLater(() -> {
+					System.out.println("Hallo 9");
+					trayIconActionListenerCounter = 2;
+					stage.show();
+					System.out.println("Hallo 10");
+					stage.setIconified(false);
+					System.out.println("Hallo 11");
+					SystemTray.getSystemTray().remove(trayIcon);
+					System.out.println("Hallo 12");
+				});
+			});
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	boolean hasSystray() {
+		return trayIcon != null;
+	}
+
+	void setSystrayTooltip(final String tooltip) {
+
+		if (trayIcon != null) {
+			trayIcon.setToolTip("Hallo");
+		}
 	}
 
 	void showStoredAlarms() {
