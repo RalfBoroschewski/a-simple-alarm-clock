@@ -30,7 +30,6 @@ class SoundManager {
 	private final Button addButton;
 	private final Stage stage;
 
-	@SuppressWarnings("unused")
 	SoundManager(final Stage ownerStage, final ArrayList<AlarmManager.AlarmManagerItem> alarmManagerItems,
 			final AlarmManager alarmManager) {
 		soundItems = Preferences.getSounds();
@@ -123,7 +122,7 @@ class SoundManager {
 		stage.showAndWait();
 	}
 
-	@SuppressWarnings({ "java:S3776", "unused" })
+	@SuppressWarnings("java:S3776")
 	private void setListener(final ArrayList<AlarmManager.AlarmManagerItem> alarmManagerItems,
 			final AlarmManager alarmManager) {
 		editButton.setOnAction(event -> {
@@ -209,7 +208,6 @@ class SoundManager {
 				soundItems.remove(selectedItem.getItem());
 				rebuildListView();
 				Preferences.setSounds(soundItems);
-				// addEditAlarmManagerItem.buildAlarmsComboBox();
 				deleteButton.setDisable(true);
 				editButton.setDisable(true);
 			}
@@ -218,7 +216,7 @@ class SoundManager {
 
 	}
 
-	@SuppressWarnings({ "unchecked", "unused" })
+	@SuppressWarnings("unchecked")
 	void buildTableView() {
 		final TableColumn<MyRow, String> tableColumn1 = new TableColumn<>(
 				MainClass.messages.getString("SoundManager.name"));

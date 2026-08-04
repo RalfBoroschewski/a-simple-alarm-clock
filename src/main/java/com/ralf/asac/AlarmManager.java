@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import com.ralf.asac.AlarmManager.AlarmManagerItem;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -40,7 +38,7 @@ class AlarmManager {
 	private final Button defaultSoundButton;
 	private final CheckBox minimizeToSystrayCheckBox;
 
-	@SuppressWarnings({ "java:S106", "unused" })
+	@SuppressWarnings("java:S106")
 	AlarmManager(final MainClass mainClass) {
 		final Stage stage = new Stage();
 		stage.initOwner(mainClass.getStage());
@@ -167,13 +165,13 @@ class AlarmManager {
 		stage.showAndWait();
 	}
 
-	@SuppressWarnings({ "java:S3776", "unused" })
+	@SuppressWarnings("java:S3776")
 	private void setListener(final Stage stage, final MainClass mainClass) {
 		editButton.setOnAction(event -> {
 			if (selectedItem != null) {
 				final AddEditAlarmManagerItem addEditAlarmManagerItem = new AddEditAlarmManagerItem(
 						selectedItem.getName(), selectedItem.getTime(), selectedItem.getAlarmSoundData(), false,
-						alarmManagerItems, stage, this);
+						alarmManagerItems, stage);
 
 				if (addEditAlarmManagerItem.isOk()) {
 					final AlarmManagerItem alarmManagerItem = new AlarmManagerItem(addEditAlarmManagerItem.getName(),
@@ -215,7 +213,7 @@ class AlarmManager {
 
 		addButton.setOnAction(event -> {
 			AddEditAlarmManagerItem addEditAlarmManagerItem = new AddEditAlarmManagerItem("", "", null, true,
-					alarmManagerItems, stage, this);
+					alarmManagerItems, stage);
 			if (addEditAlarmManagerItem.isOk()) {
 				final AlarmManagerItem item = new AlarmManagerItem(addEditAlarmManagerItem.getName(),
 						addEditAlarmManagerItem.getTime(), addEditAlarmManagerItem.getAlarmSoundData());
@@ -285,7 +283,7 @@ class AlarmManager {
 		}
 	}
 
-	@SuppressWarnings({ "unchecked", "unused" })
+	@SuppressWarnings("unchecked")
 	void buildTableView() {
 		final TableColumn<MyRow, String> tableColumn1 = new TableColumn<>(
 				MainClass.messages.getString("AlarmManager.name"));

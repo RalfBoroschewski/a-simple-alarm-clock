@@ -44,9 +44,18 @@ class PerformDuration implements EventHandler<ActionEvent> {
 			long step = 1;
 
 			for (int indexMinutes = 0; indexMinutes < minutes; indexMinutes++) {
-				String time = (minutes - indexMinutes) + "";
-				mainClass.setTimeDurationFieldText(time);
-				mainClass.setSystrayTooltip(time);
+				long time = minutes - indexMinutes;
+				String timeString = time + "";
+				mainClass.setTimeDurationFieldText(timeString);
+
+				final String minutesString;
+				if (time == 1) {
+					minutesString = MainClass.messages.getString("minute");
+				} else {
+					minutesString = MainClass.messages.getString("minutes");
+				}
+
+				mainClass.setSystrayTooltip(minutesString);
 
 				for (int indexSeconds = 0; indexSeconds < 60; indexSeconds += step) {
 					if (mainClass.pauseButtonIsPause) {
@@ -67,6 +76,7 @@ class PerformDuration implements EventHandler<ActionEvent> {
 			if (startBell) {
 				final String name = mainClass.getName();
 				mainClass.setTimeDurationFieldText("");
+				mainClass.setSystrayTooltip("");
 				mainClass.setVisibilityDeactivateButton(false);
 				mainClass.deactivatePauseButton();
 

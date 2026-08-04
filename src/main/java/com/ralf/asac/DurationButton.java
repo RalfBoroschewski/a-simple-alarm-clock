@@ -11,7 +11,6 @@ import javafx.scene.control.SeparatorMenuItem;
 
 class DurationButton extends Button {
 
-	@SuppressWarnings("unused")
 	DurationButton(final MainClass mainClass) {
 		super(MainClass.messages.getString("DurationButton.set.duration"));
 		final ContextMenu contextMenu = new ContextMenu();
@@ -22,9 +21,9 @@ class DurationButton extends Button {
 			if (minute != -1) {
 				final String minutesString;
 				if (minute == 1) {
-					minutesString = MainClass.messages.getString("DurationButton.minute");
+					minutesString = MainClass.messages.getString("minute");
 				} else {
-					minutesString = MainClass.messages.getString("DurationButton.minutes");
+					minutesString = MainClass.messages.getString("minutes");
 				}
 
 				final String margin = "            ";

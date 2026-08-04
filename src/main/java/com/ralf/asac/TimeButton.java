@@ -11,7 +11,6 @@ import javafx.scene.control.MenuItem;
 
 class TimeButton extends Button {
 
-	@SuppressWarnings("unused")
 	TimeButton(MainClass mainClass) {
 		super(MainClass.messages.getString("TimeButton.set.time"));
 		this.setOnAction(event -> buildTimePopup(mainClass).show(this, Side.BOTTOM, 0, 0));

@@ -27,10 +27,9 @@ class AddEditAlarmManagerItem {
 	private boolean isOkAttribute;
 	private final String name;
 
-	@SuppressWarnings("unused")
 	AddEditAlarmManagerItem(final String name, final String time, final AlarmSounds.AlarmSoundData alarmSoundData,
 			final boolean isNewEntry, final ArrayList<AlarmManager.AlarmManagerItem> alarmManagerItems,
-			final Stage ownerStage, final AlarmManager alarmManager) {
+			final Stage ownerStage) {
 		this.name = name;
 		final Stage stage = new Stage();
 		this.isNewEntry = isNewEntry;

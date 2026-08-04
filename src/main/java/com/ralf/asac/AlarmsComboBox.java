@@ -7,7 +7,7 @@ public class AlarmsComboBox extends ComboBox<Alarm> {
 
 	private Alarm storedAlarm;
 
-	@SuppressWarnings({ "java:S6201", "unused" })
+	@SuppressWarnings("java:S6201")
 	AlarmsComboBox(final MainClass mainClass, final TimeDurationField timeDurationField) {
 		setEditable(true);
 

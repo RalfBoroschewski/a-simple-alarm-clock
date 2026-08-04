@@ -21,6 +21,7 @@ class PerformTime implements EventHandler<javafx.event.ActionEvent> {
 	}
 
 	@Override
+	@SuppressWarnings("java:S8688")
 	public void handle(final ActionEvent event) {
 		mainClass.deactivate();
 
@@ -79,6 +80,7 @@ class PerformTime implements EventHandler<javafx.event.ActionEvent> {
 			if (startBell) {
 				mainClass.setVisibilityDeactivateButton(false);
 				mainClass.setTimeDurationFieldText("");
+				mainClass.setSystrayTooltip("");
 
 				final String name = mainClass.getName();
 

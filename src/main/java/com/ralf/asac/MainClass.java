@@ -2,9 +2,11 @@ package com.ralf.asac;
 
 import java.awt.AWTException;
 import java.awt.Menu;
+import java.awt.MenuItem;
 import java.awt.PopupMenu;
 import java.awt.SystemTray;
 import java.awt.TrayIcon;
+import java.awt.event.MouseAdapter;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,15 +19,21 @@ import javax.imageio.ImageIO;
 
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
 public class MainClass extends Application {
@@ -45,9 +53,12 @@ public class MainClass extends Application {
 	static final ResourceBundle messages = ResourceBundle.getBundle("messages", Locale.getDefault());
 	static final String PAUSE_KEY = "MainClass.pause";
 
+	private double xOffset = 0;
+	private double yOffset = 0;
+
 	private TrayIcon trayIcon;
-	private Menu trayIconDuration;
-	private Menu trayIconTime;
+	private Menu trayIconDurationMenu;
+	private Menu trayIconTimeMenu;
 
 	static void start(final String[] args) {
 		launch(args);
@@ -65,7 +76,7 @@ public class MainClass extends Application {
 	public void start(final Stage stage) throws Exception {
 
 		this.stage = stage;
-
+		stage.initStyle(StageStyle.UNDECORATED);
 		setIcon(false);
 
 		final Pane pane = new Pane();
@@ -92,6 +103,23 @@ public class MainClass extends Application {
 		int positionX = 0;
 		int positionY = 0;
 
+		Button minimizeButton = new Button("_");
+		Button finishButton = new Button("✕");
+
+		BorderPane titlePane = new BorderPane();
+		HBox hBoxTitleBar = new HBox();
+		hBoxTitleBar.setAlignment(Pos.CENTER_RIGHT);
+		hBoxTitleBar.setMaxWidth(Double.MAX_VALUE);
+
+		hBoxTitleBar.getChildren().addAll(minimizeButton, finishButton);
+		titlePane.setRight(hBoxTitleBar);
+
+		positionX = 1;
+		gridPane.add(titlePane, positionX, positionY, 1, 1);
+
+		positionX = 0;
+		positionY++;
+
 		gridPane.add(alarmsComboBox, positionX, positionY, 1, 1);
 		positionX++;
 		gridPane.add(alarmManagerButton, positionX, positionY, 1, 1);
@@ -115,6 +143,9 @@ public class MainClass extends Application {
 		positionY++;
 
 		gridPane.add(pauseButton, positionX, positionY, 1, 1);
+		gridPane.setStyle("-fx-background-color: red;");
+
+		VBox vBox = new VBox();
 
 		alarmManagerButton.setOnAction(event -> {
 			new AlarmManager(this);
@@ -159,52 +190,50 @@ public class MainClass extends Application {
 
 		stage.setOnCloseRequest(event -> deactivate());
 
-		stage.iconifiedProperty().addListener((observable, oldValue, newValue) -> {
+		minimizeButton.setOnAction(event -> {
 
-			System.out.println("Hallo 1 ");
-
-			if (Preferences.getSystrayMode() == Preferences.SystrayMode.NOT_IN_SYSTRAY || trayIcon == null
-					|| trayIconActionListenerCounter-- > 0) {
+			if (Preferences.getSystrayMode() == Preferences.SystrayMode.NOT_IN_SYSTRAY || trayIcon == null) {
 				return;
 			}
 
-			System.out.println("Hallo 3 " + newValue);
-			System.out.println("Holla");
-			if (newValue != null && newValue && observable.getValue() && stage.isShowing()) {
-				System.out.println("Hallo 4 " + trayIconActionListenerCounter);
-				System.out.println("Hallo 5 " + observable);
-				System.out.println("Hallo 6 " + oldValue);
-				System.out.println("Hallo 7 " + newValue);
-//				System.out.println("Hallo 9");
-				stage.hide();
-				System.out.println("Fenster wurde minimiert!");
+			stage.hide();
 
-				boolean alreadySet = false;
-				for (TrayIcon currentTrayIcon : SystemTray.getSystemTray().getTrayIcons()) {
-					if (currentTrayIcon == trayIcon) {
-						alreadySet = true;
-						break;
-					}
-				}
-
-				if (!alreadySet) {
-					try {
-						SystemTray.getSystemTray().add(trayIcon);
-					} catch (AWTException e1) {
-						e1.printStackTrace();
-						// trayIcon = null;
-					}
+			boolean alreadySet = false;
+			for (TrayIcon currentTrayIcon : SystemTray.getSystemTray().getTrayIcons()) {
+				if (currentTrayIcon == trayIcon) {
+					alreadySet = true;
+					break;
 				}
 			}
+
+			if (!alreadySet) {
+				try {
+					SystemTray.getSystemTray().add(trayIcon);
+				} catch (AWTException e1) {
+					e1.printStackTrace();
+				}
+			}
+
 		});
 
+		finishButton.setOnAction(event -> System.exit(0));
 		Platform.setImplicitExit(false);
 		buildSysTray();
 
+		gridPane.setOnMousePressed(this::handleMousePressed);
+		gridPane.setOnMouseDragged(this::handleMouseDragged);
 	}
 
-	int trayIconActionListenerCounter;
-	int counter;
+	private void handleMousePressed(MouseEvent event) {
+		xOffset = event.getSceneX();
+		yOffset = event.getSceneY();
+	}
+
+	private void handleMouseDragged(MouseEvent event) {
+		Stage tmpStage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
+		tmpStage.setX(event.getScreenX() - xOffset);
+		tmpStage.setY(event.getScreenY() - yOffset);
+	}
 
 	private void buildSysTray() {
 
@@ -226,37 +255,34 @@ public class MainClass extends Application {
 			trayIcon = new TrayIcon(image);
 			trayIcon.setImageAutoSize(true);
 
-			// private PopupMenu trayIconTime;
+			trayIconDurationMenu = new Menu("Duration");
+			trayIconTimeMenu = new Menu("Time");
 
-			trayIconDuration = new Menu("Duration");
-			trayIconTime = new Menu("Time");
+			PopupMenu mainPopupMenu = new PopupMenu();
+			mainPopupMenu.add(trayIconDurationMenu);
+			mainPopupMenu.add(trayIconTimeMenu);
 
-			PopupMenu popupMenu = new PopupMenu();
-			popupMenu.add(trayIconDuration);
-			popupMenu.add(trayIconTime);
+			trayIcon.setPopupMenu(mainPopupMenu);
 
-			trayIcon.setPopupMenu(popupMenu);
+			trayIcon.addActionListener(event -> Platform.runLater(() -> {
+				stage.show();
+				stage.setIconified(false);
+				SystemTray.getSystemTray().remove(trayIcon);
+			}));
 
-			// popupMenu.
-
-			// trayIcon.addActionListener(event -> System.out.println("MENU CLICK"));
-
-			trayIcon.addActionListener(event -> {
-				System.out.println("Hallo 8");
-				Platform.runLater(() -> {
-					System.out.println("Hallo 9");
-					trayIconActionListenerCounter = 2;
-					stage.show();
-					System.out.println("Hallo 10");
-					stage.setIconified(false);
-					System.out.println("Hallo 11");
-					SystemTray.getSystemTray().remove(trayIcon);
-					System.out.println("Hallo 12");
-				});
+			trayIcon.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mousePressed(java.awt.event.MouseEvent e) {
+					if (e.isPopupTrigger()) {
+						trayIconTimeMenu.removeAll();
+						trayIconTimeMenu.add(new MenuItem("qqq"));
+					}
+				}
 			});
+
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			trayIcon = null;
 		}
 	}
 
@@ -267,7 +293,7 @@ public class MainClass extends Application {
 	void setSystrayTooltip(final String tooltip) {
 
 		if (trayIcon != null) {
-			trayIcon.setToolTip("Hallo");
+			trayIcon.setToolTip(tooltip);
 		}
 	}
 

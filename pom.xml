@@ -2,42 +2,167 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.ralf</groupId>
 	<artifactId>a-simple-alarm-clock</artifactId>
 	<version>1.0-SNAPSHOT</version>
+	<name>ASAC</name>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.compiler.source>25</maven.compiler.source>
-		<maven.compiler.target>25</maven.compiler.target>
-		<maven.compiler.release>25</maven.compiler.release>
+		<maven.compiler.source>9</maven.compiler.source>
+		<maven.compiler.target>9</maven.compiler.target>
+
+		<javafx.version>23.0.2</javafx.version>
+		<mainClass>com.ralf.asac.Asac</mainClass>
 	</properties>
 
+
 	<dependencies>
+
 		<dependency>
 			<groupId>org.openjfx</groupId>
 			<artifactId>javafx-controls</artifactId>
-			<version>26</version>
+			<version>23.0.2</version>
+		</dependency> 
+		
+		<dependency>
+			<groupId>org.openjfx</groupId>
+			<artifactId>javafx-controls</artifactId>
+			<version>23.0.2</version>
+			<classifier>win</classifier>
 		</dependency>
+		
+		<dependency>
+			<groupId>org.openjfx</groupId>
+			<artifactId>javafx-controls</artifactId>
+			<version>23.0.2</version>
+			<classifier>mac</classifier>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.openjfx</groupId>
+			<artifactId>javafx-controls</artifactId>
+			<version>23.0.2</version>
+			<classifier>linux</classifier>
+		</dependency>
+		
 		<dependency>
 			<groupId>org.openjfx</groupId>
 			<artifactId>javafx-media</artifactId>
-			<version>26</version>
+			<version>23.0.2</version>
+		</dependency>
+		
+		
+		<dependency>
+			<groupId>org.openjfx</groupId>
+			<artifactId>javafx-media</artifactId>
+			<version>23.0.2</version>
+			<classifier>win</classifier>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.openjfx</groupId>
+			<artifactId>javafx-media</artifactId>
+			<version>23.0.2</version>
+			<classifier>mac</classifier>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.openjfx</groupId>
+			<artifactId>javafx-media</artifactId>
+			<version>23.0.2</version>
+			<classifier>linux</classifier>
+		</dependency>
+
+		<dependency>
+			<groupId>org.openjfx</groupId>
+			<artifactId>javafx-graphics</artifactId>
+			<version>23.0.2</version>
+			<classifier>win</classifier>
+		</dependency>
+
+		<dependency>
+			<groupId>org.openjfx</groupId>
+			<artifactId>javafx-graphics</artifactId>
+			<version>23.0.2</version>
+			<classifier>mac</classifier>
+		</dependency>
+
+		<dependency>
+			<groupId>org.openjfx</groupId>
+			<artifactId>javafx-graphics</artifactId>
+			<version>23.0.2</version>
+			<classifier>linux</classifier>
 		</dependency>
 
 		<dependency>
 			<groupId>io.github.classgraph</groupId>
 			<artifactId>classgraph</artifactId>
 			<version>4.8.184</version>
-			<scope>compile</scope>
 		</dependency>
+		
+		
+		
+
+		<dependency>
+			<groupId>org.openjfx</groupId>
+			<artifactId>javafx-swing</artifactId>
+			<version>23.0.2</version>
+			<classifier>win</classifier>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.openjfx</groupId>
+			<artifactId>javafx-swing</artifactId>
+			<version>23.0.2</version>
+			<classifier>mac</classifier>
+		</dependency>
+
+		<dependency>
+			<groupId>org.openjfx</groupId>
+			<artifactId>javafx-swing</artifactId>
+			<version>23.0.2</version>
+			<classifier>linux</classifier>
+		</dependency>
+
+		<dependency>
+			<groupId>io.github.classgraph</groupId>
+			<artifactId>classgraph</artifactId>
+			<version>4.8.184</version>
+		</dependency>	
 
 	</dependencies>
 
 	<build>
 		<plugins>
+		
+		
+		<plugin>
+    <groupId>org.openjfx</groupId>
+    <artifactId>javafx-maven-plugin</artifactId>
+    <version>0.0.8</version> <!-- Ihre Version beibehalten -->
+    <configuration>
+        <mainClass>mein.projekt.name.MainApp</mainClass>
+        <options>
+            <!-- Erzwingt, dass AWT ein grafisches Display initialisiert -->
+            <option>-Djava.awt.headless=false</option>
+        </options>
+    </configuration>
+</plugin>
+
+		
+		
+		
+		
+		
+			<!-- Compiler -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.11.0</version>
+			</plugin>
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
@@ -47,13 +172,142 @@
 						<manifest>
 							<addClasspath>true</addClasspath>
 							<mainClass>com.ralf.asac.Asac</mainClass>
-
 						</manifest>
 					</archive>
 				</configuration>
 			</plugin>
 
+			<!-- COPY DEPENDENCIES -->
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>3.8.1</version>
+				<executions>
+					<execution>
+						<id>copy-dependencies</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}/used-libs</outputDirectory>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+
+			<!-- CREATE DEB -->
+			<plugin>
+				<artifactId>jdeb</artifactId>
+				<groupId>org.vafer</groupId>
+				<version>1.14</version>
+				<executions>
+					<execution>
+						<id>jdeb</id>
+						<phase>package</phase>
+						<goals>
+							<goal>jdeb</goal>
+						</goals>
+						<configuration>
+							<deb>${project.build.directory}/${project.artifactId}_${version}_all.deb</deb>
+							<verbose>true</verbose>
+							<snapshotExpand>true</snapshotExpand>
+							<snapshotEnv>USER</snapshotEnv>
+							<verbose>true</verbose>
+							<controlDir>${basedir}/src/main/assembly/linux/deb/control</controlDir>
+
+							<dataSet>
+								<data>
+									<src>${project.build.directory}/${project.build.finalName}.jar</src>
+									<type>file</type>
+									<mapper>
+										<type>perm</type>
+										<prefix>/usr/share/a-simple-alarm-clock</prefix>
+										<user>root</user>
+										<group>root</group>
+										<filemode>0644</filemode>
+									</mapper>
+								</data>
+
+								<!-- USES DEPENDENCIES -->
+								<data>
+									<src>${project.build.directory}/used-libs</src>
+									<type>directory</type>
+									<includes />
+									<mapper>
+										<type>perm</type>
+										<prefix>/usr/share/a-simple-alarm-clock/lib</prefix>
+										<user>root</user>
+										<group>root</group>
+										<filemode>0644</filemode>
+									</mapper>
+								</data>
+
+								<!-- DIRECTORY conf -->
+								<data>
+									<src>${basedir}/src/main/assembly/linux/conf/</src>
+									<type>directory</type>
+									<includes />
+									<mapper>
+										<type>perm</type>
+										<prefix>/usr/share/a-simple-alarm-clock/conf</prefix>
+										<user>root</user>
+										<group>root</group>
+										<filemode>0644</filemode>
+									</mapper>
+								</data>
+
+								<data>
+									<src>${basedir}/src/main/assembly/linux/remains/alarm.png</src>
+									<type>file</type>
+									<mapper>
+										<type>perm</type>
+										<prefix>/usr/share/a-simple-alarm-clock</prefix>
+										<user>root</user>
+										<group>root</group>
+										<filemode>0644</filemode>
+									</mapper>
+								</data>
+
+								<data>
+									<src>${basedir}/src/main/assembly//linux/remains/a-simple-alarm-clock.sh</src>
+									<type>file</type>
+									<mapper>
+										<type>perm</type>
+										<prefix>/usr/share/a-simple-alarm-clock</prefix>
+										<user>root</user>
+										<group>root</group>
+										<filemode>0755</filemode>
+									</mapper>
+								</data>
+
+								<data>
+									<type>link</type>
+									<symlink>true</symlink>
+									<linkName>/usr/bin/a-simple-alarm-clock</linkName>
+									<linkTarget>/usr/share/a-simple-alarm-clock/a-simple-alarm-clock.sh</linkTarget>
+								</data>
+
+								<data>
+									<src>${basedir}/src/main/assembly/linux/remains/a-simple-alarm-clock.desktop</src>
+									<type>file</type>
+									<mapper>
+										<type>perm</type>
+										<prefix>/usr/share/applications</prefix>
+										<user>root</user>
+										<group>root</group>
+										<filemode>0644</filemode>
+									</mapper>
+								</data>
+							</dataSet>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+
+			<!-- CREATE SHADED JAR --><plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>
 				<version>3.5.1</version>
@@ -64,6 +318,10 @@
 							<goal>shade</goal>
 						</goals>
 						<configuration>
+
+							<shadedArtifactAttached>true</shadedArtifactAttached>
+							<shadedClassifierName>SHADED</shadedClassifierName>
+
 							<transformers>
 								<transformer
 									implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
@@ -89,6 +347,50 @@
 									</includes>
 								</filter>
 							</filters>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>com.akathist.maven.plugins.launch4j</groupId>
+				<artifactId>launch4j-maven-plugin</artifactId>
+				<version>2.4.1</version>
+				<executions>
+					<execution>
+						<id>l4j-clui</id>
+						<phase>package</phase>
+						<goals>
+							<goal>launch4j</goal>
+						</goals>
+						<configuration>
+							<headerType>gui</headerType>
+							<jar>
+								${project.build.directory}/${project.artifactId}-${project.version}-SHADED.jar</jar>
+							<outfile>${project.build.directory}/asac.exe</outfile>
+							<downloadUrl>http://java.com/download</downloadUrl>
+							<classPath>
+								<mainClass>com.ralf.asac.Asac</mainClass>
+								<addDependencies>false</addDependencies>
+								<preCp>anything</preCp>
+							</classPath>
+							<icon>${project.basedir}/src/main/resources/asac.ico</icon>
+							<jre>
+								<!--	<path>${java.home}\bin</path>	-->			<!-- Version 1 -->
+								<path>%JAVA_HOME%\bin</path> 	<!-- Version 2 -->
+							</jre>
+							<versionInfo>
+								<fileVersion>1.0.0.0</fileVersion>
+								<txtFileVersion>${project.version}</txtFileVersion>
+								<fileDescription>A simple alarm clock</fileDescription>
+								<copyright>2026 Ralf</copyright>
+								<productVersion>1.0.0.0</productVersion>
+								<txtProductVersion>1.0.0.0</txtProductVersion>
+								<productName>${project.name}</productName>
+								<companyName>Ralf</companyName>
+								<internalName>Asac</internalName>
+								<originalFilename>Asac.exe</originalFilename>
+							</versionInfo>
 						</configuration>
 					</execution>
 				</executions>
