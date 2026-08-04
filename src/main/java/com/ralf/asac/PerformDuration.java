@@ -4,27 +4,34 @@ import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.stage.Stage;
 
 class PerformDuration implements EventHandler<ActionEvent> {
 
 	private final long minutes;
+	private final Stage stage;
 	private final MainClass mainClass;
 	private MyWorker myWorker;
 
-	PerformDuration(final long minutes, final MainClass mainClass) {
+	PerformDuration(final long minutes, final Stage stage, final MainClass mainClass) {
 		this.minutes = minutes;
+		this.stage = stage;
 		this.mainClass = mainClass;
 	}
 
 	@Override
 	public void handle(final ActionEvent event) {
+		stage.setTitle("Holla 1");
 		mainClass.deactivate();
+		stage.setTitle("Holla 2");
 		mainClass.setVisibilityPauseButton(true);
 
 		mainClass.oldPerformDuration = this;
 
 		mainClass.setIcon(true);
+		stage.setTitle("Holla 3");
 		myWorker = new MyWorker();
+		stage.setTitle("Holla 4");
 		new Thread(myWorker).start();
 	}
 
@@ -48,14 +55,10 @@ class PerformDuration implements EventHandler<ActionEvent> {
 				String timeString = time + "";
 				mainClass.setTimeDurationFieldText(timeString);
 
-				final String minutesString;
-				if (time == 1) {
-					minutesString = MainClass.messages.getString("minute");
-				} else {
-					minutesString = MainClass.messages.getString("minutes");
-				}
+				String minutesString = time + Asac.getMinuteString(time);
 
 				mainClass.setSystrayTooltip(minutesString);
+				Platform.runLater(() -> stage.setTitle(minutesString));
 
 				for (int indexSeconds = 0; indexSeconds < 60; indexSeconds += step) {
 					if (mainClass.pauseButtonIsPause) {

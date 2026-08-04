@@ -5,7 +5,14 @@ public class Asac {
 	static final String DEFAULT_SOUND_FILE = "default.wav";
 
 	public static void main(final String[] args) {
-		// System.setProperty("java.awt.headless", "false");
 		MainClass.start(args);
+	}
+
+	static String getMinuteString(long time) {
+
+		if (time == 1) {
+			return MainClass.messages.getString("minute");
+		}
+		return MainClass.messages.getString("minutes");
 	}
 }

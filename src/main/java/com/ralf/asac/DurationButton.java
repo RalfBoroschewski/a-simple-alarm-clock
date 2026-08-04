@@ -1,52 +1,52 @@
 package com.ralf.asac;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javafx.geometry.Side;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
+import javafx.stage.Stage;
 
 class DurationButton extends Button {
 
-	DurationButton(final MainClass mainClass) {
+	DurationButton(final Stage stage, final MainClass mainClass) {
 		super(MainClass.messages.getString("DurationButton.set.duration"));
+
 		final ContextMenu contextMenu = new ContextMenu();
+		MyDurationPopupListener listener = new MyDurationPopupListener(stage, mainClass, contextMenu);
 
-		final List<Integer> minutesList = getMinutesList();
-
-		for (int minute : minutesList) {
-			if (minute != -1) {
-				final String minutesString;
-				if (minute == 1) {
-					minutesString = MainClass.messages.getString("minute");
-				} else {
-					minutesString = MainClass.messages.getString("minutes");
-				}
-
-				final String margin = "            ";
-				final MenuItem menuItem = new MenuItem("\u0080" + margin + minute + minutesString + margin);
-				menuItem.setOnAction(new PerformDuration(minute, mainClass));
-				contextMenu.getItems().add(menuItem);
-			} else {
-				contextMenu.getItems().add(new SeparatorMenuItem());
-			}
-		}
+		DurationPopup durationPopup = new DurationPopup();
+		durationPopup.buildPopup(listener);
 
 		this.setOnAction(event -> contextMenu.show(this, Side.BOTTOM, 0, 0));
 
 	}
 
-	private List<Integer> getMinutesList() {
-		final int[] values = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, -1, 11, 12, 13, 14, 15, 20, 25, 30, 45, 60, 75,
-				90, 120 };
+	class MyDurationPopupListener implements DurationPopupListener {
+		final Stage stage;
+		final MainClass mainClass;
+		final ContextMenu contextMenu;
 
-		final List<Integer> result = new ArrayList<>();
-		for (int value : values) {
-			result.add(value);
+		MyDurationPopupListener(final Stage stage, final MainClass mainClass, final ContextMenu contextMenu) {
+			this.stage = stage;
+			this.mainClass = mainClass;
+			this.contextMenu = contextMenu;
 		}
-		return result;
+
+		@Override
+		public void setMenuItem(int minute, String minutesString) {
+			final String margin = "            ";
+			String menuItemText = "\u00A0" + margin + minute + minutesString + margin;
+			final MenuItem menuItem = new MenuItem(menuItemText);
+			menuItem.setOnAction(new PerformDuration(minute, stage, mainClass));
+			contextMenu.getItems().add(menuItem);
+		}
+
+		@Override
+		public void addSeparator() {
+			contextMenu.getItems().add(new SeparatorMenuItem());
+		}
+
 	}
+
 }

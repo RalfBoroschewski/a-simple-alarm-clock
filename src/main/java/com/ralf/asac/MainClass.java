@@ -84,7 +84,7 @@ public class MainClass extends Application {
 		pane.getChildren();
 
 		final Button alarmManagerButton = new Button(messages.getString("MainClass.alarm.manager"));
-		final DurationButton durationButton = new DurationButton(this);
+		final DurationButton durationButton = new DurationButton(stage, this);
 		final TimeButton timeButton = new TimeButton(this);
 		pauseButton.setVisible(false);
 
@@ -143,7 +143,6 @@ public class MainClass extends Application {
 		positionY++;
 
 		gridPane.add(pauseButton, positionX, positionY, 1, 1);
-		gridPane.setStyle("-fx-background-color: red;");
 
 		VBox vBox = new VBox();
 
@@ -222,6 +221,7 @@ public class MainClass extends Application {
 
 		gridPane.setOnMousePressed(this::handleMousePressed);
 		gridPane.setOnMouseDragged(this::handleMouseDragged);
+		// stage.setTitle("Hallo 1");
 	}
 
 	private void handleMousePressed(MouseEvent event) {
@@ -270,12 +270,19 @@ public class MainClass extends Application {
 				SystemTray.getSystemTray().remove(trayIcon);
 			}));
 
+			MainClass mainClass = this;
 			trayIcon.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mousePressed(java.awt.event.MouseEvent e) {
+					System.out.println("Hallo 1");
 					if (e.isPopupTrigger()) {
-						trayIconTimeMenu.removeAll();
-						trayIconTimeMenu.add(new MenuItem("qqq"));
+						trayIconDurationMenu.removeAll();
+
+						MyDurationPopupListener listener = new MyDurationPopupListener(stage, trayIconDurationMenu,
+								mainClass);
+						DurationPopup durationPopup = new DurationPopup();
+						durationPopup.buildPopup(listener);
+						trayIconDurationMenu.add(new MenuItem("qqq"));
 					}
 				}
 			});
@@ -363,7 +370,7 @@ public class MainClass extends Application {
 			final int colonIndex = timeDuration.indexOf(':');
 			if (colonIndex < 0) {
 				final long minute = Long.parseLong(timeDuration);
-				final PerformDuration performDuration = new PerformDuration(minute, this);
+				final PerformDuration performDuration = new PerformDuration(minute, stage, this);
 				performDuration.handle(null);
 			} else {
 				final String hourString = timeDuration.substring(0, colonIndex);
@@ -433,4 +440,34 @@ public class MainClass extends Application {
 	Stage getStage() {
 		return stage;
 	}
+}
+
+class MyDurationPopupListener implements DurationPopupListener {
+	final Menu trayIconTimeMenu;
+	final Stage stage;
+	final MainClass mainClass;
+
+	MyDurationPopupListener(Stage stage, Menu trayIconTimeMenu, MainClass mainClass) {
+		this.stage = stage;
+		this.trayIconTimeMenu = trayIconTimeMenu;
+		this.mainClass = mainClass;
+	}
+
+	@Override
+	public void setMenuItem(int minute, String minutesString) {
+		String menuItemText = minute + minutesString;
+		final MenuItem menuItem = new MenuItem(menuItemText);
+		menuItem.addActionListener(event -> {
+			mainClass.setTimeDurationFieldText(minute + "");
+			PerformDuration performDuration = new PerformDuration(minute, stage, mainClass);
+			performDuration.handle(null);
+		});
+		trayIconTimeMenu.add(menuItem);
+	}
+
+	@Override
+	public void addSeparator() {
+		trayIconTimeMenu.addSeparator();
+	}
+
 }
