@@ -11,6 +11,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -57,7 +58,6 @@ public class MainClass extends Application {
 	private double yOffset = 0;
 
 	private TrayIcon trayIcon;
-	private Menu trayIconDurationMenu;
 	private Menu trayIconTimeMenu;
 
 	static void start(final String[] args) {
@@ -71,7 +71,7 @@ public class MainClass extends Application {
 		alarmsComboBox = new AlarmsComboBox(this, timeDurationField);
 	}
 
-	@SuppressWarnings({ "exports", "java:S3776", "unused" })
+	@SuppressWarnings({ "exports", "java:S3776", "java:S4507", "unused" })
 	@Override
 	public void start(final Stage stage) throws Exception {
 
@@ -221,7 +221,6 @@ public class MainClass extends Application {
 
 		gridPane.setOnMousePressed(this::handleMousePressed);
 		gridPane.setOnMouseDragged(this::handleMouseDragged);
-		// stage.setTitle("Hallo 1");
 	}
 
 	private void handleMousePressed(MouseEvent event) {
@@ -235,6 +234,7 @@ public class MainClass extends Application {
 		tmpStage.setY(event.getScreenY() - yOffset);
 	}
 
+	@SuppressWarnings("java:S4507")
 	private void buildSysTray() {
 
 		if (!SystemTray.isSupported()) {
@@ -255,7 +255,7 @@ public class MainClass extends Application {
 			trayIcon = new TrayIcon(image);
 			trayIcon.setImageAutoSize(true);
 
-			trayIconDurationMenu = new Menu("Duration");
+			Menu trayIconDurationMenu = new Menu("Duration");
 			trayIconTimeMenu = new Menu("Time");
 
 			PopupMenu mainPopupMenu = new PopupMenu();
@@ -270,35 +270,70 @@ public class MainClass extends Application {
 				SystemTray.getSystemTray().remove(trayIcon);
 			}));
 
-			MainClass mainClass = this;
+			MyDurationPopupListener listener = new MyDurationPopupListener(stage, trayIconDurationMenu, this);
+			DurationPopup durationPopup = new DurationPopup();
+			durationPopup.buildPopup(listener);
+
 			trayIcon.addMouseListener(new MouseAdapter() {
 				@Override
-				public void mousePressed(java.awt.event.MouseEvent e) {
-					System.out.println("Hallo 1");
-					if (e.isPopupTrigger()) {
-						trayIconDurationMenu.removeAll();
+				public void mousePressed(java.awt.event.MouseEvent event) {
+					if (event.isPopupTrigger()) {
 
-						MyDurationPopupListener listener = new MyDurationPopupListener(stage, trayIconDurationMenu,
-								mainClass);
-						DurationPopup durationPopup = new DurationPopup();
-						durationPopup.buildPopup(listener);
-						trayIconDurationMenu.add(new MenuItem("qqq"));
+						trayIconTimeMenu.removeAll();
+						buildTimePopup(trayIconTimeMenu);
+
 					}
 				}
 			});
 
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (IOException exception) {
+			exception.printStackTrace();
 			trayIcon = null;
 		}
+	}
+
+	@SuppressWarnings("java:S8688")
+	void buildTimePopup(Menu trayIconTimeMenu) {
+
+		LocalDateTime now = LocalDateTime.now();
+		int hourNow = now.getHour();
+		int minuteNow = now.getMinute();
+
+		int startIndex = minuteNow / 5 + 1;
+
+		if (minuteNow >= 55) {
+			hourNow++;
+			startIndex = 0;
+		}
+
+		for (int hour = hourNow; hour < hourNow + 24; hour++) {
+
+			final Menu hourMenu = new Menu((hour % 24) + ":00");
+
+			for (int index = startIndex; index < 12; index++) {
+				final int minute = index * 5;
+				String minuteString = "0" + minute;
+				minuteString = minuteString.substring(minuteString.length() - 2);
+				final MenuItem menuItem = new MenuItem(minuteString);
+				int tmp = hour % 24;
+				menuItem.addActionListener(event -> {
+					PerformTime performTime = new PerformTime(tmp, minute, this);
+					performTime.handle(null);
+				});
+				hourMenu.add(menuItem);
+			}
+			startIndex = 0;
+			trayIconTimeMenu.add(hourMenu);
+
+		}
+
 	}
 
 	boolean hasSystray() {
 		return trayIcon != null;
 	}
 
-	void setSystrayTooltip(final String tooltip) {
-
+	void setSystrayToolTip(final String tooltip) {
 		if (trayIcon != null) {
 			trayIcon.setToolTip(tooltip);
 		}
@@ -308,6 +343,7 @@ public class MainClass extends Application {
 		final ArrayList<AlarmManager.AlarmManagerItem> items = Preferences.getAlarms();
 
 		final ArrayList<Alarm> tmpStoredAlarms = new ArrayList<>();
+
 		for (AlarmManager.AlarmManagerItem item : items) {
 			tmpStoredAlarms.add(new Alarm(item.getName(), item.getTime(), item.getAlarmSoundData()));
 		}

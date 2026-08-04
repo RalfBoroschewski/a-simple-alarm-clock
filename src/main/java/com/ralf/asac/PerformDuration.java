@@ -21,17 +21,13 @@ class PerformDuration implements EventHandler<ActionEvent> {
 
 	@Override
 	public void handle(final ActionEvent event) {
-		stage.setTitle("Holla 1");
 		mainClass.deactivate();
-		stage.setTitle("Holla 2");
 		mainClass.setVisibilityPauseButton(true);
 
 		mainClass.oldPerformDuration = this;
 
 		mainClass.setIcon(true);
-		stage.setTitle("Holla 3");
 		myWorker = new MyWorker();
-		stage.setTitle("Holla 4");
 		new Thread(myWorker).start();
 	}
 
@@ -57,7 +53,7 @@ class PerformDuration implements EventHandler<ActionEvent> {
 
 				String minutesString = time + Asac.getMinuteString(time);
 
-				mainClass.setSystrayTooltip(minutesString);
+				mainClass.setSystrayToolTip(minutesString);
 				Platform.runLater(() -> stage.setTitle(minutesString));
 
 				for (int indexSeconds = 0; indexSeconds < 60; indexSeconds += step) {
@@ -79,7 +75,8 @@ class PerformDuration implements EventHandler<ActionEvent> {
 			if (startBell) {
 				final String name = mainClass.getName();
 				mainClass.setTimeDurationFieldText("");
-				mainClass.setSystrayTooltip("");
+				Platform.runLater(() -> stage.setTitle(""));
+				mainClass.setSystrayToolTip("");
 				mainClass.setVisibilityDeactivateButton(false);
 				mainClass.deactivatePauseButton();
 

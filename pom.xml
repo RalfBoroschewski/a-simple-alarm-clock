@@ -101,61 +101,10 @@
 			<artifactId>classgraph</artifactId>
 			<version>4.8.184</version>
 		</dependency>
-		
-		
-		
-
-		<dependency>
-			<groupId>org.openjfx</groupId>
-			<artifactId>javafx-swing</artifactId>
-			<version>23.0.2</version>
-			<classifier>win</classifier>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.openjfx</groupId>
-			<artifactId>javafx-swing</artifactId>
-			<version>23.0.2</version>
-			<classifier>mac</classifier>
-		</dependency>
-
-		<dependency>
-			<groupId>org.openjfx</groupId>
-			<artifactId>javafx-swing</artifactId>
-			<version>23.0.2</version>
-			<classifier>linux</classifier>
-		</dependency>
-
-		<dependency>
-			<groupId>io.github.classgraph</groupId>
-			<artifactId>classgraph</artifactId>
-			<version>4.8.184</version>
-		</dependency>	
-
 	</dependencies>
 
 	<build>
 		<plugins>
-		
-		
-		<plugin>
-    <groupId>org.openjfx</groupId>
-    <artifactId>javafx-maven-plugin</artifactId>
-    <version>0.0.8</version> <!-- Ihre Version beibehalten -->
-    <configuration>
-        <mainClass>mein.projekt.name.MainApp</mainClass>
-        <options>
-            <!-- Erzwingt, dass AWT ein grafisches Display initialisiert -->
-            <option>-Djava.awt.headless=false</option>
-        </options>
-    </configuration>
-</plugin>
-
-		
-		
-		
-		
-		
 			<!-- Compiler -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -210,7 +159,7 @@
 							<goal>jdeb</goal>
 						</goals>
 						<configuration>
-							<deb>${project.build.directory}/${project.artifactId}_${version}_all.deb</deb>
+							<deb>${project.build.directory}/${artifactId}_${version}_all.deb</deb>
 							<verbose>true</verbose>
 							<snapshotExpand>true</snapshotExpand>
 							<snapshotEnv>USER</snapshotEnv>

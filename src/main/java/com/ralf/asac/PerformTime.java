@@ -47,7 +47,7 @@ class PerformTime implements EventHandler<javafx.event.ActionEvent> {
 
 		String time = hourString + ":" + minuteString;
 		mainClass.setTimeDurationFieldText(time);
-		mainClass.setSystrayTooltip(time);
+		mainClass.setSystrayToolTip(time);
 
 		myWorker = new MyWorker(desiredMilliSeconds - nowMilliSeconds);
 		new Thread(myWorker).start();
@@ -66,7 +66,7 @@ class PerformTime implements EventHandler<javafx.event.ActionEvent> {
 			this.durationMilliSeconds = durationMilliSeconds;
 		}
 
-		@SuppressWarnings("java:S2142")
+		@SuppressWarnings({ "java:S2142", "java:S4507" })
 		@Override
 		protected Integer call() throws Exception {
 			startBell = true;
@@ -80,7 +80,7 @@ class PerformTime implements EventHandler<javafx.event.ActionEvent> {
 			if (startBell) {
 				mainClass.setVisibilityDeactivateButton(false);
 				mainClass.setTimeDurationFieldText("");
-				mainClass.setSystrayTooltip("");
+				mainClass.setSystrayToolTip("");
 
 				final String name = mainClass.getName();
 

@@ -1,7 +1,6 @@
 package com.ralf.asac;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
+import java.time.LocalDateTime;
 
 import javafx.geometry.Side;
 import javafx.scene.control.Button;
@@ -16,11 +15,12 @@ class TimeButton extends Button {
 		this.setOnAction(event -> buildTimePopup(mainClass).show(this, Side.BOTTOM, 0, 0));
 	}
 
+	@SuppressWarnings("java:S8688")
 	ContextMenu buildTimePopup(final MainClass mainClass) {
 
-		final Calendar now = new GregorianCalendar();
-		int hourNow = now.get(Calendar.HOUR_OF_DAY);
-		int minuteNow = now.get(Calendar.MINUTE);
+		LocalDateTime now = LocalDateTime.now();
+		int hourNow = now.getHour();
+		int minuteNow = now.getMinute();
 
 		int startIndex = minuteNow / 5 + 1;
 
@@ -36,13 +36,13 @@ class TimeButton extends Button {
 
 		for (int hour = hourNow; hour < hourNow + 24; hour++) {
 
-			final Menu hourMenu = new Menu("\u0080" + marginHour + (hour % 24) + ":00" + marginHour);
+			final Menu hourMenu = new Menu("\u00A0" + marginHour + (hour % 24) + ":00" + marginHour);
 
 			for (int index = startIndex; index < 12; index++) {
 				final int minute = index * 5;
 				String minuteString = "0" + minute;
 				minuteString = minuteString.substring(minuteString.length() - 2);
-				final MenuItem menuItem = new MenuItem("\u0080" + marginMinute + minuteString + marginMinute);
+				final MenuItem menuItem = new MenuItem("\u00A0" + marginMinute + minuteString + marginMinute);
 				menuItem.setOnAction(new PerformTime(hour % 24, minute, mainClass));
 				hourMenu.getItems().add(menuItem);
 			}
