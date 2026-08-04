@@ -192,6 +192,7 @@ public class MainClass extends Application {
 		minimizeButton.setOnAction(event -> {
 
 			if (Preferences.getSystrayMode() == Preferences.SystrayMode.NOT_IN_SYSTRAY || trayIcon == null) {
+				Platform.runLater(() -> stage.setIconified(true));
 				return;
 			}
 
@@ -208,8 +209,8 @@ public class MainClass extends Application {
 			if (!alreadySet) {
 				try {
 					SystemTray.getSystemTray().add(trayIcon);
-				} catch (AWTException e1) {
-					e1.printStackTrace();
+				} catch (AWTException exception) {
+					exception.printStackTrace();
 				}
 			}
 
