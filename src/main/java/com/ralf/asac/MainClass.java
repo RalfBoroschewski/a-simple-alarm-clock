@@ -256,8 +256,8 @@ public class MainClass extends Application {
 			trayIcon = new TrayIcon(image);
 			trayIcon.setImageAutoSize(true);
 
-			Menu trayIconDurationMenu = new Menu("Duration");
-			trayIconTimeMenu = new Menu("Time");
+			Menu trayIconDurationMenu = new Menu(messages.getString("MainClass.systree.set.duration"));
+			trayIconTimeMenu = new Menu(messages.getString("MainClass.systree.set.time"));
 
 			PopupMenu mainPopupMenu = new PopupMenu();
 			mainPopupMenu.add(trayIconDurationMenu);
