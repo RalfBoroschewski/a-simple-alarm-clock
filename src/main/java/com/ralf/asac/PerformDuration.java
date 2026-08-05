@@ -56,54 +56,59 @@ class PerformDuration implements EventHandler<ActionEvent> {
 				final String name = mainClass.getName();
 				mainClass.setSystrayToolTip(name + " - " + minutesString);
 
-				if (name.isBlank()) {
-					Platform.runLater(() -> stage.setTitle(minutesString));
-				} else {
-					Platform.runLater(() -> stage
-							.setTitle(name + "\u00A0" + mainClass.getDashForTitle() + "\u00A0" + minutesString));
-				}
+				setTitle(name, minutesString);
 
 				for (int indexSeconds = 0; indexSeconds < 60; indexSeconds += step) {
-					if (mainClass.pauseButtonIsPause) {
-						step = 0;
-					} else {
-						step = 1;
-					}
+					step = mainClass.pauseButtonIsPause ? 0 : 1;
 
 					if (!startBell)
 						return 1;
 					sleep(1000L);
 				}
+
 				if (!startBell) {
 					break;
 				}
 			}
 
 			if (startBell) {
-				final String name = mainClass.getName();
-				mainClass.setTimeDurationFieldText("");
-				Platform.runLater(() -> stage.setTitle(""));
-				mainClass.setSystrayToolTip("");
-				mainClass.setVisibilityDeactivateButton(false);
-				mainClass.deactivatePauseButton();
-
-				AlarmSounds.AlarmSoundData alarmSoundData = null;
-				Alarm storedAlarm = mainClass.getStoredAlarm();
-				if (storedAlarm != null) {
-					alarmSoundData = storedAlarm.alarmSoundData;
-				}
-
-				mainClass.bellIcon = new BellIcon(name, alarmSoundData);
-				mainClass.bellIcon.play();
-				Platform.runLater(() -> {
-					mainClass.resetStoredAlarmsVaLue();
-					mainClass.setIcon(false);
-				});
+				launchBell();
 			}
 
 			return 0;
 		}
 
+	}
+
+	void setTitle(String name, String minutesString) {
+		if (name.isBlank()) {
+			Platform.runLater(() -> stage.setTitle(minutesString));
+		} else {
+			Platform.runLater(
+					() -> stage.setTitle(name + "\u00A0" + mainClass.getDashForTitle() + "\u00A0" + minutesString));
+		}
+	}
+
+	void launchBell() {
+		final String name = mainClass.getName();
+		mainClass.setTimeDurationFieldText("");
+		Platform.runLater(() -> stage.setTitle(""));
+		mainClass.setSystrayToolTip("");
+		mainClass.setVisibilityDeactivateButton(false);
+		mainClass.deactivatePauseButton();
+
+		AlarmSounds.AlarmSoundData alarmSoundData = null;
+		Alarm storedAlarm = mainClass.getStoredAlarm();
+		if (storedAlarm != null) {
+			alarmSoundData = storedAlarm.alarmSoundData;
+		}
+
+		mainClass.bellIcon = new BellIcon(name, alarmSoundData);
+		mainClass.bellIcon.play();
+		Platform.runLater(() -> {
+			mainClass.resetStoredAlarmsVaLue();
+			mainClass.setIcon(false);
+		});
 	}
 
 	@SuppressWarnings({ "java:S2142", "java:S4507" })
