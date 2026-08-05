@@ -3,6 +3,8 @@ package com.ralf.asac;
 import java.util.ArrayList;
 import java.util.Optional;
 
+import com.ralf.asac.SoundManager.SoundManagerItem;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -75,7 +77,7 @@ class SoundManager {
 
 		final GridPane gridPane = new GridPane();
 
-		Insets insets = new Insets(0, 0, 10, 10);
+		final Insets insets = new Insets(0, 0, 10, 10);
 
 		int positionX = 0;
 		int positionY = 0;

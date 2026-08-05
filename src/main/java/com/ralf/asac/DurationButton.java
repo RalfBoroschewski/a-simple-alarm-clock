@@ -13,9 +13,9 @@ class DurationButton extends Button {
 		super(MainClass.messages.getString("DurationButton.set.duration"));
 
 		final ContextMenu contextMenu = new ContextMenu();
-		MyDurationPopupListener listener = new MyDurationPopupListener(stage, mainClass, contextMenu);
+		final MyDurationPopupListener listener = new MyDurationPopupListener(stage, mainClass, contextMenu);
 
-		DurationPopup durationPopup = new DurationPopup();
+		final DurationPopup durationPopup = new DurationPopup();
 		durationPopup.buildPopup(listener);
 
 		this.setOnAction(event -> contextMenu.show(this, Side.BOTTOM, 0, 0));
@@ -34,9 +34,9 @@ class DurationButton extends Button {
 		}
 
 		@Override
-		public void setMenuItem(int minute, String minutesString) {
+		public void setMenuItem(final int minute, final String minutesString) {
 			final String margin = "            ";
-			String menuItemText = "\u00A0" + margin + minute + minutesString + margin;
+			final String menuItemText = "\u00A0" + margin + minute + minutesString + margin;
 			final MenuItem menuItem = new MenuItem(menuItemText);
 			menuItem.setOnAction(new PerformDuration(minute, stage, mainClass));
 			contextMenu.getItems().add(menuItem);

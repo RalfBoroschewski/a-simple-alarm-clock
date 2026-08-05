@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.ralf.asac.AlarmManager.AlarmManagerItem;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -131,7 +133,7 @@ class AlarmManager {
 		positionX = 1;
 		positionY++;
 
-		VBox vBox = new VBox(10);
+		final VBox vBox = new VBox(10);
 		vBox.getChildren().addAll(manageSoundsButton, defaultSoundButton);
 
 		gridPane.add(vBox, positionX, positionY, 3, 1);
@@ -233,9 +235,9 @@ class AlarmManager {
 			stageDefaultSound.setTitle(MainClass.messages.getString("AlarmManager.default.sound.window.title"));
 			final List<AlarmSounds.AlarmSoundData> list = new AlarmSounds().getAlarmSoundDatas();
 
-			Label label = new Label(MainClass.messages.getString("AlarmManager.default.sound.title"));
+			final Label label = new Label(MainClass.messages.getString("AlarmManager.default.sound.title"));
 
-			ComboBox<AlarmSounds.AlarmSoundData> alarmSounds = new ComboBox<>();
+			final ComboBox<AlarmSounds.AlarmSoundData> alarmSounds = new ComboBox<>();
 			alarmSounds.getItems().clear();
 			alarmSounds.getItems().addAll(list);
 
@@ -244,7 +246,7 @@ class AlarmManager {
 			final Button okButton = new Button(MainClass.messages.getString("ok"));
 			final Button cancelButton = new Button(MainClass.messages.getString("cancel"));
 
-			HBox hBox = new HBox();
+			final HBox hBox = new HBox();
 			hBox.getChildren().addAll(okButton, cancelButton);
 
 			final VBox vBox = new VBox();
@@ -366,7 +368,7 @@ class AlarmManager {
 			return alarmSoundData;
 		}
 
-		void setAlarmSoundData(AlarmSounds.AlarmSoundData alarmSoundData) {
+		void setAlarmSoundData(final AlarmSounds.AlarmSoundData alarmSoundData) {
 			this.alarmSoundData = alarmSoundData;
 		}
 

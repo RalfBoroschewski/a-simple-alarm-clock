@@ -53,8 +53,15 @@ class PerformDuration implements EventHandler<ActionEvent> {
 
 				String minutesString = time + Asac.getMinuteString(time);
 
-				mainClass.setSystrayToolTip(minutesString);
-				Platform.runLater(() -> stage.setTitle(minutesString));
+				final String name = mainClass.getName();
+				mainClass.setSystrayToolTip(name + " - " + minutesString);
+
+				if (name.isBlank()) {
+					Platform.runLater(() -> stage.setTitle(minutesString));
+				} else {
+					Platform.runLater(() -> stage
+							.setTitle(name + "\u00A0" + mainClass.getDashForTitle() + "\u00A0" + minutesString));
+				}
 
 				for (int indexSeconds = 0; indexSeconds < 60; indexSeconds += step) {
 					if (mainClass.pauseButtonIsPause) {

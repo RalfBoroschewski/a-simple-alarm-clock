@@ -45,9 +45,16 @@ class PerformTime implements EventHandler<javafx.event.ActionEvent> {
 		String minuteString = "0" + minute;
 		minuteString = minuteString.substring(minuteString.length() - 2);
 
-		String time = hourString + ":" + minuteString;
+		final String time = hourString + ":" + minuteString;
 		mainClass.setTimeDurationFieldText(time);
-		mainClass.setSystrayToolTip(time);
+
+		final String name = mainClass.getName();
+
+		if (name.isBlank()) {
+			mainClass.setSystrayToolTip(time);
+		} else {
+			mainClass.setSystrayToolTip(name + "- " + time);
+		}
 
 		myWorker = new MyWorker(desiredMilliSeconds - nowMilliSeconds);
 		new Thread(myWorker).start();
@@ -85,7 +92,7 @@ class PerformTime implements EventHandler<javafx.event.ActionEvent> {
 				final String name = mainClass.getName();
 
 				AlarmSounds.AlarmSoundData alarmSoundData = null;
-				Alarm storedAlarm = mainClass.getStoredAlarm();
+				final Alarm storedAlarm = mainClass.getStoredAlarm();
 				if (storedAlarm != null) {
 					alarmSoundData = storedAlarm.alarmSoundData;
 				}

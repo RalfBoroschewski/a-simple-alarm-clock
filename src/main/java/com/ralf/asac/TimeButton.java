@@ -18,9 +18,9 @@ class TimeButton extends Button {
 	@SuppressWarnings("java:S8688")
 	ContextMenu buildTimePopup(final MainClass mainClass) {
 
-		LocalDateTime now = LocalDateTime.now();
+		final LocalDateTime now = LocalDateTime.now();
 		int hourNow = now.getHour();
-		int minuteNow = now.getMinute();
+		final int minuteNow = now.getMinute();
 
 		int startIndex = minuteNow / 5 + 1;
 

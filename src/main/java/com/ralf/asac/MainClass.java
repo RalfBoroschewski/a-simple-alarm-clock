@@ -242,10 +242,7 @@ public class MainClass extends Application {
 			return;
 		}
 
-		String xdgDesktop = System.getenv("XDG_CURRENT_DESKTOP");
-		String kdeSession = System.getenv("KDE_FULL_SESSION");
-
-		if ("KDE".equalsIgnoreCase(xdgDesktop) || "true".equalsIgnoreCase(kdeSession)) {
+		if (Asac.getOperationSystem() == Asac.OperationSystem.KDE) {
 			return;
 		}
 
@@ -317,10 +314,12 @@ public class MainClass extends Application {
 				minuteString = minuteString.substring(minuteString.length() - 2);
 				final MenuItem menuItem = new MenuItem(minuteString);
 				int tmp = hour % 24;
+
 				menuItem.addActionListener(event -> {
 					PerformTime performTime = new PerformTime(tmp, minute, this);
 					performTime.handle(null);
 				});
+
 				hourMenu.add(menuItem);
 			}
 			startIndex = 0;
@@ -414,9 +413,31 @@ public class MainClass extends Application {
 				final String minuteString = timeDuration.substring(colonIndex + 1);
 				final int hour = Integer.parseInt(hourString);
 				final int minute = Integer.parseInt(minuteString);
+
+				final String tmp = "00" + minuteString;
+				final String minuteStringFormated = tmp.substring(0, tmp.length() - 2);
+				final String time = hour + ":" + minuteStringFormated;
+				final String name = getName();
+				if (name.isBlank()) {
+					Platform.runLater(() -> stage.setTitle(time));
+				} else {
+					Platform.runLater(() -> stage.setTitle(name + "\u00A0" + getDashForTitle() + "\u00A0" + time));
+				}
+
 				final PerformTime performTime = new PerformTime(hour, minute, this);
 				performTime.handle(null);
 			}
+		}
+	}
+
+	String getDashForTitle() {
+		switch (Asac.getOperationSystem()) {
+		case KDE:
+			return "⸺";
+		case XFCE:
+			return "-";
+		default:
+			return "⸺";
 		}
 	}
 

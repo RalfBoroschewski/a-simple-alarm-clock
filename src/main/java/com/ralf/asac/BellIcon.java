@@ -109,7 +109,7 @@ class BellIcon {
 	}
 
 	@SuppressWarnings("java:S4507")
-	URL getURLbyFilePath(String filePath) {
+	URL getURLbyFilePath(final String filePath) {
 		final File file = new File(filePath);
 		if (!file.isFile()) {
 			return ClassLoader.getSystemResource(Asac.DEFAULT_SOUND_FILE);

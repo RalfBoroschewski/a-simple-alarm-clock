@@ -9,7 +9,7 @@ class AudioOutput extends Task<Integer> {
 	private final AudioClip audioClip;
 	private boolean isRunning;
 
-	AudioOutput(URL url) {
+	AudioOutput(final URL url) {
 		audioClip = new AudioClip(url.toString());
 	}
 
