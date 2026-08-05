@@ -25,10 +25,6 @@ public class Asac {
 		String xdgDesktop = System.getenv("XDG_CURRENT_DESKTOP");
 		String kdeSession = System.getenv("KDE_FULL_SESSION");
 
-		System.out.println("Hallo 1 " + xdgDesktop);
-
-		System.out.println("Hallo 2 " + kdeSession);
-
 		if ("KDE".equalsIgnoreCase(xdgDesktop) || "true".equalsIgnoreCase(kdeSession)) {
 			return OperationSystem.KDE;
 		}

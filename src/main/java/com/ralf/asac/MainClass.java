@@ -435,6 +435,7 @@ public class MainClass extends Application {
 		case KDE:
 			return "⸺";
 		case XFCE:
+		case WINDOWS:
 			return "-";
 		default:
 			return "-";
