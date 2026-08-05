@@ -17,13 +17,17 @@ public class Asac {
 	}
 
 	enum OperationSystem {
-		KDE, XFCE, OTHER
+		KDE, XFCE, WINDOWS, MAC, OTHER
 	}
 
 	static OperationSystem getOperationSystem() {
 
 		String xdgDesktop = System.getenv("XDG_CURRENT_DESKTOP");
 		String kdeSession = System.getenv("KDE_FULL_SESSION");
+
+		System.out.println("Hallo 1 " + xdgDesktop);
+
+		System.out.println("Hallo 2 " + kdeSession);
 
 		if ("KDE".equalsIgnoreCase(xdgDesktop) || "true".equalsIgnoreCase(kdeSession)) {
 			return OperationSystem.KDE;
@@ -33,6 +37,13 @@ public class Asac {
 			return OperationSystem.XFCE;
 		}
 
+		String osName = System.getProperty("os.name").toLowerCase();
+
+		if (osName.contains("win")) {
+			return OperationSystem.WINDOWS;
+		} else if (osName.contains("mac")) {
+			return OperationSystem.MAC;
+		}
 		return OperationSystem.OTHER;
 	}
 

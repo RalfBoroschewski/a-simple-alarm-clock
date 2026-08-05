@@ -437,7 +437,7 @@ public class MainClass extends Application {
 		case XFCE:
 			return "-";
 		default:
-			return "⸺";
+			return "-";
 		}
 	}
 
