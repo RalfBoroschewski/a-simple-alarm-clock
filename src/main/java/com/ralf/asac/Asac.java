@@ -43,4 +43,13 @@ public class Asac {
 		return OperationSystem.OTHER;
 	}
 
+	@SuppressWarnings({ "java:S2142", "java:S4507" })
+	static void sleep(final long milliSecond) {
+		try {
+			Thread.sleep(milliSecond);
+		} catch (InterruptedException exception) {
+			exception.printStackTrace();
+		}
+	}
+
 }

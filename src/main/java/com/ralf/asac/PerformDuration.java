@@ -63,7 +63,7 @@ class PerformDuration implements EventHandler<ActionEvent> {
 
 					if (!startBell)
 						return 1;
-					sleep(1000L);
+					Asac.sleep(1000L);
 				}
 
 				if (!startBell) {
@@ -111,12 +111,4 @@ class PerformDuration implements EventHandler<ActionEvent> {
 		});
 	}
 
-	@SuppressWarnings({ "java:S2142", "java:S4507" })
-	void sleep(final long milliSecond) {
-		try {
-			Thread.sleep(milliSecond);
-		} catch (InterruptedException exception) {
-			exception.printStackTrace();
-		}
-	}
 }

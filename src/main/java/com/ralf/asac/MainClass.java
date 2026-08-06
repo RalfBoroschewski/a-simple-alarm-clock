@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -290,10 +291,9 @@ public class MainClass extends Application {
 		}
 	}
 
-	@SuppressWarnings("java:S8688")
 	void buildTimePopup(Menu trayIconTimeMenu) {
 
-		LocalDateTime now = LocalDateTime.now();
+		LocalDateTime now = LocalDateTime.now(ZoneId.systemDefault());
 		int hourNow = now.getHour();
 		int minuteNow = now.getMinute();
 

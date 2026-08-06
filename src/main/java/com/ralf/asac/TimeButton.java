@@ -1,6 +1,7 @@
 package com.ralf.asac;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 import javafx.geometry.Side;
 import javafx.scene.control.Button;
@@ -15,10 +16,9 @@ class TimeButton extends Button {
 		this.setOnAction(event -> buildTimePopup(mainClass).show(this, Side.BOTTOM, 0, 0));
 	}
 
-	@SuppressWarnings("java:S8688")
 	ContextMenu buildTimePopup(final MainClass mainClass) {
 
-		final LocalDateTime now = LocalDateTime.now();
+		final LocalDateTime now = LocalDateTime.now(ZoneId.systemDefault());
 		int hourNow = now.getHour();
 		final int minuteNow = now.getMinute();
 

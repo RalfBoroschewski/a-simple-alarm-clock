@@ -1,6 +1,7 @@
 package com.ralf.asac;
 
-import java.time.LocalTime;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 import javafx.application.Platform;
 import javafx.concurrent.Task;
@@ -14,6 +15,8 @@ class PerformTime implements EventHandler<javafx.event.ActionEvent> {
 	private final int minute;
 	private final MainClass mainClass;
 
+	static int INTERVAL_LENGTH_IN_SECONDS = 15;
+
 	PerformTime(final int hour, final int minute, final MainClass mainClass) {
 		this.hour = hour;
 		this.minute = minute;
@@ -21,22 +24,18 @@ class PerformTime implements EventHandler<javafx.event.ActionEvent> {
 	}
 
 	@Override
-	@SuppressWarnings("java:S8688")
 	public void handle(final ActionEvent event) {
 		mainClass.deactivate();
 
 		mainClass.oldPerformTime = this;
 		mainClass.setIcon(true);
 
-		final LocalTime now = LocalTime.now();
-		final long nowMilliSeconds = now.toNanoOfDay() / 1000000;
+		final LocalDateTime now = LocalDateTime.now(ZoneId.systemDefault());
 
-		final LocalTime desiredTime = LocalTime.of(hour, minute, 0, 0);
+		LocalDateTime desiredTime = LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(), hour, minute);
 
-		long desiredMilliSeconds = desiredTime.toNanoOfDay() / 1000000;
-
-		if (desiredMilliSeconds < nowMilliSeconds) {
-			desiredMilliSeconds += 24 * 3600 * 1000;
+		if (desiredTime.compareTo(now) < 0) {
+			desiredTime = desiredTime.plusDays(1);
 		}
 
 		String hourString = "0" + hour;
@@ -56,7 +55,7 @@ class PerformTime implements EventHandler<javafx.event.ActionEvent> {
 			mainClass.setSystrayToolTip(name + "- " + time);
 		}
 
-		myWorker = new MyWorker(desiredMilliSeconds - nowMilliSeconds);
+		myWorker = new MyWorker(desiredTime);
 		new Thread(myWorker).start();
 	}
 
@@ -65,23 +64,34 @@ class PerformTime implements EventHandler<javafx.event.ActionEvent> {
 	}
 
 	private class MyWorker extends Task<Integer> {
-
-		private final long durationMilliSeconds;
+		private final LocalDateTime desiredTime;
 		boolean startBell;
 
-		MyWorker(final long durationMilliSeconds) {
-			this.durationMilliSeconds = durationMilliSeconds;
+		MyWorker(LocalDateTime desiredTime) {
+			this.desiredTime = desiredTime;
 		}
 
-		@SuppressWarnings({ "java:S2142", "java:S4507" })
+		@SuppressWarnings({ "java:S2142", "java:S4507", "java:S2589" })
 		@Override
 		protected Integer call() throws Exception {
 			startBell = true;
 			mainClass.setVisibilityDeactivateButton(true);
-			try {
-				Thread.sleep(durationMilliSeconds);
-			} catch (InterruptedException exception) {
-				exception.printStackTrace();
+
+			LocalDateTime now = LocalDateTime.now(ZoneId.systemDefault());
+
+			while (now.compareTo(desiredTime) < 0 && startBell) {
+				final int nowSeconds = now.getSecond();
+				final int nextIntervalSeconds = ((nowSeconds + INTERVAL_LENGTH_IN_SECONDS) / INTERVAL_LENGTH_IN_SECONDS)
+						* INTERVAL_LENGTH_IN_SECONDS;
+
+				final int durationInSeconds = nextIntervalSeconds - now.getSecond();
+
+				if (durationInSeconds > 0) {
+					Asac.sleep(durationInSeconds * 1000l);
+				} else {
+					break;
+				}
+				now = LocalDateTime.now(ZoneId.systemDefault());
 			}
 
 			if (startBell) {
