@@ -84,7 +84,7 @@ class PerformTime implements EventHandler<javafx.event.ActionEvent> {
 				final int nextIntervalSeconds = ((nowSeconds + INTERVAL_LENGTH_IN_SECONDS) / INTERVAL_LENGTH_IN_SECONDS)
 						* INTERVAL_LENGTH_IN_SECONDS;
 
-				final int durationInSeconds = nextIntervalSeconds - now.getSecond();
+				final int durationInSeconds = nextIntervalSeconds - nowSeconds;
 
 				if (durationInSeconds > 0) {
 					Asac.sleep(durationInSeconds * 1000l);
