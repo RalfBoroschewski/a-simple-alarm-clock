@@ -29,6 +29,7 @@ class PerformTime implements EventHandler<javafx.event.ActionEvent> {
 
 		mainClass.oldPerformTime = this;
 		mainClass.setIcon(true);
+		mainClass.setRepeatButton(-1);
 
 		final LocalDateTime now = LocalDateTime.now(ZoneId.systemDefault());
 

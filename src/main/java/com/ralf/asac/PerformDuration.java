@@ -23,6 +23,7 @@ class PerformDuration implements EventHandler<ActionEvent> {
 	public void handle(final ActionEvent event) {
 		mainClass.deactivate();
 		mainClass.setVisibilityPauseButton(true);
+		mainClass.setRepeatButton(-1);
 
 		mainClass.oldPerformDuration = this;
 
@@ -96,6 +97,7 @@ class PerformDuration implements EventHandler<ActionEvent> {
 		mainClass.setSystrayToolTip("");
 		mainClass.setVisibilityDeactivateButton(false);
 		mainClass.deactivatePauseButton();
+		mainClass.setRepeatButton(minutes);
 
 		AlarmSounds.AlarmSoundData alarmSoundData = null;
 		Alarm storedAlarm = mainClass.getStoredAlarm();

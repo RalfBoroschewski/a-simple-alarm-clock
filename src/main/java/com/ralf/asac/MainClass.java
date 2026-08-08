@@ -49,6 +49,8 @@ public class MainClass extends Application {
 	private final Button deactivateButton;
 	private final Button pauseButton;
 	boolean pauseButtonIsPause;
+	private final Button repeatButton;
+	private long repeatDuration;
 
 	BellIcon bellIcon;
 
@@ -67,9 +69,10 @@ public class MainClass extends Application {
 
 	public MainClass() {
 		timeDurationField = new TimeDurationField();
+		alarmsComboBox = new AlarmsComboBox(this, timeDurationField);
 		deactivateButton = new Button(messages.getString("MainClass.deactivate"));
 		pauseButton = new Button(messages.getString(PAUSE_KEY));
-		alarmsComboBox = new AlarmsComboBox(this, timeDurationField);
+		repeatButton = new Button("Hallo Du da");
 	}
 
 	@SuppressWarnings({ "exports", "java:S3776", "java:S4507", "unused" })
@@ -88,6 +91,7 @@ public class MainClass extends Application {
 		final DurationButton durationButton = new DurationButton(stage, this);
 		final TimeButton timeButton = new TimeButton(this);
 		pauseButton.setVisible(false);
+		repeatButton.setVisible(false);
 
 		showStoredAlarms();
 
@@ -115,7 +119,7 @@ public class MainClass extends Application {
 		hBoxTitleBar.getChildren().addAll(minimizeButton, finishButton);
 		titlePane.setRight(hBoxTitleBar);
 
-		positionX = 1;
+		positionX++;
 		gridPane.add(titlePane, positionX, positionY, 1, 1);
 
 		positionX = 0;
@@ -145,6 +149,8 @@ public class MainClass extends Application {
 
 		gridPane.add(pauseButton, positionX, positionY, 1, 1);
 
+		gridPane.add(repeatButton, positionX, positionY, 2, 1);
+
 		VBox vBox = new VBox();
 
 		alarmManagerButton.setOnAction(event -> {
@@ -172,6 +178,12 @@ public class MainClass extends Application {
 		pauseButton.setOnAction(event -> {
 			pauseButton.setText(messages.getString(pauseButtonIsPause ? PAUSE_KEY : "MainClass.continue"));
 			pauseButtonIsPause = !pauseButtonIsPause;
+		});
+
+		repeatButton.setOnAction(event -> {
+			timeDurationField.setText(repeatDuration + "");
+			PerformDuration performDuration = new PerformDuration(repeatDuration, stage, this);
+			performDuration.handle(null);
 		});
 
 		final Scene scene = new Scene(gridPane);
@@ -498,6 +510,15 @@ public class MainClass extends Application {
 
 	Stage getStage() {
 		return stage;
+	}
+
+	void setRepeatButton(long duration) {
+		repeatDuration = duration;
+		Platform.runLater(() -> {
+			repeatButton.setText(messages.getString("MainClass.repeat.button.part1") + duration
+					+ Asac.getMinuteString(duration) + messages.getString("MainClass.repeat.button.part2"));
+			repeatButton.setVisible(duration >= 0);
+		});
 	}
 }
 
