@@ -353,7 +353,7 @@
     <version>3.4.0</version>
     <executions>
         <execution>
-            <id>loesche-classes-ordner</id>
+            <id>delete-classes-folder</id>
             <phase>verify</phase>
             <goals>
                 <goal>clean</goal>
@@ -373,6 +373,7 @@
                             <include>test-classes/</include>
                             <include>used-libs/</include>
                             <include>original-a-simple-alarm-clock-1.0-SNAPSHOT.jar</include>
+                            <include>a-simple-alarm-clock-1.0-SNAPSHOT.jar</include>
                         </includes>
                     </fileset>
                 </filesets>
