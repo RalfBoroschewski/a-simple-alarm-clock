@@ -346,6 +346,47 @@
 			</plugin>
 
 
+
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-clean-plugin</artifactId>
+    <version>3.4.0</version>
+    <executions>
+        <execution>
+            <id>loesche-classes-ordner</id>
+            <phase>verify</phase>
+            <goals>
+                <goal>clean</goal>
+            </goals>
+            <configuration>
+                <excludeDefaultDirectories>true</excludeDefaultDirectories>
+                <filesets>
+                    <fileset>
+                        <directory>${project.build.directory}</directory>
+                        <includes>
+                            <include>classes/</include>
+                            <include>a-simple-alarm-clock_1.0~ralf_all.changes/</include>
+                            <include>generated-sources/</include>
+                            <include>generated-test-sources/</include>
+                            <include>maven-archiver/</include>
+                            <include>maven-status/</include>
+                            <include>test-classes/</include>
+                            <include>used-libs/</include>
+                            <include>a-simple-alarm-clock-1.0-SNAPSHOT.jar/</include>
+                        </includes>
+                    </fileset>
+                </filesets>
+            </configuration>
+        </execution>
+    </executions>
+</plugin>
+
+
+
+
+
+
+
 		</plugins>
 	</build>
 </project>
