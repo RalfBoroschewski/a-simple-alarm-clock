@@ -372,7 +372,7 @@
                             <include>maven-status/</include>
                             <include>test-classes/</include>
                             <include>used-libs/</include>
-                            <include>a-simple-alarm-clock-1.0-SNAPSHOT.jar/</include>
+                            <include>original-a-simple-alarm-clock-1.0-SNAPSHOT.jar</include>
                         </includes>
                     </fileset>
                 </filesets>
