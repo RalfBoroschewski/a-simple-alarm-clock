@@ -26,7 +26,7 @@ public class Asac {
 		String kdeSession = System.getenv("KDE_FULL_SESSION");
 
 		if ("KDE".equalsIgnoreCase(xdgDesktop) || "true".equalsIgnoreCase(kdeSession)) {
-			return OperationSystem.KDE;
+			// return OperationSystem.KDE;
 		}
 
 		if ("XFCE".equalsIgnoreCase(xdgDesktop)) {

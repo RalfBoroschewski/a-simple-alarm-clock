@@ -46,8 +46,11 @@ public class MainClass extends Application {
 	private boolean timeDurationFieldIsSetInternal;
 	PerformTime oldPerformTime;
 	PerformDuration oldPerformDuration;
+	private final Button minimizeButton = new Button("_");
+	private final Button finishButton = new Button("✕");
 	private final Button deactivateButton;
 	private final Button pauseButton;
+	Button alarmManagerButton;
 	boolean pauseButtonIsPause;
 	private final Button repeatButton;
 	private long repeatDuration;
@@ -87,7 +90,7 @@ public class MainClass extends Application {
 
 		pane.getChildren();
 
-		final Button alarmManagerButton = new Button(messages.getString("MainClass.alarm.manager"));
+		alarmManagerButton = new Button(messages.getString("MainClass.alarm.manager"));
 		final DurationButton durationButton = new DurationButton(stage, this);
 		final TimeButton timeButton = new TimeButton(this);
 		pauseButton.setVisible(false);
@@ -107,9 +110,6 @@ public class MainClass extends Application {
 
 		int positionX = 0;
 		int positionY = 0;
-
-		Button minimizeButton = new Button("_");
-		Button finishButton = new Button("✕");
 
 		BorderPane titlePane = new BorderPane();
 		HBox hBoxTitleBar = new HBox();
@@ -153,38 +153,7 @@ public class MainClass extends Application {
 
 		VBox vBox = new VBox();
 
-		alarmManagerButton.setOnAction(event -> {
-			new AlarmManager(this);
-			showStoredAlarms();
-		});
-
-		timeDurationField.setOnAction(event -> {
-			String name = alarmsComboBox.getEditor().getText();
-			for (Alarm alarm : alarmsComboBox.getItems()) {
-				if (name.equals(alarm.name)) {
-					alarmsComboBox.getEditor().setText("");
-					break;
-				}
-			}
-			evaluateTimeDurationField();
-		});
-
 		deactivateButton.setVisible(false);
-		deactivateButton.setOnAction(event -> {
-			deactivate();
-			alarmsComboBox.setValue(null);
-		});
-
-		pauseButton.setOnAction(event -> {
-			pauseButton.setText(messages.getString(pauseButtonIsPause ? PAUSE_KEY : "MainClass.continue"));
-			pauseButtonIsPause = !pauseButtonIsPause;
-		});
-
-		repeatButton.setOnAction(event -> {
-			timeDurationField.setText(repeatDuration + "");
-			PerformDuration performDuration = new PerformDuration(repeatDuration, stage, this);
-			performDuration.handle(null);
-		});
 
 		final Scene scene = new Scene(gridPane);
 		stage.setTitle(messages.getString("MainClass.title"));
@@ -201,6 +170,49 @@ public class MainClass extends Application {
 		stage.setY(windowsPositionY);
 
 		stage.setOnCloseRequest(event -> deactivate());
+
+		finishButton.setOnAction(event -> System.exit(0));
+		Platform.setImplicitExit(false);
+		buildSysTray();
+
+		gridPane.setOnMousePressed(this::handleMousePressed);
+		gridPane.setOnMouseDragged(this::handleMouseDragged);
+
+		setListener(gridPane);
+	}
+
+	private void setListener(GridPane gridPane) {
+		alarmManagerButton.setOnAction(event -> {
+			new AlarmManager(this);
+			showStoredAlarms();
+		});
+
+		timeDurationField.setOnAction(event -> {
+			String name = alarmsComboBox.getEditor().getText();
+			for (Alarm alarm : alarmsComboBox.getItems()) {
+				if (name.equals(alarm.name)) {
+					alarmsComboBox.getEditor().setText("");
+					break;
+				}
+			}
+			evaluateTimeDurationField();
+		});
+
+		deactivateButton.setOnAction(event -> {
+			deactivate();
+			alarmsComboBox.setValue(null);
+		});
+
+		pauseButton.setOnAction(event -> {
+			pauseButton.setText(messages.getString(pauseButtonIsPause ? PAUSE_KEY : "MainClass.continue"));
+			pauseButtonIsPause = !pauseButtonIsPause;
+		});
+
+		repeatButton.setOnAction(event -> {
+			timeDurationField.setText(repeatDuration + "");
+			PerformDuration performDuration = new PerformDuration(repeatDuration, stage, this);
+			performDuration.handle(null);
+		});
 
 		minimizeButton.setOnAction(event -> {
 
@@ -229,12 +241,6 @@ public class MainClass extends Application {
 
 		});
 
-		finishButton.setOnAction(event -> System.exit(0));
-		Platform.setImplicitExit(false);
-		buildSysTray();
-
-		gridPane.setOnMousePressed(this::handleMousePressed);
-		gridPane.setOnMouseDragged(this::handleMouseDragged);
 	}
 
 	private void handleMousePressed(MouseEvent event) {
