@@ -18,9 +18,11 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 import javax.imageio.ImageIO;
+import javax.swing.SwingUtilities;
 
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
@@ -33,6 +35,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Popup;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -254,15 +257,72 @@ public class MainClass extends Application {
 		tmpStage.setY(event.getScreenY() - yOffset);
 	}
 
-	@SuppressWarnings("java:S4507")
 	private void buildSysTray() {
-
 		if (!SystemTray.isSupported()) {
 			return;
 		}
 
 		if (Asac.getOperationSystem() == Asac.OperationSystem.KDE) {
 			return;
+		}
+
+		Stage owner = new Stage();
+		owner.initStyle(StageStyle.UTILITY);
+		owner.setOpacity(0);
+		owner.setWidth(1);
+		owner.setHeight(1);
+
+		URL imageURL = ClassLoader.getSystemResource("alarm.png");
+		BufferedImage image;
+		try {
+			image = ImageIO.read(imageURL);
+			trayIcon = new TrayIcon(image);
+			trayIcon.setImageAutoSize(true);
+		} catch (IOException exception) {
+			exception.printStackTrace();
+			trayIcon = null;
+		}
+
+		if (trayIcon != null) {
+			trayIcon.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(java.awt.event.MouseEvent e) {
+					if (SwingUtilities.isLeftMouseButton(e)) {
+						Platform.runLater(() -> {
+
+							Popup popup = new Popup();
+							popup.setAutoHide(true);
+							popup.setHideOnEscape(true);
+							popup.setConsumeAutoHidingEvents(true);
+
+							VBox content = new VBox(new javafx.scene.control.Label("Meine Anwendung"),
+									new Button("Einstellungen"), new Button("Beenden"));
+
+							content.setPadding(new Insets(10));
+							content.setSpacing(5);
+							content.setStyle("-fx-background-color: white;" + "-fx-border-color: gray;");
+
+							popup.getContent().add(content);
+
+							owner.show();
+							// Bildschirmkoordinaten des Tray-Klicks
+							popup.show(owner, e.getXOnScreen(), e.getYOnScreen());
+						});
+					}
+				}
+			});
+		}
+	}
+
+	@SuppressWarnings("java:S4507")
+	private void buildSysTray1() {
+
+		if (!SystemTray.isSupported()) {
+			return;
+		}
+
+		if (Asac.getOperationSystem() == Asac.OperationSystem.KDE) {
+			// return;
 		}
 
 		URL imageURL = ClassLoader.getSystemResource("alarm.png");

@@ -8,6 +8,7 @@ module Asac {
 
 	// Requirements for systray
 	requires java.desktop;
+	requires javafx.graphics;
 
 	exports com.ralf.asac;
 }
