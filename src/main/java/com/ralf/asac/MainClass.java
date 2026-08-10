@@ -1,9 +1,6 @@
 package com.ralf.asac;
 
 import java.awt.AWTException;
-import java.awt.Menu;
-import java.awt.MenuItem;
-import java.awt.PopupMenu;
 import java.awt.SystemTray;
 import java.awt.TrayIcon;
 import java.awt.event.MouseAdapter;
@@ -11,8 +8,6 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -27,6 +22,10 @@ import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
@@ -57,6 +56,8 @@ public class MainClass extends Application {
 	boolean pauseButtonIsPause;
 	private final Button repeatButton;
 	private long repeatDuration;
+
+	private final ContextMenu contextMenuDuration = new ContextMenu();
 
 	BellIcon bellIcon;
 
@@ -94,7 +95,7 @@ public class MainClass extends Application {
 		pane.getChildren();
 
 		alarmManagerButton = new Button(messages.getString("MainClass.alarm.manager"));
-		final DurationButton durationButton = new DurationButton(stage, this);
+		final DurationButton durationButton = new DurationButton(stage, this, null);
 		final TimeButton timeButton = new TimeButton(this);
 		pauseButton.setVisible(false);
 		repeatButton.setVisible(false);
@@ -284,127 +285,37 @@ public class MainClass extends Application {
 		}
 
 		if (trayIcon != null) {
+			Popup sysTrayPopup = new Popup();
+			sysTrayPopup.setAutoHide(true);
+			sysTrayPopup.setHideOnEscape(true);
+			sysTrayPopup.setConsumeAutoHidingEvents(true);
+
+			DurationButton trayIconDurationButton = new DurationButton(stage, this, sysTrayPopup);
+
+			Button trayIconTimeButton = new Button(messages.getString("MainClass.systree.set.time"));
+
+			TimeDurationField timeDurationField = new TimeDurationField();
+
+			VBox content = new VBox(trayIconDurationButton, trayIconTimeButton, timeDurationField);
+
+			content.setPadding(new Insets(10));
+			content.setSpacing(5);
+			content.setStyle("-fx-background-color: white;" + "-fx-border-color: gray;");
+
+			sysTrayPopup.getContent().add(content);
+
 			trayIcon.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseClicked(java.awt.event.MouseEvent e) {
-					if (SwingUtilities.isLeftMouseButton(e)) {
+					if (SwingUtilities.isRightMouseButton(e)) {
 						Platform.runLater(() -> {
-
-							Popup popup = new Popup();
-							popup.setAutoHide(true);
-							popup.setHideOnEscape(true);
-							popup.setConsumeAutoHidingEvents(true);
-
-							VBox content = new VBox(new javafx.scene.control.Label("Meine Anwendung"),
-									new Button("Einstellungen"), new Button("Beenden"));
-
-							content.setPadding(new Insets(10));
-							content.setSpacing(5);
-							content.setStyle("-fx-background-color: white;" + "-fx-border-color: gray;");
-
-							popup.getContent().add(content);
-
 							owner.show();
-							// Bildschirmkoordinaten des Tray-Klicks
-							popup.show(owner, e.getXOnScreen(), e.getYOnScreen());
+							sysTrayPopup.show(owner, e.getXOnScreen(), e.getYOnScreen());
 						});
 					}
 				}
 			});
 		}
-	}
-
-	@SuppressWarnings("java:S4507")
-	private void buildSysTray1() {
-
-		if (!SystemTray.isSupported()) {
-			return;
-		}
-
-		if (Asac.getOperationSystem() == Asac.OperationSystem.KDE) {
-			// return;
-		}
-
-		URL imageURL = ClassLoader.getSystemResource("alarm.png");
-		BufferedImage image;
-		try {
-			image = ImageIO.read(imageURL);
-			trayIcon = new TrayIcon(image);
-			trayIcon.setImageAutoSize(true);
-
-			Menu trayIconDurationMenu = new Menu(messages.getString("MainClass.systree.set.duration"));
-			trayIconTimeMenu = new Menu(messages.getString("MainClass.systree.set.time"));
-
-			PopupMenu mainPopupMenu = new PopupMenu();
-			mainPopupMenu.add(trayIconDurationMenu);
-			mainPopupMenu.add(trayIconTimeMenu);
-
-			trayIcon.setPopupMenu(mainPopupMenu);
-
-			trayIcon.addActionListener(event -> Platform.runLater(() -> {
-				stage.show();
-				stage.setIconified(false);
-				SystemTray.getSystemTray().remove(trayIcon);
-			}));
-
-			MyDurationPopupListener listener = new MyDurationPopupListener(stage, trayIconDurationMenu, this);
-			DurationPopup durationPopup = new DurationPopup();
-			durationPopup.buildPopup(listener);
-
-			trayIcon.addMouseListener(new MouseAdapter() {
-				@Override
-				public void mousePressed(java.awt.event.MouseEvent event) {
-					if (event.isPopupTrigger()) {
-
-						trayIconTimeMenu.removeAll();
-						buildTimePopup(trayIconTimeMenu);
-
-					}
-				}
-			});
-
-		} catch (IOException exception) {
-			exception.printStackTrace();
-			trayIcon = null;
-		}
-	}
-
-	void buildTimePopup(Menu trayIconTimeMenu) {
-
-		LocalDateTime now = LocalDateTime.now(ZoneId.systemDefault());
-		int hourNow = now.getHour();
-		int minuteNow = now.getMinute();
-
-		int startIndex = minuteNow / 5 + 1;
-
-		if (minuteNow >= 55) {
-			hourNow++;
-			startIndex = 0;
-		}
-
-		for (int hour = hourNow; hour < hourNow + 24; hour++) {
-
-			final Menu hourMenu = new Menu((hour % 24) + ":00");
-
-			for (int index = startIndex; index < 12; index++) {
-				final int minute = index * 5;
-				String minuteString = "0" + minute;
-				minuteString = minuteString.substring(minuteString.length() - 2);
-				final MenuItem menuItem = new MenuItem(minuteString);
-				int tmp = hour % 24;
-
-				menuItem.addActionListener(event -> {
-					PerformTime performTime = new PerformTime(tmp, minute, this);
-					performTime.handle(null);
-				});
-
-				hourMenu.add(menuItem);
-			}
-			startIndex = 0;
-			trayIconTimeMenu.add(hourMenu);
-
-		}
-
 	}
 
 	boolean hasSystray() {
@@ -589,31 +500,42 @@ public class MainClass extends Application {
 }
 
 class MyDurationPopupListener implements DurationPopupListener {
-	final Menu trayIconTimeMenu;
+	final ContextMenu trayIconTimeMenu;
 	final Stage stage;
 	final MainClass mainClass;
+	final Popup sysTrayPopup;
 
-	MyDurationPopupListener(Stage stage, Menu trayIconTimeMenu, MainClass mainClass) {
+	MyDurationPopupListener(Stage stage, ContextMenu popupMenu, MainClass mainClass, Popup sysTrayPopup) {
 		this.stage = stage;
-		this.trayIconTimeMenu = trayIconTimeMenu;
+		this.trayIconTimeMenu = popupMenu;
 		this.mainClass = mainClass;
+		this.sysTrayPopup = sysTrayPopup;
 	}
 
 	@Override
 	public void setMenuItem(int minute, String minutesString) {
+		System.out.println("Hallo 1");
 		String menuItemText = minute + minutesString;
 		final MenuItem menuItem = new MenuItem(menuItemText);
-		menuItem.addActionListener(event -> {
+		menuItem.setOnAction(event -> {
+			System.out.println("Hallo 2");
 			mainClass.setTimeDurationFieldText(minute + "");
 			PerformDuration performDuration = new PerformDuration(minute, stage, mainClass);
 			performDuration.handle(null);
+			System.out.println("Hallo 2");
+			if (sysTrayPopup != null) {
+				System.out.println("Hallo 3");
+				sysTrayPopup.hide();
+			}
 		});
-		trayIconTimeMenu.add(menuItem);
+		trayIconTimeMenu.getItems().addAll(menuItem);
 	}
 
 	@Override
 	public void addSeparator() {
-		trayIconTimeMenu.addSeparator();
+		trayIconTimeMenu.getItems().add(new SeparatorMenuItem());
 	}
 
 }
+
+//**************************************
