@@ -51,9 +51,9 @@ class PerformTime implements EventHandler<javafx.event.ActionEvent> {
 		final String name = mainClass.getName();
 
 		if (name.isBlank()) {
-			mainClass.setSystrayToolTip(time);
+			mainClass.getSystray().setSystrayToolTip(time);
 		} else {
-			mainClass.setSystrayToolTip(name + "- " + time);
+			mainClass.getSystray().setSystrayToolTip(name + "- " + time);
 		}
 
 		myWorker = new MyWorker(desiredTime);
@@ -98,7 +98,7 @@ class PerformTime implements EventHandler<javafx.event.ActionEvent> {
 			if (startBell) {
 				mainClass.setVisibilityDeactivateButton(false);
 				mainClass.setTimeDurationFieldText("");
-				mainClass.setSystrayToolTip("");
+				mainClass.getSystray().setSystrayToolTip("");
 
 				final String name = mainClass.getName();
 

@@ -137,7 +137,7 @@ class AlarmManager {
 		gridPane.add(vBox, positionX, positionY, 3, 1);
 		GridPane.setMargin(vBox, new Insets(50, 10, 0, 10));
 
-		if (mainClass.hasSystray()) {
+		if (mainClass.getSystray().hasSystray()) {
 			positionY++;
 
 			gridPane.add(minimizeToSystrayCheckBox, positionX, positionY, 1, 1);

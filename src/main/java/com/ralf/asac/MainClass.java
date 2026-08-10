@@ -1,10 +1,5 @@
 package com.ralf.asac;
 
-import java.awt.AWTException;
-import java.awt.SystemTray;
-import java.awt.TrayIcon;
-import java.awt.event.MouseAdapter;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -12,18 +7,13 @@ import java.util.ArrayList;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-import javax.imageio.ImageIO;
-import javax.swing.SwingUtilities;
-
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
-import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.Tooltip;
@@ -57,18 +47,14 @@ public class MainClass extends Application {
 	private final Button repeatButton;
 	private long repeatDuration;
 
-	private final ContextMenu contextMenuDuration = new ContextMenu();
-
 	BellIcon bellIcon;
 
 	static final ResourceBundle messages = ResourceBundle.getBundle("messages", Locale.getDefault());
 	static final String PAUSE_KEY = "MainClass.pause";
 
+	private Systray systray;
 	private double xOffset = 0;
 	private double yOffset = 0;
-
-	private TrayIcon trayIcon;
-	private Menu trayIconTimeMenu;
 
 	static void start(final String[] args) {
 		launch(args);
@@ -177,15 +163,16 @@ public class MainClass extends Application {
 
 		finishButton.setOnAction(event -> System.exit(0));
 		Platform.setImplicitExit(false);
-		buildSysTray();
+
+		systray = new Systray(stage, this);
 
 		gridPane.setOnMousePressed(this::handleMousePressed);
 		gridPane.setOnMouseDragged(this::handleMouseDragged);
 
-		setListener(gridPane);
+		setListener();
 	}
 
-	private void setListener(GridPane gridPane) {
+	private void setListener() {
 		alarmManagerButton.setOnAction(event -> {
 			new AlarmManager(this);
 			showStoredAlarms();
@@ -220,31 +207,20 @@ public class MainClass extends Application {
 
 		minimizeButton.setOnAction(event -> {
 
-			if (Preferences.getSystrayMode() == Preferences.SystrayMode.NOT_IN_SYSTRAY || trayIcon == null) {
+			if (Preferences.getSystrayMode() == Preferences.SystrayMode.NOT_IN_SYSTRAY || !systray.hasSystray()) {
 				Platform.runLater(() -> stage.setIconified(true));
 				return;
 			}
 
 			stage.hide();
-
-			boolean alreadySet = false;
-			for (TrayIcon currentTrayIcon : SystemTray.getSystemTray().getTrayIcons()) {
-				if (currentTrayIcon == trayIcon) {
-					alreadySet = true;
-					break;
-				}
-			}
-
-			if (!alreadySet) {
-				try {
-					SystemTray.getSystemTray().add(trayIcon);
-				} catch (AWTException exception) {
-					exception.printStackTrace();
-				}
-			}
+			systray.addSystray();
 
 		});
 
+	}
+
+	Systray getSystray() {
+		return systray;
 	}
 
 	private void handleMousePressed(MouseEvent event) {
@@ -253,79 +229,13 @@ public class MainClass extends Application {
 	}
 
 	private void handleMouseDragged(MouseEvent event) {
-		Stage tmpStage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
+		final Stage tmpStage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
 		tmpStage.setX(event.getScreenX() - xOffset);
 		tmpStage.setY(event.getScreenY() - yOffset);
 	}
 
-	private void buildSysTray() {
-		if (!SystemTray.isSupported()) {
-			return;
-		}
-
-		if (Asac.getOperationSystem() == Asac.OperationSystem.KDE) {
-			return;
-		}
-
-		Stage owner = new Stage();
-		owner.initStyle(StageStyle.UTILITY);
-		owner.setOpacity(0);
-		owner.setWidth(1);
-		owner.setHeight(1);
-
-		URL imageURL = ClassLoader.getSystemResource("alarm.png");
-		BufferedImage image;
-		try {
-			image = ImageIO.read(imageURL);
-			trayIcon = new TrayIcon(image);
-			trayIcon.setImageAutoSize(true);
-		} catch (IOException exception) {
-			exception.printStackTrace();
-			trayIcon = null;
-		}
-
-		if (trayIcon != null) {
-			Popup sysTrayPopup = new Popup();
-			sysTrayPopup.setAutoHide(true);
-			sysTrayPopup.setHideOnEscape(true);
-			sysTrayPopup.setConsumeAutoHidingEvents(true);
-
-			DurationButton trayIconDurationButton = new DurationButton(stage, this, sysTrayPopup);
-
-			Button trayIconTimeButton = new Button(messages.getString("MainClass.systree.set.time"));
-
-			TimeDurationField timeDurationField = new TimeDurationField();
-
-			VBox content = new VBox(trayIconDurationButton, trayIconTimeButton, timeDurationField);
-
-			content.setPadding(new Insets(10));
-			content.setSpacing(5);
-			content.setStyle("-fx-background-color: white;" + "-fx-border-color: gray;");
-
-			sysTrayPopup.getContent().add(content);
-
-			trayIcon.addMouseListener(new MouseAdapter() {
-				@Override
-				public void mouseClicked(java.awt.event.MouseEvent e) {
-					if (SwingUtilities.isRightMouseButton(e)) {
-						Platform.runLater(() -> {
-							owner.show();
-							sysTrayPopup.show(owner, e.getXOnScreen(), e.getYOnScreen());
-						});
-					}
-				}
-			});
-		}
-	}
-
-	boolean hasSystray() {
-		return trayIcon != null;
-	}
-
-	void setSystrayToolTip(final String tooltip) {
-		if (trayIcon != null) {
-			trayIcon.setToolTip(tooltip);
-		}
+	void show() {
+		stage.show();
 	}
 
 	void showStoredAlarms() {
@@ -514,17 +424,13 @@ class MyDurationPopupListener implements DurationPopupListener {
 
 	@Override
 	public void setMenuItem(int minute, String minutesString) {
-		System.out.println("Hallo 1");
 		String menuItemText = minute + minutesString;
 		final MenuItem menuItem = new MenuItem(menuItemText);
 		menuItem.setOnAction(event -> {
-			System.out.println("Hallo 2");
 			mainClass.setTimeDurationFieldText(minute + "");
 			PerformDuration performDuration = new PerformDuration(minute, stage, mainClass);
 			performDuration.handle(null);
-			System.out.println("Hallo 2");
 			if (sysTrayPopup != null) {
-				System.out.println("Hallo 3");
 				sysTrayPopup.hide();
 			}
 		});

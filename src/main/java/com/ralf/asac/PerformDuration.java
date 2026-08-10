@@ -50,12 +50,13 @@ class PerformDuration implements EventHandler<ActionEvent> {
 			for (int indexMinutes = 0; indexMinutes < minutes; indexMinutes++) {
 				long time = minutes - indexMinutes;
 				String timeString = time + "";
+				System.out.println("Hallo 1");
 				mainClass.setTimeDurationFieldText(timeString);
 
 				String minutesString = time + Asac.getMinuteString(time);
 
 				final String name = mainClass.getName();
-				mainClass.setSystrayToolTip(name + " - " + minutesString);
+				mainClass.getSystray().setSystrayToolTip(name + " - " + minutesString);
 
 				setTitle(name, minutesString);
 
@@ -94,7 +95,7 @@ class PerformDuration implements EventHandler<ActionEvent> {
 		final String name = mainClass.getName();
 		mainClass.setTimeDurationFieldText("");
 		Platform.runLater(() -> stage.setTitle(""));
-		mainClass.setSystrayToolTip("");
+		mainClass.getSystray().setSystrayToolTip("");
 		mainClass.setVisibilityDeactivateButton(false);
 		mainClass.deactivatePauseButton();
 		mainClass.setRepeatButton(minutes);

@@ -10,19 +10,17 @@ import javafx.stage.Stage;
 
 class DurationButton extends Button {
 
-	DurationButton(final Stage stage, final MainClass mainClass, Popup popupMenuDuration) {
+	DurationButton(final Stage stage, final MainClass mainClass, Popup sysTrayPopup) {
 		super(MainClass.messages.getString("DurationButton.set.duration"));
 
 		final ContextMenu contextMenu = new ContextMenu();
 		final MyDurationPopupListener listener = new MyDurationPopupListener(stage, mainClass, contextMenu,
-				popupMenuDuration);
+				sysTrayPopup);
 
 		final DurationPopup durationPopup = new DurationPopup();
 		durationPopup.buildPopup(listener);
 
-		this.setOnAction(event -> {
-			contextMenu.show(this, Side.BOTTOM, 0, 0);
-		});
+		this.setOnAction(event -> contextMenu.show(this, Side.BOTTOM, 0, 0));
 
 	}
 
@@ -30,14 +28,14 @@ class DurationButton extends Button {
 		private final Stage stage;
 		private final MainClass mainClass;
 		private final ContextMenu contextMenu;
-		private final Popup popupMenuDuration;
+		private final Popup sysTrayPopup;
 
 		MyDurationPopupListener(final Stage stage, final MainClass mainClass, final ContextMenu contextMenu,
-				Popup popupMenuDuration) {
+				Popup sysTrayPopup) {
 			this.stage = stage;
 			this.mainClass = mainClass;
 			this.contextMenu = contextMenu;
-			this.popupMenuDuration = popupMenuDuration;
+			this.sysTrayPopup = sysTrayPopup;
 		}
 
 		@Override
@@ -46,11 +44,9 @@ class DurationButton extends Button {
 			final String menuItemText = "\u00A0" + margin + minute + minutesString + margin;
 			final MenuItem menuItem = new MenuItem(menuItemText);
 			menuItem.setOnAction(event -> {
-				System.out.println("Huhu 3");
 				new PerformDuration(minute, stage, mainClass);
-				if (popupMenuDuration != null) {
-					System.out.println("Huhu 4");
-					popupMenuDuration.hide();
+				if (sysTrayPopup != null) {
+					sysTrayPopup.hide();
 				}
 			});
 			contextMenu.getItems().add(menuItem);
