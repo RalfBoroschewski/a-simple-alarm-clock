@@ -44,6 +44,7 @@ class PerformTime {
 
 		final String time = hourString + ":" + minuteString;
 		mainClass.setTimeDurationFieldText(time);
+		mainClass.getSystray().setTimeDurationFieldText(time);
 
 		final String name = mainClass.getName();
 
@@ -95,6 +96,7 @@ class PerformTime {
 			if (startBell) {
 				mainClass.setVisibilityDeactivateButton(false);
 				mainClass.setTimeDurationFieldText("");
+				mainClass.getSystray().setTimeDurationFieldText("");
 				mainClass.getSystray().setSystrayToolTip("");
 
 				final String name = mainClass.getName();

@@ -7,6 +7,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.SwingUtilities;
@@ -15,9 +17,11 @@ import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
@@ -36,6 +40,8 @@ class Systray {
 		timeDurationField = new TimeDurationField();
 		sysTrayPopup = new Popup();
 		alarmsComboBox = new AlarmsComboBox(mainClass, timeDurationField);
+		timeDurationField.setListener(alarmsComboBox, mainClass);
+		alarmsComboBox.setAlarmsComboBoxToBeSynchronize(mainClass.getAlarmsComboBox());
 
 		if (!SystemTray.isSupported()) {
 			trayIcon = null;
@@ -91,6 +97,9 @@ class Systray {
 
 		sysTrayPopup.getContent().add(content);
 
+		hideWhenMouseClickedOutsideSysTrayPopup(mainClass, sysTrayPopup, showAlarmManager);
+//		hideWhenMouseClickedOutsideSysTrayPopup(mainClass,content,showAlarmManager);
+
 		trayIcon.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(java.awt.event.MouseEvent e) {
@@ -110,10 +119,38 @@ class Systray {
 			}
 		});
 
+	}
+
+	void hideWhenMouseClickedOutsideSysTrayPopup(MainClass mainClass, Popup sysTrayPopup, Button showAlarmManager) {
+		List<MouseEvent> events = new ArrayList<>();
+
+		EventHandler handler = (javafx.event.EventHandler<MouseEvent>) event -> {
+
+			double screenX = event.getScreenX();
+			double screenY = event.getScreenY();
+
+			boolean insidePopup = sysTrayPopup.getContent().stream().filter(Node.class::isInstance)
+					.map(Node.class::cast).anyMatch(node -> {
+						Bounds bounds = node.localToScreen(node.getBoundsInLocal());
+
+						return bounds != null && bounds.contains(screenX, screenY);
+					});
+
+			if (!insidePopup) {
+				sysTrayPopup.hide();
+			}
+		};
+
+		mainClass.getScene().addEventFilter(MouseEvent.MOUSE_PRESSED, handler);
+
+		sysTrayPopup.setOnHidden(event -> mainClass.getScene().removeEventFilter(MouseEvent.MOUSE_PRESSED, handler));
+	}
+
+	void hideWhenMouseClickedOutsideSysTrayPopup1(MainClass mainClass, Pane pane, Button showAlarmManager) {
 		Scene scene = mainClass.getScene();
 
 		EventHandler<MouseEvent> handler = event -> {
-			Bounds bounds = content.localToScreen(content.getBoundsInLocal());
+			Bounds bounds = pane.localToScreen(pane.getBoundsInLocal());
 
 			if (bounds == null || !bounds.contains(event.getScreenX(), event.getScreenY())) {
 				sysTrayPopup.hide();
@@ -126,6 +163,10 @@ class Systray {
 			scene.removeEventFilter(MouseEvent.MOUSE_PRESSED, handler);
 		});
 
+		showAlarmManager.setOnAction(event -> {
+			new AlarmManager(mainClass);
+			alarmsComboBox.showStoredAlarms();
+		});
 	}
 
 	boolean hasSystray() {
@@ -168,5 +209,9 @@ class Systray {
 			timeDurationField.setText(text);
 			timeDurationFieldIsSetInternal = false;
 		});
+	}
+
+	AlarmsComboBox getAlarmsComboBox() {
+		return alarmsComboBox;
 	}
 }

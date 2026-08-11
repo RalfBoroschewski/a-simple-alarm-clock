@@ -9,7 +9,7 @@ import javafx.stage.Stage;
 
 class TimeDurationField extends TextField {
 
-	boolean timeDurationFieldIsSetInternal;
+	private boolean timeDurationFieldIsSetInternal;
 
 	TimeDurationField() {
 		super();
@@ -80,8 +80,18 @@ class TimeDurationField extends TextField {
 		setTextFormatter(new TextFormatter<>(filter));
 	}
 
-	void setIsInternal(boolean timeDurationFieldIsSetInternal) {
-		this.timeDurationFieldIsSetInternal = timeDurationFieldIsSetInternal;
+	void setListener(AlarmsComboBox alarmsComboBox, MainClass mainClass) {
+
+		setOnAction(event -> {
+			String name = alarmsComboBox.getEditor().getText();
+			for (Alarm alarm : alarmsComboBox.getItems()) {
+				if (name.equals(alarm.name)) {
+					alarmsComboBox.getEditor().setText("");
+					break;
+				}
+			}
+			evaluateTimeDurationField(mainClass);
+		});
 	}
 
 	void evaluateTimeDurationField(MainClass mainClass) {
@@ -119,6 +129,14 @@ class TimeDurationField extends TextField {
 				performTime.start();
 			}
 		}
+	}
+
+	void protectedSetText(String text) {
+		Platform.runLater(() -> {
+			timeDurationFieldIsSetInternal = true;
+			setText(text);
+			timeDurationFieldIsSetInternal = false;
+		});
 	}
 
 }

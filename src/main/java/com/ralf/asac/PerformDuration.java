@@ -2,7 +2,6 @@ package com.ralf.asac;
 
 import javafx.application.Platform;
 import javafx.concurrent.Task;
-import javafx.stage.Stage;
 
 class PerformDuration {
 
@@ -80,19 +79,18 @@ class PerformDuration {
 	}
 
 	void setTitle(String name, String minutesString) {
-		Stage stage = mainClass.getStage();
 		if (name.isBlank()) {
-			Platform.runLater(() -> stage.setTitle(minutesString));
+			mainClass.setTitle(minutesString);
 		} else {
-			Platform.runLater(
-					() -> stage.setTitle(name + "\u00A0" + mainClass.getDashForTitle() + "\u00A0" + minutesString));
+			mainClass.setTitle(name + "\u00A0" + mainClass.getDashForTitle() + "\u00A0" + minutesString);
 		}
 	}
 
 	void launchBell() {
 		final String name = mainClass.getName();
 		mainClass.setTimeDurationFieldText("");
-		Platform.runLater(() -> mainClass.getStage().setTitle(""));
+		mainClass.getSystray().setTimeDurationFieldText("");
+		mainClass.setTitle(MainClass.messages.getString("MainClass.title"));
 		mainClass.getSystray().setSystrayToolTip("");
 		mainClass.setVisibilityDeactivateButton(false);
 		mainClass.deactivatePauseButton();

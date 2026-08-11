@@ -10,6 +10,7 @@ import javafx.util.StringConverter;
 public class AlarmsComboBox extends ComboBox<Alarm> {
 
 	private Alarm storedAlarm;
+	private AlarmsComboBox alarmsComboBoxToBeSynchronize;
 
 	@SuppressWarnings("java:S6201")
 	AlarmsComboBox(final MainClass mainClass, final TimeDurationField timeDurationField) {
@@ -24,11 +25,20 @@ public class AlarmsComboBox extends ComboBox<Alarm> {
 				} else {
 					timeDurationField.setText("");
 				}
+				if (alarmsComboBoxToBeSynchronize != null) {
+					alarmsComboBoxToBeSynchronize.setValue(storedAlarm);
+				}
+
 			}
 			timeDurationField.evaluateTimeDurationField(mainClass);
+
 		});
 
 		setConverter(this, timeDurationField);
+	}
+
+	void setAlarmsComboBoxToBeSynchronize(AlarmsComboBox alarmsComboBoxToBeSynchronize) {
+		this.alarmsComboBoxToBeSynchronize = alarmsComboBoxToBeSynchronize;
 	}
 
 	Alarm getStoredAlarm() {

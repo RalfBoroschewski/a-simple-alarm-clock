@@ -33,7 +33,6 @@ public class MainClass extends Application {
 
 	private final AlarmsComboBox alarmsComboBox;
 	private final TimeDurationField timeDurationField;
-//	private boolean timeDurationFieldIsSetInternal;
 	PerformTime oldPerformTime;
 	PerformDuration oldPerformDuration;
 	private final Button minimizeButton = new Button("_");
@@ -63,7 +62,7 @@ public class MainClass extends Application {
 		alarmsComboBox = new AlarmsComboBox(this, timeDurationField);
 		deactivateButton = new Button(messages.getString("MainClass.deactivate"));
 		pauseButton = new Button(messages.getString(PAUSE_KEY));
-		repeatButton = new Button("Hallo Du da");
+		repeatButton = new Button();
 	}
 
 	@SuppressWarnings({ "exports", "java:S3776", "java:S4507", "unused" })
@@ -145,7 +144,7 @@ public class MainClass extends Application {
 		deactivateButton.setVisible(false);
 
 		scene = new Scene(gridPane);
-		stage.setTitle(messages.getString("MainClass.title"));
+		setTitle(messages.getString("MainClass.title"));
 		stage.setScene(scene);
 		stage.show();
 
@@ -168,6 +167,7 @@ public class MainClass extends Application {
 		gridPane.setOnMousePressed(this::handleMousePressed);
 		gridPane.setOnMouseDragged(this::handleMouseDragged);
 
+		alarmsComboBox.setAlarmsComboBoxToBeSynchronize(systray.getAlarmsComboBox());
 		setListener();
 	}
 
@@ -177,16 +177,16 @@ public class MainClass extends Application {
 			alarmsComboBox.showStoredAlarms();
 		});
 
-		timeDurationField.setOnAction(event -> {
-			String name = alarmsComboBox.getEditor().getText();
-			for (Alarm alarm : alarmsComboBox.getItems()) {
-				if (name.equals(alarm.name)) {
-					alarmsComboBox.getEditor().setText("");
-					break;
-				}
-			}
-			timeDurationField.evaluateTimeDurationField(this);
-		});
+//		timeDurationField.setOnAction(event -> {
+//			String name = alarmsComboBox.getEditor().getText();
+//			for (Alarm alarm : alarmsComboBox.getItems()) {
+//				if (name.equals(alarm.name)) {
+//					alarmsComboBox.getEditor().setText("");
+//					break;
+//				}
+//			}
+//			timeDurationField.evaluateTimeDurationField(this);
+//		});
 
 		deactivateButton.setOnAction(event -> {
 			deactivate();
@@ -216,6 +216,7 @@ public class MainClass extends Application {
 
 		});
 
+		timeDurationField.setListener(alarmsComboBox, this);
 	}
 
 	Systray getSystray() {
@@ -236,26 +237,6 @@ public class MainClass extends Application {
 	void show() {
 		stage.show();
 	}
-//
-//	void showStoredAlarms() {
-//		final ArrayList<AlarmManager.AlarmManagerItem> items = Preferences.getAlarms();
-//
-//		final ArrayList<Alarm> tmpStoredAlarms = new ArrayList<>();
-//
-//		for (AlarmManager.AlarmManagerItem item : items) {
-//			tmpStoredAlarms.add(new Alarm(item.getName(), item.getTime(), item.getAlarmSoundData()));
-//		}
-//
-//		alarmsComboBox.getItems().clear();
-//		alarmsComboBox.getItems().addAll(tmpStoredAlarms);
-//
-//		if (items.isEmpty()) {
-//			Tooltip tooltip = new Tooltip(messages.getString("MainClass.tooltip"));
-//			tooltip.setShowDelay(new Duration(0));
-//			alarmsComboBox.setTooltip(tooltip);
-//		}
-//
-//	}
 
 	void clearAlarmsComboBox() {
 		alarmsComboBox.clear();
@@ -367,12 +348,13 @@ public class MainClass extends Application {
 		}
 	}
 
+	void setTitle(String title) {
+		System.out.println("Holla 1 " + title);
+		Platform.runLater(() -> stage.setTitle(title));
+	}
+
 	void setTimeDurationFieldText(final String text) {
-		Platform.runLater(() -> {
-			timeDurationField.setIsInternal(true);
-			timeDurationField.setText(text);
-			timeDurationField.setIsInternal(false);
-		});
+		timeDurationField.protectedSetText(text);
 	}
 
 	void setVisibilityDeactivateButton(final boolean visibility) {
