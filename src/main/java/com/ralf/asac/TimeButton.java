@@ -11,8 +11,11 @@ import javafx.scene.control.MenuItem;
 
 class TimeButton extends Button {
 
-	TimeButton(MainClass mainClass) {
+	TimeButton() {
 		super(MainClass.messages.getString("TimeButton.set.time"));
+	}
+
+	void init(MainClass mainClass) {
 		this.setOnAction(event -> buildTimePopup(mainClass).show(this, Side.BOTTOM, 0, 0));
 	}
 

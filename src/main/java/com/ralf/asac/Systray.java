@@ -16,13 +16,11 @@ import javax.swing.SwingUtilities;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
-import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -30,16 +28,41 @@ import javafx.stage.StageStyle;
 class Systray {
 
 	private final TrayIcon trayIcon;
+
+	private final CommonPanel commonPanel;
 	private final Popup sysTrayPopup;
-	private final TimeDurationField timeDurationField;
 	boolean timeDurationFieldIsSetInternal;
+
 	private final AlarmsComboBox alarmsComboBox;
+	private final TimeDurationField timeDurationField;
+	private final Button deactivateButton;
+	private final Button pauseButton;
+	private final Button alarmManagerButton;
+	private boolean pauseButtonIsPause;
+	private final Button repeatButton;
+	private long repeatDuration;
+	final DurationButton durationButton;
+	final TimeButton timeButton;
 
 	Systray(final MainClass mainClass) {
 
-		timeDurationField = new TimeDurationField();
+		commonPanel = new CommonPanel();
+		timeDurationField = commonPanel.getTimeDurationField();
+		alarmsComboBox = commonPanel.getAlarmsComboBox();
+		deactivateButton = commonPanel.getDeactivateButton();
+		pauseButton = commonPanel.getPauseButton();
+		repeatButton = commonPanel.getRepeatButton();
+		alarmManagerButton = commonPanel.getAlarmManagerButton();
+		durationButton = commonPanel.getDurationButton();
+		timeButton = commonPanel.getTimeButton();
+
+		commonPanel.init(null);
+
+		durationButton.init(mainClass);
+		timeButton.init(mainClass);
+
 		sysTrayPopup = new Popup();
-		alarmsComboBox = new AlarmsComboBox(mainClass, timeDurationField);
+		alarmsComboBox.initialize(mainClass, timeDurationField);
 		timeDurationField.setListener(alarmsComboBox, mainClass);
 		alarmsComboBox.setAlarmsComboBoxToBeSynchronize(mainClass.getAlarmsComboBox());
 
@@ -79,7 +102,8 @@ class Systray {
 		sysTrayPopup.setHideOnEscape(true);
 		sysTrayPopup.setConsumeAutoHidingEvents(true);
 
-		DurationButton trayIconDurationButton = new DurationButton(mainClass);
+		DurationButton trayIconDurationButton = new DurationButton();
+		trayIconDurationButton.init(mainClass);
 
 		Button trayIconTimeButton = new Button(MainClass.messages.getString("MainClass.systree.set.time"));
 
@@ -88,17 +112,17 @@ class Systray {
 
 		Button showAlarmManager = new Button("Alarm manager");
 
-		VBox content = new VBox(trayIconDurationButton, trayIconTimeButton, timeDurationField, alarmsComboBox,
-				showAlarmManager, exitButton);
+//		VBox content = new VBox(trayIconDurationButton, trayIconTimeButton, timeDurationField, alarmsComboBox,
+//				showAlarmManager, exitButton);
+//
+//		content.setPadding(new Insets(10));
+//		content.setSpacing(5);
+//		content.setStyle("-fx-background-color: white;" + "-fx-border-color: gray;");
 
-		content.setPadding(new Insets(10));
-		content.setSpacing(5);
-		content.setStyle("-fx-background-color: white;" + "-fx-border-color: gray;");
+		sysTrayPopup.getContent().add(commonPanel.getPane());
 
-		sysTrayPopup.getContent().add(content);
-
-		hideWhenMouseClickedOutsideSysTrayPopup(mainClass, sysTrayPopup, showAlarmManager);
-//		hideWhenMouseClickedOutsideSysTrayPopup(mainClass,content,showAlarmManager);
+//		hideWhenMouseClickedOutsideSysTrayPopup(mainClass, sysTrayPopup, showAlarmManager);
+		hideWhenMouseClickedOutsideSysTrayPopup(mainClass, commonPanel.getPane(), showAlarmManager);
 
 		trayIcon.addMouseListener(new MouseAdapter() {
 			@Override
@@ -146,7 +170,7 @@ class Systray {
 		sysTrayPopup.setOnHidden(event -> mainClass.getScene().removeEventFilter(MouseEvent.MOUSE_PRESSED, handler));
 	}
 
-	void hideWhenMouseClickedOutsideSysTrayPopup1(MainClass mainClass, Pane pane, Button showAlarmManager) {
+	void hideWhenMouseClickedOutsideSysTrayPopup(MainClass mainClass, Pane pane, Button showAlarmManager) {
 		Scene scene = mainClass.getScene();
 
 		EventHandler<MouseEvent> handler = event -> {

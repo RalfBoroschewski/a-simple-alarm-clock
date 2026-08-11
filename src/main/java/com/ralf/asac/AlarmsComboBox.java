@@ -13,7 +13,10 @@ public class AlarmsComboBox extends ComboBox<Alarm> {
 	private AlarmsComboBox alarmsComboBoxToBeSynchronize;
 
 	@SuppressWarnings("java:S6201")
-	AlarmsComboBox(final MainClass mainClass, final TimeDurationField timeDurationField) {
+	AlarmsComboBox() {
+	}
+
+	void initialize(final MainClass mainClass, final TimeDurationField timeDurationField) {
 		setEditable(true);
 
 		setOnAction(event -> {

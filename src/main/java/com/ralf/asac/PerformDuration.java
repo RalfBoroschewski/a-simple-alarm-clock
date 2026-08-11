@@ -57,7 +57,7 @@ class PerformDuration {
 				setTitle(name, minutesString);
 
 				for (int indexSeconds = 0; indexSeconds < 60; indexSeconds += step) {
-					step = mainClass.pauseButtonIsPause ? 0 : 1;
+					step = mainClass.getPauseButtonIsPause() ? 0 : 1;
 
 					if (!startBell)
 						return 1;

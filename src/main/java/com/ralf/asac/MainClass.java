@@ -18,10 +18,8 @@ import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
 import javafx.stage.Popup;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -31,6 +29,7 @@ public class MainClass extends Application {
 	private Stage stage;
 	private Scene scene;
 
+	private final CommonPanel commonPanel;
 	private final AlarmsComboBox alarmsComboBox;
 	private final TimeDurationField timeDurationField;
 	PerformTime oldPerformTime;
@@ -39,10 +38,12 @@ public class MainClass extends Application {
 	private final Button finishButton = new Button("✕");
 	private final Button deactivateButton;
 	private final Button pauseButton;
-	Button alarmManagerButton;
-	boolean pauseButtonIsPause;
+	private final Button alarmManagerButton;
+	private boolean pauseButtonIsPause;
 	private final Button repeatButton;
 	private long repeatDuration;
+	final DurationButton durationButton;
+	final TimeButton timeButton;
 
 	BellIcon bellIcon;
 
@@ -58,11 +59,15 @@ public class MainClass extends Application {
 	}
 
 	public MainClass() {
-		timeDurationField = new TimeDurationField();
-		alarmsComboBox = new AlarmsComboBox(this, timeDurationField);
-		deactivateButton = new Button(messages.getString("MainClass.deactivate"));
-		pauseButton = new Button(messages.getString(PAUSE_KEY));
-		repeatButton = new Button();
+		commonPanel = new CommonPanel();
+		timeDurationField = commonPanel.getTimeDurationField();
+		alarmsComboBox = commonPanel.getAlarmsComboBox();
+		deactivateButton = commonPanel.getDeactivateButton();
+		pauseButton = commonPanel.getPauseButton();
+		repeatButton = commonPanel.getRepeatButton();
+		alarmManagerButton = commonPanel.getAlarmManagerButton();
+		durationButton = commonPanel.getDurationButton();
+		timeButton = commonPanel.getTimeButton();
 	}
 
 	@SuppressWarnings({ "exports", "java:S3776", "java:S4507", "unused" })
@@ -73,31 +78,51 @@ public class MainClass extends Application {
 		stage.initStyle(StageStyle.UNDECORATED);
 		setIcon(false);
 
-		final Pane pane = new Pane();
+		commonPanel.init(getTitlePane());
 
-		pane.getChildren();
+		durationButton.init(this);
+		timeButton.init(this);
 
-		alarmManagerButton = new Button(messages.getString("MainClass.alarm.manager"));
-		final DurationButton durationButton = new DurationButton(this);
-		final TimeButton timeButton = new TimeButton(this);
-		pauseButton.setVisible(false);
-		repeatButton.setVisible(false);
-
-		// showStoredAlarms();
+		alarmsComboBox.initialize(this, timeDurationField);
 		alarmsComboBox.showStoredAlarms();
 
-		final double width = Double.parseDouble(messages.getString("MainClass.buttons.width"));
-		alarmsComboBox.setPrefWidth(width);
-		alarmManagerButton.setPrefWidth(width);
-		durationButton.setPrefWidth(width);
-		timeButton.setPrefWidth(width);
-		timeDurationField.setPrefWidth(width);
-		deactivateButton.setPrefWidth(width);
+		deactivateButton.setVisible(false);
 
-		final GridPane gridPane = new GridPane();
+		Pane pane = commonPanel.getPane();
+		scene = new Scene(pane);
 
-		int positionX = 0;
-		int positionY = 0;
+		setTitle(messages.getString("MainClass.title"));
+		stage.setScene(scene);
+		stage.show();
+
+		setToMiddleOfTheScreen();
+
+		stage.setOnCloseRequest(event -> deactivate());
+
+		finishButton.setOnAction(event -> System.exit(0));
+		Platform.setImplicitExit(false);
+
+		systray = new Systray(this);
+
+		pane.setOnMousePressed(this::handleMousePressed);
+		pane.setOnMouseDragged(this::handleMouseDragged);
+
+		alarmsComboBox.setAlarmsComboBoxToBeSynchronize(systray.getAlarmsComboBox());
+		setListener();
+	}
+
+	private void setToMiddleOfTheScreen() {
+		final Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
+
+		final double stageWidth = stage.getWidth();
+		final double stageHeight = stage.getHeight();
+		final double windowsPositionX = (primScreenBounds.getWidth() - stageWidth) / 2;
+		final double windowsPositionY = (primScreenBounds.getHeight() - stageHeight) / 2;
+		stage.setX(windowsPositionX);
+		stage.setY(windowsPositionY);
+	}
+
+	private Pane getTitlePane() {
 
 		BorderPane titlePane = new BorderPane();
 		HBox hBoxTitleBar = new HBox();
@@ -107,68 +132,7 @@ public class MainClass extends Application {
 		hBoxTitleBar.getChildren().addAll(minimizeButton, finishButton);
 		titlePane.setRight(hBoxTitleBar);
 
-		positionX++;
-		gridPane.add(titlePane, positionX, positionY, 1, 1);
-
-		positionX = 0;
-		positionY++;
-
-		gridPane.add(alarmsComboBox, positionX, positionY, 1, 1);
-		positionX++;
-		gridPane.add(alarmManagerButton, positionX, positionY, 1, 1);
-
-		positionX = 0;
-		positionY++;
-
-		gridPane.add(durationButton, positionX, positionY, 1, 1);
-		positionX++;
-		gridPane.add(timeButton, positionX, positionY, 1, 1);
-
-		positionX = 0;
-		positionY++;
-
-		gridPane.add(timeDurationField, positionX, positionY, 1, 1);
-
-		positionX++;
-		gridPane.add(deactivateButton, positionX, positionY, 1, 1);
-
-		positionX = 0;
-		positionY++;
-
-		gridPane.add(pauseButton, positionX, positionY, 1, 1);
-
-		gridPane.add(repeatButton, positionX, positionY, 2, 1);
-
-		VBox vBox = new VBox();
-
-		deactivateButton.setVisible(false);
-
-		scene = new Scene(gridPane);
-		setTitle(messages.getString("MainClass.title"));
-		stage.setScene(scene);
-		stage.show();
-
-		final Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
-
-		final double stageWidth = stage.getWidth();
-		final double stageHeight = stage.getHeight();
-		final double windowsPositionX = (primScreenBounds.getWidth() - stageWidth) / 2;
-		final double windowsPositionY = (primScreenBounds.getHeight() - stageHeight) / 2;
-		stage.setX(windowsPositionX);
-		stage.setY(windowsPositionY);
-
-		stage.setOnCloseRequest(event -> deactivate());
-
-		finishButton.setOnAction(event -> System.exit(0));
-		Platform.setImplicitExit(false);
-
-		systray = new Systray(this);
-
-		gridPane.setOnMousePressed(this::handleMousePressed);
-		gridPane.setOnMouseDragged(this::handleMouseDragged);
-
-		alarmsComboBox.setAlarmsComboBoxToBeSynchronize(systray.getAlarmsComboBox());
-		setListener();
+		return titlePane;
 	}
 
 	private void setListener() {
@@ -176,17 +140,6 @@ public class MainClass extends Application {
 			new AlarmManager(this);
 			alarmsComboBox.showStoredAlarms();
 		});
-
-//		timeDurationField.setOnAction(event -> {
-//			String name = alarmsComboBox.getEditor().getText();
-//			for (Alarm alarm : alarmsComboBox.getItems()) {
-//				if (name.equals(alarm.name)) {
-//					alarmsComboBox.getEditor().setText("");
-//					break;
-//				}
-//			}
-//			timeDurationField.evaluateTimeDurationField(this);
-//		});
 
 		deactivateButton.setOnAction(event -> {
 			deactivate();
@@ -274,41 +227,6 @@ public class MainClass extends Application {
 
 	}
 
-//	void evaluateTimeDurationField() {
-//		if (timeDurationFieldIsSetInternal) {
-//			return;
-//		}
-//		final String timeDuration = timeDurationField.getText();
-//
-//		if (timeDuration != null && !timeDuration.isEmpty()) {
-//			deactivate();
-//			final int colonIndex = timeDuration.indexOf(':');
-//			if (colonIndex < 0) {
-//				final long minute = Long.parseLong(timeDuration);
-//				final PerformDuration performDuration = new PerformDuration(minute,  this);
-//				performDuration.handle(null);
-//			} else {
-//				final String hourString = timeDuration.substring(0, colonIndex);
-//				final String minuteString = timeDuration.substring(colonIndex + 1);
-//				final int hour = Integer.parseInt(hourString);
-//				final int minute = Integer.parseInt(minuteString);
-//
-//				final String tmp = "00" + minuteString;
-//				final String minuteStringFormated = tmp.substring(0, tmp.length() - 2);
-//				final String time = hour + ":" + minuteStringFormated;
-//				final String name = getName();
-//				if (name.isBlank()) {
-//					Platform.runLater(() -> stage.setTitle(time));
-//				} else {
-//					Platform.runLater(() -> stage.setTitle(name + "\u00A0" + getDashForTitle() + "\u00A0" + time));
-//				}
-//
-//				final PerformTime performTime = new PerformTime(hour, minute, this);
-//				performTime.handle(null);
-//			}
-//		}
-//	}
-
 	String getDashForTitle() {
 		switch (Asac.getOperationSystem()) {
 		case KDE:
@@ -346,6 +264,10 @@ public class MainClass extends Application {
 			stage.getIcons().clear();
 			stage.getIcons().add(image);
 		}
+	}
+
+	boolean getPauseButtonIsPause() {
+		return pauseButtonIsPause;
 	}
 
 	void setTitle(String title) {
