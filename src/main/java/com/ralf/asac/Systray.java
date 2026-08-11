@@ -122,7 +122,6 @@ class Systray {
 
 		scene.addEventFilter(MouseEvent.MOUSE_PRESSED, handler);
 
-// Später wieder entfernen:
 		sysTrayPopup.setOnHidden(event -> {
 			scene.removeEventFilter(MouseEvent.MOUSE_PRESSED, handler);
 		});
