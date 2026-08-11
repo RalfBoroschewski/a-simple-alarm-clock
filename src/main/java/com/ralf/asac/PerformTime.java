@@ -5,10 +5,8 @@ import java.time.ZoneId;
 
 import javafx.application.Platform;
 import javafx.concurrent.Task;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 
-class PerformTime implements EventHandler<javafx.event.ActionEvent> {
+class PerformTime {
 
 	private MyWorker myWorker;
 	private final int hour;
@@ -23,8 +21,7 @@ class PerformTime implements EventHandler<javafx.event.ActionEvent> {
 		this.mainClass = mainClass;
 	}
 
-	@Override
-	public void handle(final ActionEvent event) {
+	public void start() {
 		mainClass.deactivate();
 
 		mainClass.oldPerformTime = this;

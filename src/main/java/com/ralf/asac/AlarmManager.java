@@ -154,7 +154,7 @@ class AlarmManager {
 			editButton.setDisable(false);
 		});
 
-		setListener(stage, mainClass);
+		setListener(mainClass);
 
 		final Scene scene = new Scene(gridPane);
 		stage.setScene(scene);
@@ -166,7 +166,9 @@ class AlarmManager {
 	}
 
 	@SuppressWarnings("java:S3776")
-	private void setListener(final Stage stage, final MainClass mainClass) {
+	private void setListener(final MainClass mainClass) {
+		Stage stage = mainClass.getStage();
+
 		editButton.setOnAction(event -> {
 			if (selectedItem != null) {
 				final AddEditAlarmManagerItem addEditAlarmManagerItem = new AddEditAlarmManagerItem(
@@ -183,7 +185,7 @@ class AlarmManager {
 					rebuildListView();
 					selectedItem(alarmManagerItem);
 					Preferences.setAlarms(alarmManagerItems);
-					mainClass.showStoredAlarms();
+					mainClass.getAlarmsComboBox().showStoredAlarms();
 
 				}
 			}
@@ -204,7 +206,7 @@ class AlarmManager {
 				alarmManagerItems.remove(selectedItem.getAlarmManagerItem());
 				rebuildListView();
 				Preferences.setAlarms(alarmManagerItems);
-				mainClass.showStoredAlarms();
+				mainClass.getAlarmsComboBox().showStoredAlarms();
 				deleteButton.setDisable(true);
 				editButton.setDisable(true);
 			}
@@ -222,7 +224,7 @@ class AlarmManager {
 				rebuildListView();
 				selectedItem(item);
 				Preferences.setAlarms(alarmManagerItems);
-				mainClass.showStoredAlarms();
+				mainClass.getAlarmsComboBox().showStoredAlarms();
 			}
 		});
 

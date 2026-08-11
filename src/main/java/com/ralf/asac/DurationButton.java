@@ -5,17 +5,17 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
-import javafx.stage.Popup;
-import javafx.stage.Stage;
 
 class DurationButton extends Button {
 
-	DurationButton(final Stage stage, final MainClass mainClass, Popup sysTrayPopup) {
+	DurationButton(final MainClass mainClass) {
 		super(MainClass.messages.getString("DurationButton.set.duration"));
 
+//		new Exception().printStackTrace();
+//		System.out.println("Holla 1");
+
 		final ContextMenu contextMenu = new ContextMenu();
-		final MyDurationPopupListener listener = new MyDurationPopupListener(stage, mainClass, contextMenu,
-				sysTrayPopup);
+		final MyDurationPopupListener listener = new MyDurationPopupListener(mainClass, contextMenu);
 
 		final DurationPopup durationPopup = new DurationPopup();
 		durationPopup.buildPopup(listener);
@@ -25,17 +25,12 @@ class DurationButton extends Button {
 	}
 
 	class MyDurationPopupListener implements DurationPopupListener {
-		private final Stage stage;
 		private final MainClass mainClass;
 		private final ContextMenu contextMenu;
-		private final Popup sysTrayPopup;
 
-		MyDurationPopupListener(final Stage stage, final MainClass mainClass, final ContextMenu contextMenu,
-				Popup sysTrayPopup) {
-			this.stage = stage;
+		MyDurationPopupListener(final MainClass mainClass, final ContextMenu contextMenu) {
 			this.mainClass = mainClass;
 			this.contextMenu = contextMenu;
-			this.sysTrayPopup = sysTrayPopup;
 		}
 
 		@Override
@@ -44,10 +39,8 @@ class DurationButton extends Button {
 			final String menuItemText = "\u00A0" + margin + minute + minutesString + margin;
 			final MenuItem menuItem = new MenuItem(menuItemText);
 			menuItem.setOnAction(event -> {
-				new PerformDuration(minute, stage, mainClass);
-				if (sysTrayPopup != null) {
-					sysTrayPopup.hide();
-				}
+				new PerformDuration(minute, mainClass).start();
+				mainClass.getSystray().hide();
 			});
 			contextMenu.getItems().add(menuItem);
 		}

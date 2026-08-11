@@ -2,10 +2,14 @@ package com.ralf.asac;
 
 import java.util.function.UnaryOperator;
 
+import javafx.application.Platform;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
+import javafx.stage.Stage;
 
 class TimeDurationField extends TextField {
+
+	boolean timeDurationFieldIsSetInternal;
 
 	TimeDurationField() {
 		super();
@@ -76,39 +80,45 @@ class TimeDurationField extends TextField {
 		setTextFormatter(new TextFormatter<>(filter));
 	}
 
-//	void evaluateTimeDurationField() {
-//		if (timeDurationFieldIsSetInternal) {
-//			return;
-//		}
-//		final String timeDuration = this.getText();
-//
-//		if (timeDuration != null && !timeDuration.isEmpty()) {
-//			deactivate();
-//			final int colonIndex = timeDuration.indexOf(':');
-//			if (colonIndex < 0) {
-//				final long minute = Long.parseLong(timeDuration);
-//				final PerformDuration performDuration = new PerformDuration(minute, stage, this, null);
-//				performDuration.handle(null);
-//			} else {
-//				final String hourString = timeDuration.substring(0, colonIndex);
-//				final String minuteString = timeDuration.substring(colonIndex + 1);
-//				final int hour = Integer.parseInt(hourString);
-//				final int minute = Integer.parseInt(minuteString);
-//
-//				final String tmp = "00" + minuteString;
-//				final String minuteStringFormated = tmp.substring(0, tmp.length() - 2);
-//				final String time = hour + ":" + minuteStringFormated;
-//				final String name = getName();
-//				if (name.isBlank()) {
-//					Platform.runLater(() -> stage.setTitle(time));
-//				} else {
-//					Platform.runLater(() -> stage.setTitle(name + "\u00A0" + getDashForTitle() + "\u00A0" + time));
-//				}
-//
-//				final PerformTime performTime = new PerformTime(hour, minute, this);
-//				performTime.handle(null);
-//			}
-//		}
-//	}
+	void setIsInternal(boolean timeDurationFieldIsSetInternal) {
+		this.timeDurationFieldIsSetInternal = timeDurationFieldIsSetInternal;
+	}
+
+	void evaluateTimeDurationField(MainClass mainClass) {
+		if (timeDurationFieldIsSetInternal) {
+			return;
+		}
+		final String timeDuration = this.getText();
+
+		if (timeDuration != null && !timeDuration.isEmpty()) {
+			mainClass.deactivate();
+			final int colonIndex = timeDuration.indexOf(':');
+			if (colonIndex < 0) {
+				final long minute = Long.parseLong(timeDuration);
+				final PerformDuration performDuration = new PerformDuration(minute, mainClass);
+				performDuration.start();
+			} else {
+				final String hourString = timeDuration.substring(0, colonIndex);
+				final String minuteString = timeDuration.substring(colonIndex + 1);
+				final int hour = Integer.parseInt(hourString);
+				final int minute = Integer.parseInt(minuteString);
+
+				final String tmp = "00" + minuteString;
+				final String minuteStringFormated = tmp.substring(0, tmp.length() - 2);
+				final String time = hour + ":" + minuteStringFormated;
+				final String name = mainClass.getName();
+				Stage stage = mainClass.getStage();
+				if (name.isBlank()) {
+					Platform.runLater(() -> stage.setTitle(time));
+				} else {
+					Platform.runLater(
+							() -> stage.setTitle(name + "\u00A0" + mainClass.getDashForTitle() + "\u00A0" + time));
+				}
+
+				final PerformTime performTime = new PerformTime(hour, minute, mainClass);
+				performTime.start();
+			}
+		}
+	}
 
 }

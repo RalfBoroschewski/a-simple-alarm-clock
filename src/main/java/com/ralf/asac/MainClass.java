@@ -3,7 +3,6 @@ package com.ralf.asac;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -16,7 +15,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
-import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
@@ -28,14 +26,14 @@ import javafx.stage.Popup;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import javafx.util.Duration;
 
 public class MainClass extends Application {
 	private Stage stage;
+	private Scene scene;
 
 	private final AlarmsComboBox alarmsComboBox;
 	private final TimeDurationField timeDurationField;
-	private boolean timeDurationFieldIsSetInternal;
+//	private boolean timeDurationFieldIsSetInternal;
 	PerformTime oldPerformTime;
 	PerformDuration oldPerformDuration;
 	private final Button minimizeButton = new Button("_");
@@ -81,12 +79,13 @@ public class MainClass extends Application {
 		pane.getChildren();
 
 		alarmManagerButton = new Button(messages.getString("MainClass.alarm.manager"));
-		final DurationButton durationButton = new DurationButton(stage, this, null);
+		final DurationButton durationButton = new DurationButton(this);
 		final TimeButton timeButton = new TimeButton(this);
 		pauseButton.setVisible(false);
 		repeatButton.setVisible(false);
 
-		showStoredAlarms();
+		// showStoredAlarms();
+		alarmsComboBox.showStoredAlarms();
 
 		final double width = Double.parseDouble(messages.getString("MainClass.buttons.width"));
 		alarmsComboBox.setPrefWidth(width);
@@ -145,7 +144,7 @@ public class MainClass extends Application {
 
 		deactivateButton.setVisible(false);
 
-		final Scene scene = new Scene(gridPane);
+		scene = new Scene(gridPane);
 		stage.setTitle(messages.getString("MainClass.title"));
 		stage.setScene(scene);
 		stage.show();
@@ -164,7 +163,7 @@ public class MainClass extends Application {
 		finishButton.setOnAction(event -> System.exit(0));
 		Platform.setImplicitExit(false);
 
-		systray = new Systray(stage, this);
+		systray = new Systray(this);
 
 		gridPane.setOnMousePressed(this::handleMousePressed);
 		gridPane.setOnMouseDragged(this::handleMouseDragged);
@@ -175,7 +174,7 @@ public class MainClass extends Application {
 	private void setListener() {
 		alarmManagerButton.setOnAction(event -> {
 			new AlarmManager(this);
-			showStoredAlarms();
+			alarmsComboBox.showStoredAlarms();
 		});
 
 		timeDurationField.setOnAction(event -> {
@@ -186,7 +185,7 @@ public class MainClass extends Application {
 					break;
 				}
 			}
-			evaluateTimeDurationField();
+			timeDurationField.evaluateTimeDurationField(this);
 		});
 
 		deactivateButton.setOnAction(event -> {
@@ -201,8 +200,8 @@ public class MainClass extends Application {
 
 		repeatButton.setOnAction(event -> {
 			timeDurationField.setText(repeatDuration + "");
-			PerformDuration performDuration = new PerformDuration(repeatDuration, stage, this);
-			performDuration.handle(null);
+			PerformDuration performDuration = new PerformDuration(repeatDuration, this);
+			performDuration.start();
 		});
 
 		minimizeButton.setOnAction(event -> {
@@ -237,26 +236,26 @@ public class MainClass extends Application {
 	void show() {
 		stage.show();
 	}
-
-	void showStoredAlarms() {
-		final ArrayList<AlarmManager.AlarmManagerItem> items = Preferences.getAlarms();
-
-		final ArrayList<Alarm> tmpStoredAlarms = new ArrayList<>();
-
-		for (AlarmManager.AlarmManagerItem item : items) {
-			tmpStoredAlarms.add(new Alarm(item.getName(), item.getTime(), item.getAlarmSoundData()));
-		}
-
-		alarmsComboBox.getItems().clear();
-		alarmsComboBox.getItems().addAll(tmpStoredAlarms);
-
-		if (items.isEmpty()) {
-			Tooltip tooltip = new Tooltip(messages.getString("MainClass.tooltip"));
-			tooltip.setShowDelay(new Duration(0));
-			alarmsComboBox.setTooltip(tooltip);
-		}
-
-	}
+//
+//	void showStoredAlarms() {
+//		final ArrayList<AlarmManager.AlarmManagerItem> items = Preferences.getAlarms();
+//
+//		final ArrayList<Alarm> tmpStoredAlarms = new ArrayList<>();
+//
+//		for (AlarmManager.AlarmManagerItem item : items) {
+//			tmpStoredAlarms.add(new Alarm(item.getName(), item.getTime(), item.getAlarmSoundData()));
+//		}
+//
+//		alarmsComboBox.getItems().clear();
+//		alarmsComboBox.getItems().addAll(tmpStoredAlarms);
+//
+//		if (items.isEmpty()) {
+//			Tooltip tooltip = new Tooltip(messages.getString("MainClass.tooltip"));
+//			tooltip.setShowDelay(new Duration(0));
+//			alarmsComboBox.setTooltip(tooltip);
+//		}
+//
+//	}
 
 	void clearAlarmsComboBox() {
 		alarmsComboBox.clear();
@@ -294,40 +293,40 @@ public class MainClass extends Application {
 
 	}
 
-	void evaluateTimeDurationField() {
-		if (timeDurationFieldIsSetInternal) {
-			return;
-		}
-		final String timeDuration = timeDurationField.getText();
-
-		if (timeDuration != null && !timeDuration.isEmpty()) {
-			deactivate();
-			final int colonIndex = timeDuration.indexOf(':');
-			if (colonIndex < 0) {
-				final long minute = Long.parseLong(timeDuration);
-				final PerformDuration performDuration = new PerformDuration(minute, stage, this);
-				performDuration.handle(null);
-			} else {
-				final String hourString = timeDuration.substring(0, colonIndex);
-				final String minuteString = timeDuration.substring(colonIndex + 1);
-				final int hour = Integer.parseInt(hourString);
-				final int minute = Integer.parseInt(minuteString);
-
-				final String tmp = "00" + minuteString;
-				final String minuteStringFormated = tmp.substring(0, tmp.length() - 2);
-				final String time = hour + ":" + minuteStringFormated;
-				final String name = getName();
-				if (name.isBlank()) {
-					Platform.runLater(() -> stage.setTitle(time));
-				} else {
-					Platform.runLater(() -> stage.setTitle(name + "\u00A0" + getDashForTitle() + "\u00A0" + time));
-				}
-
-				final PerformTime performTime = new PerformTime(hour, minute, this);
-				performTime.handle(null);
-			}
-		}
-	}
+//	void evaluateTimeDurationField() {
+//		if (timeDurationFieldIsSetInternal) {
+//			return;
+//		}
+//		final String timeDuration = timeDurationField.getText();
+//
+//		if (timeDuration != null && !timeDuration.isEmpty()) {
+//			deactivate();
+//			final int colonIndex = timeDuration.indexOf(':');
+//			if (colonIndex < 0) {
+//				final long minute = Long.parseLong(timeDuration);
+//				final PerformDuration performDuration = new PerformDuration(minute,  this);
+//				performDuration.handle(null);
+//			} else {
+//				final String hourString = timeDuration.substring(0, colonIndex);
+//				final String minuteString = timeDuration.substring(colonIndex + 1);
+//				final int hour = Integer.parseInt(hourString);
+//				final int minute = Integer.parseInt(minuteString);
+//
+//				final String tmp = "00" + minuteString;
+//				final String minuteStringFormated = tmp.substring(0, tmp.length() - 2);
+//				final String time = hour + ":" + minuteStringFormated;
+//				final String name = getName();
+//				if (name.isBlank()) {
+//					Platform.runLater(() -> stage.setTitle(time));
+//				} else {
+//					Platform.runLater(() -> stage.setTitle(name + "\u00A0" + getDashForTitle() + "\u00A0" + time));
+//				}
+//
+//				final PerformTime performTime = new PerformTime(hour, minute, this);
+//				performTime.handle(null);
+//			}
+//		}
+//	}
 
 	String getDashForTitle() {
 		switch (Asac.getOperationSystem()) {
@@ -370,9 +369,9 @@ public class MainClass extends Application {
 
 	void setTimeDurationFieldText(final String text) {
 		Platform.runLater(() -> {
-			timeDurationFieldIsSetInternal = true;
+			timeDurationField.setIsInternal(true);
 			timeDurationField.setText(text);
-			timeDurationFieldIsSetInternal = false;
+			timeDurationField.setIsInternal(false);
 		});
 	}
 
@@ -391,12 +390,20 @@ public class MainClass extends Application {
 		Platform.runLater(() -> pauseButton.setVisible(visibility));
 	}
 
+	AlarmsComboBox getAlarmsComboBox() {
+		return alarmsComboBox;
+	}
+
 	Alarm getStoredAlarm() {
 		return alarmsComboBox.getStoredAlarm();
 	}
 
 	Stage getStage() {
 		return stage;
+	}
+
+	Scene getScene() {
+		return scene;
 	}
 
 	void setRepeatButton(long duration) {
@@ -411,12 +418,10 @@ public class MainClass extends Application {
 
 class MyDurationPopupListener implements DurationPopupListener {
 	final ContextMenu trayIconTimeMenu;
-	final Stage stage;
 	final MainClass mainClass;
 	final Popup sysTrayPopup;
 
-	MyDurationPopupListener(Stage stage, ContextMenu popupMenu, MainClass mainClass, Popup sysTrayPopup) {
-		this.stage = stage;
+	MyDurationPopupListener(ContextMenu popupMenu, MainClass mainClass, Popup sysTrayPopup) {
 		this.trayIconTimeMenu = popupMenu;
 		this.mainClass = mainClass;
 		this.sysTrayPopup = sysTrayPopup;
@@ -428,8 +433,8 @@ class MyDurationPopupListener implements DurationPopupListener {
 		final MenuItem menuItem = new MenuItem(menuItemText);
 		menuItem.setOnAction(event -> {
 			mainClass.setTimeDurationFieldText(minute + "");
-			PerformDuration performDuration = new PerformDuration(minute, stage, mainClass);
-			performDuration.handle(null);
+			PerformDuration performDuration = new PerformDuration(minute, mainClass);
+			performDuration.start();
 			if (sysTrayPopup != null) {
 				sysTrayPopup.hide();
 			}
@@ -443,5 +448,3 @@ class MyDurationPopupListener implements DurationPopupListener {
 	}
 
 }
-
-//**************************************

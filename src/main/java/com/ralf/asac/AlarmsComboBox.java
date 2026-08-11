@@ -1,6 +1,10 @@
 package com.ralf.asac;
 
+import java.util.ArrayList;
+
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Tooltip;
+import javafx.util.Duration;
 import javafx.util.StringConverter;
 
 public class AlarmsComboBox extends ComboBox<Alarm> {
@@ -21,7 +25,7 @@ public class AlarmsComboBox extends ComboBox<Alarm> {
 					timeDurationField.setText("");
 				}
 			}
-			mainClass.evaluateTimeDurationField();
+			timeDurationField.evaluateTimeDurationField(mainClass);
 		});
 
 		setConverter(this, timeDurationField);
@@ -86,6 +90,26 @@ public class AlarmsComboBox extends ComboBox<Alarm> {
 
 	void clear() {
 		getEditor().clear();
+	}
+
+	void showStoredAlarms() {
+		final ArrayList<AlarmManager.AlarmManagerItem> items = Preferences.getAlarms();
+
+		final ArrayList<Alarm> tmpStoredAlarms = new ArrayList<>();
+
+		for (AlarmManager.AlarmManagerItem item : items) {
+			tmpStoredAlarms.add(new Alarm(item.getName(), item.getTime(), item.getAlarmSoundData()));
+		}
+
+		getItems().clear();
+		getItems().addAll(tmpStoredAlarms);
+
+		if (items.isEmpty()) {
+			Tooltip tooltip = new Tooltip(MainClass.messages.getString("MainClass.tooltip"));
+			tooltip.setShowDelay(new Duration(0));
+			setTooltip(tooltip);
+		}
+
 	}
 
 }

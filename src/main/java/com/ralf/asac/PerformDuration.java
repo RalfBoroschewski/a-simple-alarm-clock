@@ -2,25 +2,21 @@ package com.ralf.asac;
 
 import javafx.application.Platform;
 import javafx.concurrent.Task;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.stage.Stage;
 
-class PerformDuration implements EventHandler<ActionEvent> {
+class PerformDuration {
 
 	private final long minutes;
-	private final Stage stage;
 	private final MainClass mainClass;
 	private MyWorker myWorker;
 
-	PerformDuration(final long minutes, final Stage stage, final MainClass mainClass) {
+	PerformDuration(final long minutes, final MainClass mainClass) {
 		this.minutes = minutes;
-		this.stage = stage;
 		this.mainClass = mainClass;
+		// new Exception().printStackTrace();
 	}
 
-	@Override
-	public void handle(final ActionEvent event) {
+	void start() {
 		mainClass.deactivate();
 		mainClass.setVisibilityPauseButton(true);
 		mainClass.setRepeatButton(-1);
@@ -43,6 +39,7 @@ class PerformDuration implements EventHandler<ActionEvent> {
 		@Override
 		protected Integer call() throws Exception {
 			startBell = true;
+
 			mainClass.setVisibilityDeactivateButton(true);
 
 			long step = 1;
@@ -50,8 +47,8 @@ class PerformDuration implements EventHandler<ActionEvent> {
 			for (int indexMinutes = 0; indexMinutes < minutes; indexMinutes++) {
 				long time = minutes - indexMinutes;
 				String timeString = time + "";
-				System.out.println("Hallo 1");
 				mainClass.setTimeDurationFieldText(timeString);
+				mainClass.getSystray().setTimeDurationFieldText(timeString);
 
 				String minutesString = time + Asac.getMinuteString(time);
 
@@ -83,6 +80,7 @@ class PerformDuration implements EventHandler<ActionEvent> {
 	}
 
 	void setTitle(String name, String minutesString) {
+		Stage stage = mainClass.getStage();
 		if (name.isBlank()) {
 			Platform.runLater(() -> stage.setTitle(minutesString));
 		} else {
@@ -94,7 +92,7 @@ class PerformDuration implements EventHandler<ActionEvent> {
 	void launchBell() {
 		final String name = mainClass.getName();
 		mainClass.setTimeDurationFieldText("");
-		Platform.runLater(() -> stage.setTitle(""));
+		Platform.runLater(() -> mainClass.getStage().setTitle(""));
 		mainClass.getSystray().setSystrayToolTip("");
 		mainClass.setVisibilityDeactivateButton(false);
 		mainClass.deactivatePauseButton();
