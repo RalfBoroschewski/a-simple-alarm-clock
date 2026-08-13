@@ -7,8 +7,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.SwingUtilities;
@@ -25,38 +23,20 @@ import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
-class Systray {
+class Systray extends CommonPanel {
 
+	private final MainClass mainClass;
 	private final TrayIcon trayIcon;
 
-	private final CommonPanel commonPanel;
 	private final Popup sysTrayPopup;
 	boolean timeDurationFieldIsSetInternal;
 
-	private final AlarmsComboBox alarmsComboBox;
-	private final TimeDurationField timeDurationField;
-	private final Button deactivateButton;
-	private final Button pauseButton;
-	private final Button alarmManagerButton;
-	private boolean pauseButtonIsPause;
-	private final Button repeatButton;
-	private long repeatDuration;
-	final DurationButton durationButton;
-	final TimeButton timeButton;
-
+	@SuppressWarnings("java:S4507")
 	Systray(final MainClass mainClass) {
+		super(true);
+		this.mainClass = mainClass;
 
-		commonPanel = new CommonPanel();
-		timeDurationField = commonPanel.getTimeDurationField();
-		alarmsComboBox = commonPanel.getAlarmsComboBox();
-		deactivateButton = commonPanel.getDeactivateButton();
-		pauseButton = commonPanel.getPauseButton();
-		repeatButton = commonPanel.getRepeatButton();
-		alarmManagerButton = commonPanel.getAlarmManagerButton();
-		durationButton = commonPanel.getDurationButton();
-		timeButton = commonPanel.getTimeButton();
-
-		commonPanel.init(null);
+		init(null);
 
 		durationButton.init(mainClass);
 		timeButton.init(mainClass);
@@ -76,9 +56,9 @@ class Systray {
 			return;
 		}
 
-		Stage owner = new Stage();
+		final Stage owner = new Stage();
 		owner.initStyle(StageStyle.UTILITY);
-		owner.setOpacity(0);
+		owner.setOpacity(1);
 		owner.setWidth(1);
 		owner.setHeight(1);
 
@@ -102,27 +82,14 @@ class Systray {
 		sysTrayPopup.setHideOnEscape(true);
 		sysTrayPopup.setConsumeAutoHidingEvents(true);
 
-		DurationButton trayIconDurationButton = new DurationButton();
+		final DurationButton trayIconDurationButton = new DurationButton();
 		trayIconDurationButton.init(mainClass);
 
-		Button trayIconTimeButton = new Button(MainClass.messages.getString("MainClass.systree.set.time"));
+		final Button showAlarmManager = new Button("Alarm manager");
 
-		Button exitButton = new Button(MainClass.messages.getString("MainClass.exit"));
-		exitButton.setOnAction(event -> System.exit(0));
+		sysTrayPopup.getContent().add(getPane());
 
-		Button showAlarmManager = new Button("Alarm manager");
-
-//		VBox content = new VBox(trayIconDurationButton, trayIconTimeButton, timeDurationField, alarmsComboBox,
-//				showAlarmManager, exitButton);
-//
-//		content.setPadding(new Insets(10));
-//		content.setSpacing(5);
-//		content.setStyle("-fx-background-color: white;" + "-fx-border-color: gray;");
-
-		sysTrayPopup.getContent().add(commonPanel.getPane());
-
-//		hideWhenMouseClickedOutsideSysTrayPopup(mainClass, sysTrayPopup, showAlarmManager);
-		hideWhenMouseClickedOutsideSysTrayPopup(mainClass, commonPanel.getPane(), showAlarmManager);
+		hideWhenMouseClickedOutsideSysTrayPopup(mainClass, getPane(), showAlarmManager);
 
 		trayIcon.addMouseListener(new MouseAdapter() {
 			@Override
@@ -145,15 +112,14 @@ class Systray {
 
 	}
 
-	void hideWhenMouseClickedOutsideSysTrayPopup(MainClass mainClass, Popup sysTrayPopup, Button showAlarmManager) {
-		List<MouseEvent> events = new ArrayList<>();
+	@SuppressWarnings("unused")
+	private void hideWhenMouseClickedOutsideSysTrayPopup(MainClass mainClass, Popup sysTrayPopup) {
+		EventHandler<MouseEvent> handler = (javafx.event.EventHandler<MouseEvent>) event -> {
 
-		EventHandler handler = (javafx.event.EventHandler<MouseEvent>) event -> {
+			final double screenX = event.getScreenX();
+			final double screenY = event.getScreenY();
 
-			double screenX = event.getScreenX();
-			double screenY = event.getScreenY();
-
-			boolean insidePopup = sysTrayPopup.getContent().stream().filter(Node.class::isInstance)
+			final boolean insidePopup = sysTrayPopup.getContent().stream().filter(Node.class::isInstance)
 					.map(Node.class::cast).anyMatch(node -> {
 						Bounds bounds = node.localToScreen(node.getBoundsInLocal());
 
@@ -170,11 +136,12 @@ class Systray {
 		sysTrayPopup.setOnHidden(event -> mainClass.getScene().removeEventFilter(MouseEvent.MOUSE_PRESSED, handler));
 	}
 
-	void hideWhenMouseClickedOutsideSysTrayPopup(MainClass mainClass, Pane pane, Button showAlarmManager) {
-		Scene scene = mainClass.getScene();
+	private void hideWhenMouseClickedOutsideSysTrayPopup(final MainClass mainClass, final Pane pane,
+			final Button showAlarmManager) {
+		final Scene scene = mainClass.getScene();
 
-		EventHandler<MouseEvent> handler = event -> {
-			Bounds bounds = pane.localToScreen(pane.getBoundsInLocal());
+		final EventHandler<MouseEvent> handler = event -> {
+			final Bounds bounds = pane.localToScreen(pane.getBoundsInLocal());
 
 			if (bounds == null || !bounds.contains(event.getScreenX(), event.getScreenY())) {
 				sysTrayPopup.hide();
@@ -183,9 +150,7 @@ class Systray {
 
 		scene.addEventFilter(MouseEvent.MOUSE_PRESSED, handler);
 
-		sysTrayPopup.setOnHidden(event -> {
-			scene.removeEventFilter(MouseEvent.MOUSE_PRESSED, handler);
-		});
+		sysTrayPopup.setOnHidden(event -> scene.removeEventFilter(MouseEvent.MOUSE_PRESSED, handler));
 
 		showAlarmManager.setOnAction(event -> {
 			new AlarmManager(mainClass);
@@ -203,6 +168,7 @@ class Systray {
 		}
 	}
 
+	@SuppressWarnings("java:S4507")
 	void addSystray() {
 		boolean alreadySet = false;
 		for (TrayIcon currentTrayIcon : SystemTray.getSystemTray().getTrayIcons()) {
@@ -235,7 +201,33 @@ class Systray {
 		});
 	}
 
+	@Override
 	AlarmsComboBox getAlarmsComboBox() {
 		return alarmsComboBox;
+	}
+
+	@Override
+	public void processOnActionAlarmsComboBox() {
+		mainClass.getCommonPanel().processOnActionAlarmsComboBox();
+	}
+
+	@Override
+	public void processOnActionDeactivateButton() {
+		mainClass.getCommonPanel().processOnActionDeactivateButton();
+	}
+
+	@Override
+	public void processOnActionPauseButton() {
+		mainClass.getCommonPanel().processOnActionPauseButton();
+	}
+
+	@Override
+	public void processOnActionAlarmManagerButton() {
+		mainClass.getCommonPanel().processOnActionAlarmManagerButton();
+	}
+
+	@Override
+	public void processOnActionRepeatButton() {
+		mainClass.getCommonPanel().processOnActionRepeatButton();
 	}
 }

@@ -12,7 +12,6 @@ class PerformDuration {
 	PerformDuration(final long minutes, final MainClass mainClass) {
 		this.minutes = minutes;
 		this.mainClass = mainClass;
-		// new Exception().printStackTrace();
 	}
 
 	void start() {
@@ -44,12 +43,12 @@ class PerformDuration {
 			long step = 1;
 
 			for (int indexMinutes = 0; indexMinutes < minutes; indexMinutes++) {
-				long time = minutes - indexMinutes;
+				final long time = minutes - indexMinutes;
 				String timeString = time + "";
 				mainClass.setTimeDurationFieldText(timeString);
 				mainClass.getSystray().setTimeDurationFieldText(timeString);
 
-				String minutesString = time + Asac.getMinuteString(time);
+				final String minutesString = time + Asac.getMinuteString(time);
 
 				final String name = mainClass.getName();
 				mainClass.getSystray().setSystrayToolTip(name + " - " + minutesString);
@@ -90,7 +89,7 @@ class PerformDuration {
 		final String name = mainClass.getName();
 		mainClass.setTimeDurationFieldText("");
 		mainClass.getSystray().setTimeDurationFieldText("");
-		mainClass.setTitle(MainClass.messages.getString("MainClass.title"));
+		mainClass.setTitle(MainClass.messages.getString("title"));
 		mainClass.getSystray().setSystrayToolTip("");
 		mainClass.setVisibilityDeactivateButton(false);
 		mainClass.deactivatePauseButton();

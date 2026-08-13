@@ -45,6 +45,7 @@ class PerformTime {
 		final String time = hourString + ":" + minuteString;
 		mainClass.setTimeDurationFieldText(time);
 		mainClass.getSystray().setTimeDurationFieldText(time);
+		mainClass.setTitle(time);
 
 		final String name = mainClass.getName();
 
@@ -98,6 +99,7 @@ class PerformTime {
 				mainClass.setTimeDurationFieldText("");
 				mainClass.getSystray().setTimeDurationFieldText("");
 				mainClass.getSystray().setSystrayToolTip("");
+				mainClass.setTitle(MainClass.messages.getString("title"));
 
 				final String name = mainClass.getName();
 

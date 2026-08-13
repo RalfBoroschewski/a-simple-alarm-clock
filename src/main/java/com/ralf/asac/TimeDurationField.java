@@ -117,7 +117,7 @@ class TimeDurationField extends TextField {
 				final String minuteStringFormated = tmp.substring(0, tmp.length() - 2);
 				final String time = hour + ":" + minuteStringFormated;
 				final String name = mainClass.getName();
-				Stage stage = mainClass.getStage();
+				final Stage stage = mainClass.getStage();
 				if (name.isBlank()) {
 					Platform.runLater(() -> stage.setTitle(time));
 				} else {

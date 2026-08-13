@@ -38,12 +38,11 @@ public class MainClass extends Application {
 	private final Button finishButton = new Button("✕");
 	private final Button deactivateButton;
 	private final Button pauseButton;
-	private final Button alarmManagerButton;
 	private boolean pauseButtonIsPause;
 	private final Button repeatButton;
 	private long repeatDuration;
-	final DurationButton durationButton;
-	final TimeButton timeButton;
+	private final DurationButton durationButton;
+	private final TimeButton timeButton;
 
 	BellIcon bellIcon;
 
@@ -59,18 +58,17 @@ public class MainClass extends Application {
 	}
 
 	public MainClass() {
-		commonPanel = new CommonPanel();
+		commonPanel = new MainPanel(this);
 		timeDurationField = commonPanel.getTimeDurationField();
 		alarmsComboBox = commonPanel.getAlarmsComboBox();
 		deactivateButton = commonPanel.getDeactivateButton();
 		pauseButton = commonPanel.getPauseButton();
 		repeatButton = commonPanel.getRepeatButton();
-		alarmManagerButton = commonPanel.getAlarmManagerButton();
 		durationButton = commonPanel.getDurationButton();
 		timeButton = commonPanel.getTimeButton();
 	}
 
-	@SuppressWarnings({ "exports", "java:S3776", "java:S4507", "unused" })
+	@SuppressWarnings({ "exports", "java:S3776", "java:S4507" })
 	@Override
 	public void start(final Stage stage) throws Exception {
 
@@ -79,6 +77,7 @@ public class MainClass extends Application {
 		setIcon(false);
 
 		commonPanel.init(getTitlePane());
+		commonPanel.getPane().setStyle("-fx-border-color: black; -fx-border-style: solid;");
 
 		durationButton.init(this);
 		timeButton.init(this);
@@ -88,10 +87,10 @@ public class MainClass extends Application {
 
 		deactivateButton.setVisible(false);
 
-		Pane pane = commonPanel.getPane();
+		final Pane pane = commonPanel.getPane();
 		scene = new Scene(pane);
 
-		setTitle(messages.getString("MainClass.title"));
+		setTitle(messages.getString("title"));
 		stage.setScene(scene);
 		stage.show();
 
@@ -124,8 +123,8 @@ public class MainClass extends Application {
 
 	private Pane getTitlePane() {
 
-		BorderPane titlePane = new BorderPane();
-		HBox hBoxTitleBar = new HBox();
+		final BorderPane titlePane = new BorderPane();
+		final HBox hBoxTitleBar = new HBox();
 		hBoxTitleBar.setAlignment(Pos.CENTER_RIGHT);
 		hBoxTitleBar.setMaxWidth(Double.MAX_VALUE);
 
@@ -136,29 +135,8 @@ public class MainClass extends Application {
 	}
 
 	private void setListener() {
-		alarmManagerButton.setOnAction(event -> {
-			new AlarmManager(this);
-			alarmsComboBox.showStoredAlarms();
-		});
-
-		deactivateButton.setOnAction(event -> {
-			deactivate();
-			alarmsComboBox.setValue(null);
-		});
-
-		pauseButton.setOnAction(event -> {
-			pauseButton.setText(messages.getString(pauseButtonIsPause ? PAUSE_KEY : "MainClass.continue"));
-			pauseButtonIsPause = !pauseButtonIsPause;
-		});
-
-		repeatButton.setOnAction(event -> {
-			timeDurationField.setText(repeatDuration + "");
-			PerformDuration performDuration = new PerformDuration(repeatDuration, this);
-			performDuration.start();
-		});
 
 		minimizeButton.setOnAction(event -> {
-
 			if (Preferences.getSystrayMode() == Preferences.SystrayMode.NOT_IN_SYSTRAY || !systray.hasSystray()) {
 				Platform.runLater(() -> stage.setIconified(true));
 				return;
@@ -197,9 +175,14 @@ public class MainClass extends Application {
 
 	void deactivate() {
 		timeDurationField.setText("");
+		setTitle(messages.getString("title"));
 
 		pauseButton.setVisible(false);
 		pauseButton.setText(messages.getString(PAUSE_KEY));
+
+		systray.pauseButton.setVisible(false);
+		systray.pauseButton.setText(messages.getString(PAUSE_KEY));
+
 		pauseButtonIsPause = false;
 
 		if (oldPerformTime != null) {
@@ -271,7 +254,6 @@ public class MainClass extends Application {
 	}
 
 	void setTitle(String title) {
-		System.out.println("Holla 1 " + title);
 		Platform.runLater(() -> stage.setTitle(title));
 	}
 
@@ -280,18 +262,26 @@ public class MainClass extends Application {
 	}
 
 	void setVisibilityDeactivateButton(final boolean visibility) {
-		Platform.runLater(() -> deactivateButton.setVisible(visibility));
+		Platform.runLater(() -> {
+			deactivateButton.setVisible(visibility);
+			systray.deactivateButton.setVisible(visibility);
+		});
 	}
 
 	void deactivatePauseButton() {
 		Platform.runLater(() -> {
 			pauseButton.setVisible(false);
 			pauseButton.setText(messages.getString(PAUSE_KEY));
+			systray.pauseButton.setVisible(false);
+			systray.pauseButton.setText(messages.getString(PAUSE_KEY));
 		});
 	}
 
 	void setVisibilityPauseButton(final boolean visibility) {
-		Platform.runLater(() -> pauseButton.setVisible(visibility));
+		Platform.runLater(() -> {
+			pauseButton.setVisible(visibility);
+			systray.pauseButton.setVisible(visibility);
+		});
 	}
 
 	AlarmsComboBox getAlarmsComboBox() {
@@ -318,6 +308,36 @@ public class MainClass extends Application {
 			repeatButton.setVisible(duration >= 0);
 		});
 	}
+
+	void processOnActionAlarmsComboBox() {
+		alarmsComboBox.showStoredAlarms();
+	}
+
+	void processOnActionDeactivateButton() {
+		deactivate();
+		alarmsComboBox.setValue(null);
+	}
+
+	void processOnActionPauseButton() {
+		final String text = messages.getString(pauseButtonIsPause ? PAUSE_KEY : "MainClass.continue");
+		pauseButton.setText(text);
+		systray.pauseButton.setText(text);
+		pauseButtonIsPause = !pauseButtonIsPause;
+	}
+
+	void processOnActionAlarmManagerButton() {
+		new AlarmManager(this);
+	}
+
+	void processOnActionRepeatButton() {
+		timeDurationField.setText(repeatDuration + "");
+		PerformDuration performDuration = new PerformDuration(repeatDuration, this);
+		performDuration.start();
+	}
+
+	CommonPanel getCommonPanel() {
+		return commonPanel;
+	}
 }
 
 class MyDurationPopupListener implements DurationPopupListener {
@@ -332,8 +352,8 @@ class MyDurationPopupListener implements DurationPopupListener {
 	}
 
 	@Override
-	public void setMenuItem(int minute, String minutesString) {
-		String menuItemText = minute + minutesString;
+	public void setMenuItem(final int minute, final String minutesString) {
+		final String menuItemText = minute + minutesString;
 		final MenuItem menuItem = new MenuItem(menuItemText);
 		menuItem.setOnAction(event -> {
 			mainClass.setTimeDurationFieldText(minute + "");

@@ -8,6 +8,8 @@ import javafx.scene.control.SeparatorMenuItem;
 
 class DurationButton extends Button {
 
+	DurationPopup durationPopup;
+
 	DurationButton() {
 		super(MainClass.messages.getString("DurationButton.set.duration"));
 
@@ -18,7 +20,7 @@ class DurationButton extends Button {
 		final ContextMenu contextMenu = new ContextMenu();
 		final MyDurationPopupListener listener = new MyDurationPopupListener(mainClass, contextMenu);
 
-		final DurationPopup durationPopup = new DurationPopup();
+		durationPopup = new DurationPopup();
 		durationPopup.buildPopup(listener);
 
 		this.setOnAction(event -> contextMenu.show(this, Side.BOTTOM, 0, 0));
@@ -52,4 +54,7 @@ class DurationButton extends Button {
 
 	}
 
+	DurationPopup getDurationPopup() {
+		return durationPopup;
+	}
 }
