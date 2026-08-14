@@ -210,6 +210,7 @@ public class MainClass extends Application {
 
 	}
 
+	@SuppressWarnings("java:S6208")
 	String getDashForTitle() {
 		switch (Asac.getOperationSystem()) {
 		case KDE:

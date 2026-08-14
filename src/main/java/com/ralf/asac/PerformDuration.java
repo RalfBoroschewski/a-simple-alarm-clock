@@ -35,6 +35,7 @@ class PerformDuration {
 		boolean startBell;
 
 		@Override
+		@SuppressWarnings({ "java:S2583", "java:S3516", "java:S2589" })
 		protected Integer call() throws Exception {
 			startBell = true;
 
@@ -53,7 +54,11 @@ class PerformDuration {
 				final String name = mainClass.getName();
 				mainClass.getSystray().setSystrayToolTip(name + " - " + minutesString);
 
-				setTitle(name, minutesString);
+				if (name.isBlank()) {
+					mainClass.setTitle(minutesString);
+				} else {
+					mainClass.setTitle(name + "\u00A0" + mainClass.getDashForTitle() + "\u00A0" + minutesString);
+				}
 
 				for (int indexSeconds = 0; indexSeconds < 60; indexSeconds += step) {
 					step = mainClass.getPauseButtonIsPause() ? 0 : 1;
@@ -75,14 +80,6 @@ class PerformDuration {
 			return 0;
 		}
 
-	}
-
-	void setTitle(String name, String minutesString) {
-		if (name.isBlank()) {
-			mainClass.setTitle(minutesString);
-		} else {
-			mainClass.setTitle(name + "\u00A0" + mainClass.getDashForTitle() + "\u00A0" + minutesString);
-		}
 	}
 
 	void launchBell() {

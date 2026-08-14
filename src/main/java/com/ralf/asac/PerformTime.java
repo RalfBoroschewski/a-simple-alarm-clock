@@ -36,7 +36,7 @@ class PerformTime {
 			desiredTime = desiredTime.plusDays(1);
 		}
 
-		String hourString = "0" + hour;
+		String hourString = "0" + hour; 
 		hourString = hourString.substring(hourString.length() - 2);
 
 		String minuteString = "0" + minute;
