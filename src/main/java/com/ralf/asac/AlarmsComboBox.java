@@ -32,13 +32,6 @@ public class AlarmsComboBox extends ComboBox<Alarm> {
 				return;
 			}
 
-			if (newValue instanceof Alarm) {
-				Alarm alarm = (Alarm) newValue;
-				if (alarm.name == null || alarm.name.isBlank()) {
-					return;
-				}
-			}
-
 			final Object value = getValue();
 			if (value instanceof Alarm) {
 				storedAlarm = (Alarm) value;

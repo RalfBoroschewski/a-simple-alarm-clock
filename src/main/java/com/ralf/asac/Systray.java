@@ -1,12 +1,9 @@
 package com.ralf.asac;
 
-import java.awt.AWTEvent;
 import java.awt.AWTException;
 import java.awt.Point;
 import java.awt.SystemTray;
-import java.awt.Toolkit;
 import java.awt.TrayIcon;
-import java.awt.event.AWTEventListener;
 import java.awt.event.MouseAdapter;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -17,15 +14,11 @@ import javax.swing.SwingUtilities;
 
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
-import javafx.event.EventHandler;
-import javafx.geometry.Bounds;
+import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
-import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
-import javafx.stage.Popup;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -101,6 +94,12 @@ class Systray extends CommonPanel {
 		final DurationButton trayIconDurationButton = new DurationButton();
 		trayIconDurationButton.init(mainClass);
 
+		addListener();
+
+		hideWhenMouseClickedOutsideSysTrayPopup();
+	}
+
+	private void addListener() {
 		trayIcon.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(java.awt.event.MouseEvent event) {
@@ -108,50 +107,14 @@ class Systray extends CommonPanel {
 					Platform.runLater(() -> {
 						alarmsComboBox.showStoredAlarms();
 
-						Point point = event.getLocationOnScreen();
-
 						Platform.runLater(() -> {
+							Point2D point = getPopupStageCoordinates(event);
+
+							popupStage.setX(point.getX());
+							popupStage.setY(point.getY());
+
 							popupStage.show();
 							popupStage.sizeToScene();
-
-							double width = popupStage.getWidth();
-							double height = popupStage.getHeight();
-							Screen screen = Screen.getScreensForRectangle(point.x, point.y, 1, 1).get(0);
-
-							double popupWidth = popupStage.getWidth();
-
-							Rectangle2D bounds = screen.getVisualBounds();
-
-							double x = point.x;
-							double y = point.y;
-
-							// Adjust when popupStage is to right from the screen border
-							if (x + width > bounds.getMaxX()) {
-								x = bounds.getMaxX() - width;
-							}
-
-							// Adjust when popupStage is to below from the screen border
-							if (y + height > bounds.getMaxY()) {
-								y = bounds.getMaxY() - height;
-							}
-
-							// Adjust when popupStage is to left from the screen border
-							if (x < bounds.getMinX()) {
-								x = bounds.getMinX();
-							}
-
-							// Adjust when popupStage is to above from the screen border
-							if (y < bounds.getMinY()) {
-								y = bounds.getMinY();
-							}
-
-							// Horizontal:
-							if (x + popupWidth > bounds.getMaxX()) {
-								x = bounds.getMaxX() - popupWidth;
-							}
-
-							popupStage.setX(x);
-							popupStage.setY(y);
 						});
 
 					});
@@ -163,71 +126,53 @@ class Systray extends CommonPanel {
 				}
 			}
 		});
+	}
 
-		hideWhenMouseClickedOutsideSysTrayPopup2();
+	Point2D getPopupStageCoordinates(final java.awt.event.MouseEvent event) {
+		final Point point = event.getLocationOnScreen();
+		final Screen screen = Screen.getScreensForRectangle(point.x, point.y, 1, 1).get(0);
+		final double popupWidth = popupStage.getWidth();
+
+		final double width = popupStage.getWidth();
+		final double height = popupStage.getHeight();
+
+		final Rectangle2D bounds = screen.getVisualBounds();
+
+		double x = point.x;
+		double y = point.y;
+
+		// Adjust when popupStage is to right from the screen border
+		if (x + width > bounds.getMaxX()) {
+			x = bounds.getMaxX() - width;
+		}
+
+		// Adjust when popupStage is to below from the screen border
+		if (y + height > bounds.getMaxY()) {
+			y = bounds.getMaxY() - height;
+		}
+
+		// Adjust when popupStage is to left from the screen border
+		if (x < bounds.getMinX()) {
+			x = bounds.getMinX();
+		}
+
+		// Adjust when popupStage is to above from the screen border
+		if (y < bounds.getMinY()) {
+			y = bounds.getMinY();
+		}
+
+		// Horizontal:
+		if (x + popupWidth > bounds.getMaxX()) {
+			x = bounds.getMaxX() - popupWidth;
+		}
+
+		return new Point2D(x, y);
 	}
 
 	private void hideWhenMouseClickedOutsideSysTrayPopup() {
-		Toolkit.getDefaultToolkit().addAWTEventListener(event -> {
-			if (event instanceof java.awt.event.MouseEvent) {
-				java.awt.event.MouseEvent mouseEvent = (java.awt.event.MouseEvent) event;
-				if (mouseEvent.getID() == java.awt.event.MouseEvent.MOUSE_PRESSED) {
-					Point p = mouseEvent.getLocationOnScreen();
-
-					Platform.runLater(() -> {
-						if (!popupStage.isShowing()) {
-							return;
-						}
-
-						double x = popupStage.getX();
-						double y = popupStage.getY();
-						double width = popupStage.getWidth();
-						double height = popupStage.getHeight();
-
-						boolean inside = p.x >= x && p.x <= x + width && p.y >= y && p.y <= y + height;
-
-						if (!inside) {
-							popupStage.hide();
-						}
-					});
-				}
-
-			}
-		}, AWTEvent.MOUSE_EVENT_MASK);
-	}
-
-	private void hideWhenMouseClickedOutsideSysTrayPopup1() {
-		AWTEventListener listener = event -> {
-			if (event instanceof java.awt.event.MouseEvent) {
-
-				java.awt.event.MouseEvent mouseEvent = (java.awt.event.MouseEvent) event;
-				if (mouseEvent.getID() == java.awt.event.MouseEvent.MOUSE_PRESSED) {
-					Point p = mouseEvent.getLocationOnScreen();
-
-					Platform.runLater(() -> {
-						if (!popupStage.isShowing()) {
-							return;
-						}
-
-						boolean inside = p.x >= popupStage.getX() && p.x <= popupStage.getX() + popupStage.getWidth()
-								&& p.y >= popupStage.getY() && p.y <= popupStage.getY() + popupStage.getHeight();
-
-						if (!inside) {
-							popupStage.hide();
-						}
-					});
-				}
-			}
-
-		};
-
-		Toolkit.getDefaultToolkit().addAWTEventListener(listener, AWTEvent.MOUSE_EVENT_MASK);
-	}
-
-	private void hideWhenMouseClickedOutsideSysTrayPopup2() {
 		popupStage.focusedProperty().addListener((obs, oldValue, focused) -> {
-			if (!focused) {
-				PauseTransition delay = new PauseTransition(Duration.millis(100));
+			if (focused == null || !focused) {
+				final PauseTransition delay = new PauseTransition(Duration.millis(100));
 
 				delay.setOnFinished(event -> {
 					if (!popupStage.isFocused()) {
@@ -238,30 +183,6 @@ class Systray extends CommonPanel {
 				delay.play();
 			}
 		});
-	}
-
-	@SuppressWarnings("unused")
-	private void hideWhenMouseClickedOutsideSysTrayPopup(MainClass mainClass, Popup sysTrayPopup) {
-		EventHandler<MouseEvent> handler = (javafx.event.EventHandler<MouseEvent>) event -> {
-
-			final double screenX = event.getScreenX();
-			final double screenY = event.getScreenY();
-
-			final boolean insidePopup = sysTrayPopup.getContent().stream().filter(Node.class::isInstance)
-					.map(Node.class::cast).anyMatch(node -> {
-						Bounds bounds = node.localToScreen(node.getBoundsInLocal());
-
-						return bounds != null && bounds.contains(screenX, screenY);
-					});
-
-			if (!insidePopup) {
-				sysTrayPopup.hide();
-			}
-		};
-
-		mainClass.getScene().addEventFilter(MouseEvent.MOUSE_PRESSED, handler);
-
-		sysTrayPopup.setOnHidden(event -> mainClass.getScene().removeEventFilter(MouseEvent.MOUSE_PRESSED, handler));
 	}
 
 	boolean hasSystray() {

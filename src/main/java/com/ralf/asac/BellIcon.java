@@ -76,7 +76,6 @@ class BellIcon {
 			});
 
 			button.setOnKeyReleased(event -> {
-				System.out.println("BellIcon 2");
 				audioOutput.stopPlaying();
 				stage.close();
 			});
