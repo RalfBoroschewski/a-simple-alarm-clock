@@ -125,22 +125,22 @@ class Systray extends CommonPanel {
 							double x = point.x;
 							double y = point.y;
 
-							// Rechts über den Bildschirmrand hinaus?
+							// Adjust when popupStage is to right from the screen border
 							if (x + width > bounds.getMaxX()) {
 								x = bounds.getMaxX() - width;
 							}
 
-							// Unten über den Bildschirmrand hinaus?
+							// Adjust when popupStage is to below from the screen border
 							if (y + height > bounds.getMaxY()) {
 								y = bounds.getMaxY() - height;
 							}
 
-							// Links über den Bildschirmrand hinaus?
+							// Adjust when popupStage is to left from the screen border
 							if (x < bounds.getMinX()) {
 								x = bounds.getMinX();
 							}
 
-							// Oben über den Bildschirmrand hinaus?
+							// Adjust when popupStage is to above from the screen border
 							if (y < bounds.getMinY()) {
 								y = bounds.getMinY();
 							}
@@ -264,22 +264,6 @@ class Systray extends CommonPanel {
 		sysTrayPopup.setOnHidden(event -> mainClass.getScene().removeEventFilter(MouseEvent.MOUSE_PRESSED, handler));
 	}
 
-//	private void hideWhenMouseClickedOutsideSysTrayPopup(final MainClass mainClass, final Pane pane,
-//			final Button showAlarmManager) {
-//		final Scene scene = mainClass.getScene();
-//
-//		final EventHandler<MouseEvent> handler = event -> {
-//			final Bounds bounds = pane.localToScreen(pane.getBoundsInLocal());
-//		};
-//
-//		scene.addEventFilter(MouseEvent.MOUSE_PRESSED, handler);
-//
-//		showAlarmManager.setOnAction(event -> {
-//			new AlarmManager(mainClass);
-//			alarmsComboBox.showStoredAlarms();
-//		});
-//	}
-
 	boolean hasSystray() {
 		return trayIcon != null;
 	}
@@ -327,18 +311,6 @@ class Systray extends CommonPanel {
 	AlarmsComboBox getAlarmsComboBox() {
 		return alarmsComboBox;
 	}
-//
-//	@Override
-//	public void processAlarmsComboBoxValuePropertyListener() {
-//	}
-//
-//	@Override
-//	public void processOnActionTimeDurationField() {
-//		System.out.println("Hallo 2 ");
-//		mainClass.getCommonPanel().processOnActionTimeDurationField();
-//		System.out.println("Hallo 3 ");
-//		popupStage.hide();
-//	}
 
 	@Override
 	public void processOnActionDeactivateButton() {

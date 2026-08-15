@@ -17,16 +17,12 @@ public class AlarmsComboBox extends ComboBox<Alarm> {
 
 	@SuppressWarnings("java:S6201")
 	AlarmsComboBox() {
-		System.out.println("AlarmsComboBox 1");
 	}
 
 	void initialize(final MainClass mainClass, final TimeDurationField timeDurationField) {
 		setEditable(true);
 
-		System.out.println("AlarmsComboBox 2");
-
 		valueProperty().addListener((obs, oldValue, newValue) -> {
-			System.out.println("AlarmsComboBox 3 " + oldValue + " " + newValue);
 
 			if (isInternal) {
 				return;
