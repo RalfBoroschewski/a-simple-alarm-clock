@@ -86,8 +86,9 @@ class PerformDuration {
 		final String name = mainClass.getName();
 		mainClass.setTimeDurationFieldText("");
 		mainClass.getSystray().setTimeDurationFieldText("");
-		mainClass.setTitle(MainClass.messages.getString("title"));
-		mainClass.getSystray().setSystrayToolTip("");
+		String title = MainClass.messages.getString("title");
+		mainClass.setTitle(title);
+		mainClass.getSystray().setSystrayToolTip(title);
 		mainClass.setVisibilityDeactivateButton(false);
 		mainClass.deactivatePauseButton();
 		mainClass.setRepeatButton(minutes);

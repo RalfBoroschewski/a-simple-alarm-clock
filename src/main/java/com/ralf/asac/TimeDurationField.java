@@ -24,6 +24,7 @@ class TimeDurationField extends TextField {
 	@SuppressWarnings("java:S3776")
 	public void init() {
 		final UnaryOperator<TextFormatter.Change> filter = change -> {
+			System.out.println("Hallo 20");
 			final String newText = change.getControlNewText();
 
 			int numberColons = 0;
@@ -72,6 +73,7 @@ class TimeDurationField extends TextField {
 				}
 
 				change.setText(result.toString());
+				System.out.println("Hallo 21 " + result.toString());
 				return change;
 			}
 			return null;
@@ -95,10 +97,12 @@ class TimeDurationField extends TextField {
 	}
 
 	void evaluateTimeDurationField(MainClass mainClass) {
+		System.out.println("Hallo 10");
 		if (timeDurationFieldIsSetInternal) {
 			return;
 		}
 		final String timeDuration = this.getText();
+		System.out.println("Hallo 11 " + timeDuration);
 
 		if (timeDuration != null && !timeDuration.isEmpty()) {
 			mainClass.deactivate();
