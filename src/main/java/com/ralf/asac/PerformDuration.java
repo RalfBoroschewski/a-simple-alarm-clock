@@ -99,6 +99,9 @@ class PerformDuration {
 			alarmSoundData = storedAlarm.alarmSoundData;
 		}
 
+		if (minutes == 0) {
+			Asac.sleep(100); // avoid that the BellIcon vanishes after entering 0 in the timeDurationField
+		}
 		mainClass.bellIcon = new BellIcon(name, alarmSoundData);
 		mainClass.bellIcon.play();
 		Platform.runLater(() -> {

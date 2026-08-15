@@ -1,6 +1,7 @@
 package com.ralf.asac;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Tooltip;
@@ -12,14 +13,36 @@ public class AlarmsComboBox extends ComboBox<Alarm> {
 	private Alarm storedAlarm;
 	private AlarmsComboBox alarmsComboBoxToBeSynchronize;
 
+	private boolean isInternal;
+
 	@SuppressWarnings("java:S6201")
 	AlarmsComboBox() {
+		System.out.println("AlarmsComboBox 1");
 	}
 
 	void initialize(final MainClass mainClass, final TimeDurationField timeDurationField) {
 		setEditable(true);
 
-		setOnAction(event -> {
+		System.out.println("AlarmsComboBox 2");
+
+		valueProperty().addListener((obs, oldValue, newValue) -> {
+			System.out.println("AlarmsComboBox 3 " + oldValue + " " + newValue);
+
+			if (isInternal) {
+				return;
+			}
+
+			if (Objects.equals(oldValue, newValue)) {
+				return;
+			}
+
+			if (newValue instanceof Alarm) {
+				Alarm alarm = (Alarm) newValue;
+				if (alarm.name == null || alarm.name.isBlank()) {
+					return;
+				}
+			}
+
 			final Object value = getValue();
 			if (value instanceof Alarm) {
 				storedAlarm = (Alarm) value;
@@ -29,11 +52,13 @@ public class AlarmsComboBox extends ComboBox<Alarm> {
 					timeDurationField.setText("");
 				}
 				if (alarmsComboBoxToBeSynchronize != null) {
+					alarmsComboBoxToBeSynchronize.isInternal = true;
 					alarmsComboBoxToBeSynchronize.setValue(storedAlarm);
+					alarmsComboBoxToBeSynchronize.isInternal = false;
 				}
 
 			}
-			timeDurationField.evaluateTimeDurationField(mainClass);
+			timeDurationField.evaluateTimeDurationField(mainClass, null);
 
 		});
 
@@ -122,7 +147,6 @@ public class AlarmsComboBox extends ComboBox<Alarm> {
 			tooltip.setShowDelay(new Duration(0));
 			setTooltip(tooltip);
 		}
-
 	}
 
 }

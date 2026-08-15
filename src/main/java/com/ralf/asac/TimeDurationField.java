@@ -24,7 +24,6 @@ class TimeDurationField extends TextField {
 	@SuppressWarnings("java:S3776")
 	public void init() {
 		final UnaryOperator<TextFormatter.Change> filter = change -> {
-			System.out.println("Hallo 20");
 			final String newText = change.getControlNewText();
 
 			int numberColons = 0;
@@ -73,7 +72,6 @@ class TimeDurationField extends TextField {
 				}
 
 				change.setText(result.toString());
-				System.out.println("Hallo 21 " + result.toString());
 				return change;
 			}
 			return null;
@@ -82,7 +80,7 @@ class TimeDurationField extends TextField {
 		setTextFormatter(new TextFormatter<>(filter));
 	}
 
-	void setListener(AlarmsComboBox alarmsComboBox, MainClass mainClass) {
+	void setListener(AlarmsComboBox alarmsComboBox, MainClass mainClass, Systray systray) {
 
 		setOnAction(event -> {
 			String name = alarmsComboBox.getEditor().getText();
@@ -92,20 +90,22 @@ class TimeDurationField extends TextField {
 					break;
 				}
 			}
-			evaluateTimeDurationField(mainClass);
+			evaluateTimeDurationField(mainClass, systray);
 		});
 	}
 
-	void evaluateTimeDurationField(MainClass mainClass) {
-		System.out.println("Hallo 10");
+	void evaluateTimeDurationField(MainClass mainClass, Systray systray) {
 		if (timeDurationFieldIsSetInternal) {
 			return;
 		}
 		final String timeDuration = this.getText();
-		System.out.println("Hallo 11 " + timeDuration);
 
 		if (timeDuration != null && !timeDuration.isEmpty()) {
 			mainClass.deactivate();
+			if (systray != null) {
+				systray.hide();
+			}
+
 			final int colonIndex = timeDuration.indexOf(':');
 			if (colonIndex < 0) {
 				final long minute = Long.parseLong(timeDuration);

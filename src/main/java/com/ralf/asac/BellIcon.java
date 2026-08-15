@@ -52,7 +52,6 @@ class BellIcon {
 		final ImageView finalImageView = imageView;
 
 		Platform.runLater(() -> {
-
 			stage = new Stage();
 			final VBox vBox = new VBox();
 
@@ -77,6 +76,7 @@ class BellIcon {
 			});
 
 			button.setOnKeyReleased(event -> {
+				System.out.println("BellIcon 2");
 				audioOutput.stopPlaying();
 				stage.close();
 			});

@@ -147,7 +147,7 @@ public class MainClass extends Application {
 
 		});
 
-		timeDurationField.setListener(alarmsComboBox, this);
+		timeDurationField.setListener(alarmsComboBox, this, systray);
 	}
 
 	Systray getSystray() {

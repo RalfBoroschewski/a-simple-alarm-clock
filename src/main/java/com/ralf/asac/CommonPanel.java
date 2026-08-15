@@ -97,7 +97,6 @@ public abstract class CommonPanel {
 	}
 
 	private void setListener() {
-		alarmsComboBox.setOnAction(event -> processOnActionAlarmsComboBox());
 		deactivateButton.setOnAction(event -> processOnActionDeactivateButton());
 		pauseButton.setOnAction(event -> processOnActionPauseButton());
 		alarmManagerButton.setOnAction(event -> processOnActionAlarmManagerButton());
@@ -139,8 +138,6 @@ public abstract class CommonPanel {
 	TimeButton getTimeButton() {
 		return timeButton;
 	}
-
-	abstract void processOnActionAlarmsComboBox();
 
 	abstract void processOnActionDeactivateButton();
 

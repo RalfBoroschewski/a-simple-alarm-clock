@@ -10,11 +10,6 @@ public class MainPanel extends CommonPanel {
 	}
 
 	@Override
-	void processOnActionAlarmsComboBox() {
-		mainClass.processOnActionAlarmsComboBox();
-	}
-
-	@Override
 	void processOnActionDeactivateButton() {
 		mainClass.processOnActionDeactivateButton();
 	}
