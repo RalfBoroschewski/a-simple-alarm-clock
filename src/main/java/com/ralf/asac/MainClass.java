@@ -40,7 +40,7 @@ public class MainClass extends Application {
 	private final Button pauseButton;
 	private boolean pauseButtonIsPause;
 	private final Button repeatButton;
-	private long repeatDuration;
+	private RepeatAlarmData repeatAlarmData;
 	private final DurationButton durationButton;
 	private final TimeButton timeButton;
 
@@ -301,12 +301,19 @@ public class MainClass extends Application {
 		return scene;
 	}
 
-	void setRepeatButton(long duration) {
-		repeatDuration = duration;
+	void setRepeatButton(RepeatAlarmData repeatAlarmData) {
+		System.out.println("MainClass 1");
+		this.repeatAlarmData = repeatAlarmData;
 		Platform.runLater(() -> {
-			repeatButton.setText(messages.getString("MainClass.repeat.button.part1") + duration
-					+ Asac.getMinuteString(duration) + messages.getString("MainClass.repeat.button.part2"));
-			repeatButton.setVisible(duration >= 0);
+			String text = messages.getString("MainClass.repeat.button.part1") + repeatAlarmData.duration
+					+ Asac.getMinuteString(repeatAlarmData.duration)
+					+ messages.getString("MainClass.repeat.button.part2");
+
+			repeatButton.setText(text);
+			repeatButton.setVisible(repeatAlarmData.duration >= 0);
+
+			systray.repeatButton.setText(text);
+			systray.repeatButton.setVisible(repeatAlarmData.duration >= 0);
 		});
 	}
 
@@ -331,8 +338,9 @@ public class MainClass extends Application {
 	}
 
 	void processOnActionRepeatButton() {
-		timeDurationField.setText(repeatDuration + "");
-		PerformDuration performDuration = new PerformDuration(repeatDuration, this);
+		System.out.println("MainClass 2");
+		timeDurationField.setText(repeatAlarmData.duration + "");
+		PerformDuration performDuration = new PerformDuration(0, repeatAlarmData, this);
 		performDuration.start();
 	}
 
@@ -358,7 +366,7 @@ class MyDurationPopupListener implements DurationPopupListener {
 		final MenuItem menuItem = new MenuItem(menuItemText);
 		menuItem.setOnAction(event -> {
 			mainClass.setTimeDurationFieldText(minute + "");
-			PerformDuration performDuration = new PerformDuration(minute, mainClass);
+			PerformDuration performDuration = new PerformDuration(minute, null, mainClass);
 			performDuration.start();
 			if (sysTrayPopup != null) {
 				sysTrayPopup.hide();
@@ -372,4 +380,14 @@ class MyDurationPopupListener implements DurationPopupListener {
 		trayIconTimeMenu.getItems().add(new SeparatorMenuItem());
 	}
 
+}
+
+class RepeatAlarmData {
+	final long duration;
+	final AlarmSounds.AlarmSoundData alarmSoundData;
+
+	RepeatAlarmData(long duration, AlarmSounds.AlarmSoundData alarmSoundData) {
+		this.duration = duration;
+		this.alarmSoundData = alarmSoundData;
+	}
 }

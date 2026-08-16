@@ -26,7 +26,7 @@ class PerformTime {
 
 		mainClass.oldPerformTime = this;
 		mainClass.setIcon(true);
-		mainClass.setRepeatButton(-1);
+		mainClass.setRepeatButton(new RepeatAlarmData(-1, null));
 
 		final LocalDateTime now = LocalDateTime.now(ZoneId.systemDefault());
 
@@ -36,7 +36,7 @@ class PerformTime {
 			desiredTime = desiredTime.plusDays(1);
 		}
 
-		String hourString = "0" + hour; 
+		String hourString = "0" + hour;
 		hourString = hourString.substring(hourString.length() - 2);
 
 		String minuteString = "0" + minute;

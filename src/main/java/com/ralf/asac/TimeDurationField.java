@@ -109,7 +109,7 @@ class TimeDurationField extends TextField {
 			final int colonIndex = timeDuration.indexOf(':');
 			if (colonIndex < 0) {
 				final long minute = Long.parseLong(timeDuration);
-				final PerformDuration performDuration = new PerformDuration(minute, mainClass);
+				final PerformDuration performDuration = new PerformDuration(minute, null, mainClass);
 				performDuration.start();
 			} else {
 				final String hourString = timeDuration.substring(0, colonIndex);

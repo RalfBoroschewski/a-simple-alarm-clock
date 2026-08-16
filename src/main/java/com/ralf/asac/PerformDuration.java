@@ -6,18 +6,25 @@ import javafx.concurrent.Task;
 class PerformDuration {
 
 	private final long minutes;
+	private final RepeatAlarmData repeatAlarmData;
 	private final MainClass mainClass;
 	private MyWorker myWorker;
 
-	PerformDuration(final long minutes, final MainClass mainClass) {
-		this.minutes = minutes;
+	PerformDuration(final long minutes, final RepeatAlarmData repeatAlarmData, final MainClass mainClass) {
+		if (repeatAlarmData == null) {
+			this.minutes = minutes;
+		} else {
+			this.minutes = repeatAlarmData.duration;
+		}
+		System.out.println("PerformDuration 1 " + this.minutes);
+		this.repeatAlarmData = repeatAlarmData;
 		this.mainClass = mainClass;
 	}
 
 	void start() {
 		mainClass.deactivate();
 		mainClass.setVisibilityPauseButton(true);
-		mainClass.setRepeatButton(-1);
+		mainClass.setRepeatButton(new RepeatAlarmData(-1, null));
 
 		mainClass.oldPerformDuration = this;
 
@@ -37,6 +44,7 @@ class PerformDuration {
 		@Override
 		@SuppressWarnings({ "java:S2583", "java:S3516", "java:S2589" })
 		protected Integer call() throws Exception {
+			System.out.println("PerformDuration 2 ");
 			startBell = true;
 
 			mainClass.setVisibilityDeactivateButton(true);
@@ -83,6 +91,7 @@ class PerformDuration {
 	}
 
 	void launchBell() {
+		System.out.println("PerformDuration 3 ");
 		final String name = mainClass.getName();
 		mainClass.setTimeDurationFieldText("");
 		mainClass.getSystray().setTimeDurationFieldText("");
@@ -91,13 +100,19 @@ class PerformDuration {
 		mainClass.getSystray().setSystrayToolTip(title);
 		mainClass.setVisibilityDeactivateButton(false);
 		mainClass.deactivatePauseButton();
-		mainClass.setRepeatButton(minutes);
 
 		AlarmSounds.AlarmSoundData alarmSoundData = null;
-		Alarm storedAlarm = mainClass.getStoredAlarm();
-		if (storedAlarm != null) {
-			alarmSoundData = storedAlarm.alarmSoundData;
+		if (repeatAlarmData == null) {
+			System.out.println("PerformDuration 4 ");
+			Alarm storedAlarm = mainClass.getStoredAlarm();
+			if (storedAlarm != null) {
+				alarmSoundData = storedAlarm.alarmSoundData;
+			}
+		} else {
+			alarmSoundData = repeatAlarmData.alarmSoundData;
 		}
+
+		mainClass.setRepeatButton(new RepeatAlarmData(minutes, alarmSoundData));
 
 		if (minutes == 0) {
 			Asac.sleep(100); // avoid that the BellIcon vanishes after entering 0 in the timeDurationField
