@@ -302,7 +302,6 @@ public class MainClass extends Application {
 	}
 
 	void setRepeatButton(RepeatAlarmData repeatAlarmData) {
-		System.out.println("MainClass 1");
 		this.repeatAlarmData = repeatAlarmData;
 		Platform.runLater(() -> {
 			String text = messages.getString("MainClass.repeat.button.part1") + repeatAlarmData.duration
@@ -338,8 +337,10 @@ public class MainClass extends Application {
 	}
 
 	void processOnActionRepeatButton() {
-		System.out.println("MainClass 2");
 		timeDurationField.setText(repeatAlarmData.duration + "");
+
+		alarmsComboBox.protectedSetValue(repeatAlarmData.alarmComboBox);
+		systray.alarmsComboBox.protectedSetValue(repeatAlarmData.alarmComboBox);
 		PerformDuration performDuration = new PerformDuration(0, repeatAlarmData, this);
 		performDuration.start();
 	}
@@ -385,9 +386,11 @@ class MyDurationPopupListener implements DurationPopupListener {
 class RepeatAlarmData {
 	final long duration;
 	final AlarmSounds.AlarmSoundData alarmSoundData;
+	final Alarm alarmComboBox;
 
-	RepeatAlarmData(long duration, AlarmSounds.AlarmSoundData alarmSoundData) {
+	RepeatAlarmData(long duration, AlarmSounds.AlarmSoundData alarmSoundData, Alarm alarmComboBox) {
 		this.duration = duration;
 		this.alarmSoundData = alarmSoundData;
+		this.alarmComboBox = alarmComboBox;
 	}
 }

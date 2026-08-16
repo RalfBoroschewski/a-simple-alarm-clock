@@ -3,6 +3,7 @@ package com.ralf.asac;
 import java.util.ArrayList;
 import java.util.Objects;
 
+import javafx.application.Platform;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Tooltip;
 import javafx.util.Duration;
@@ -136,6 +137,14 @@ public class AlarmsComboBox extends ComboBox<Alarm> {
 			tooltip.setShowDelay(new Duration(0));
 			setTooltip(tooltip);
 		}
+	}
+
+	void protectedSetValue(Alarm alarm) {
+		Platform.runLater(() -> {
+			isInternal = true;
+			setValue(alarm);
+			isInternal = false;
+		});
 	}
 
 }

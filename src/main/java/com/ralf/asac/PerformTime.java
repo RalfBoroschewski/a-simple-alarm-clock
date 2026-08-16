@@ -26,7 +26,7 @@ class PerformTime {
 
 		mainClass.oldPerformTime = this;
 		mainClass.setIcon(true);
-		mainClass.setRepeatButton(new RepeatAlarmData(-1, null));
+		mainClass.setRepeatButton(new RepeatAlarmData(-1, null, null));
 
 		final LocalDateTime now = LocalDateTime.now(ZoneId.systemDefault());
 
@@ -52,7 +52,7 @@ class PerformTime {
 		if (name.isBlank()) {
 			mainClass.getSystray().setSystrayToolTip(time);
 		} else {
-			mainClass.getSystray().setSystrayToolTip(name + "- " + time);
+			mainClass.getSystray().setSystrayToolTip(name + " - " + time);
 		}
 
 		myWorker = new MyWorker(desiredTime);
