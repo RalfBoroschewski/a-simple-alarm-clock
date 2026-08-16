@@ -147,7 +147,7 @@ public class MainClass extends Application {
 
 		});
 
-		timeDurationField.setListener(alarmsComboBox, this, systray);
+		timeDurationField.setListener(alarmsComboBox, this);
 	}
 
 	Systray getSystray() {
@@ -174,6 +174,7 @@ public class MainClass extends Application {
 	}
 
 	void deactivate() {
+		alarmsComboBox.getEditor().setText("");
 		timeDurationField.setText("");
 		setTitle(messages.getString("title"));
 
@@ -302,18 +303,20 @@ public class MainClass extends Application {
 	}
 
 	void setRepeatButton(RepeatAlarmData repeatAlarmData) {
-		this.repeatAlarmData = repeatAlarmData;
-		Platform.runLater(() -> {
-			String text = messages.getString("MainClass.repeat.button.part1") + repeatAlarmData.duration
-					+ Asac.getMinuteString(repeatAlarmData.duration)
-					+ messages.getString("MainClass.repeat.button.part2");
+		if (repeatAlarmData != null) {
+			this.repeatAlarmData = repeatAlarmData;
+			Platform.runLater(() -> {
+				String text = messages.getString("MainClass.repeat.button.part1") + repeatAlarmData.duration
+						+ Asac.getMinuteString(repeatAlarmData.duration)
+						+ messages.getString("MainClass.repeat.button.part2");
 
-			repeatButton.setText(text);
-			repeatButton.setVisible(repeatAlarmData.duration >= 0);
+				repeatButton.setText(text);
+				repeatButton.setVisible(repeatAlarmData.duration >= 0);
 
-			systray.repeatButton.setText(text);
-			systray.repeatButton.setVisible(repeatAlarmData.duration >= 0);
-		});
+				systray.repeatButton.setText(text);
+				systray.repeatButton.setVisible(repeatAlarmData.duration >= 0);
+			});
+		}
 	}
 
 	void processOnActionAlarmsComboBox() {

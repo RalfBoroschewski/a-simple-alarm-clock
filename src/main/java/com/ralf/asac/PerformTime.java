@@ -23,6 +23,7 @@ class PerformTime {
 
 	public void start() {
 		mainClass.deactivate();
+		mainClass.setRepeatButton(null);
 
 		mainClass.oldPerformTime = this;
 		mainClass.setIcon(true);

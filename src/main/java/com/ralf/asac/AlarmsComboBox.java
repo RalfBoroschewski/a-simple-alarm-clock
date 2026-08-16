@@ -48,7 +48,7 @@ public class AlarmsComboBox extends ComboBox<Alarm> {
 				}
 
 			}
-			timeDurationField.evaluateTimeDurationField(mainClass, null);
+			timeDurationField.evaluateTimeDurationField(mainClass);
 
 		});
 

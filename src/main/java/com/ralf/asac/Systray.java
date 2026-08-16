@@ -43,7 +43,7 @@ class Systray extends CommonPanel {
 		timeButton.init(mainClass);
 
 		alarmsComboBox.initialize(mainClass, timeDurationField);
-		timeDurationField.setListener(alarmsComboBox, mainClass, this);
+		timeDurationField.setListener(alarmsComboBox, mainClass);
 		alarmsComboBox.setAlarmsComboBoxToBeSynchronize(mainClass.getAlarmsComboBox());
 
 		if (!SystemTray.isSupported()) {
@@ -236,6 +236,7 @@ class Systray extends CommonPanel {
 	@Override
 	public void processOnActionDeactivateButton() {
 		mainClass.getCommonPanel().processOnActionDeactivateButton();
+		popupStage.hide();
 	}
 
 	@Override
@@ -251,5 +252,6 @@ class Systray extends CommonPanel {
 	@Override
 	public void processOnActionRepeatButton() {
 		mainClass.getCommonPanel().processOnActionRepeatButton();
+		popupStage.hide();
 	}
 }

@@ -80,7 +80,7 @@ class TimeDurationField extends TextField {
 		setTextFormatter(new TextFormatter<>(filter));
 	}
 
-	void setListener(AlarmsComboBox alarmsComboBox, MainClass mainClass, Systray systray) {
+	void setListener(AlarmsComboBox alarmsComboBox, MainClass mainClass) {
 
 		setOnAction(event -> {
 			String name = alarmsComboBox.getEditor().getText();
@@ -90,11 +90,12 @@ class TimeDurationField extends TextField {
 					break;
 				}
 			}
-			evaluateTimeDurationField(mainClass, systray);
+			evaluateTimeDurationField(mainClass);
 		});
 	}
 
-	void evaluateTimeDurationField(MainClass mainClass, Systray systray) {
+	void evaluateTimeDurationField(MainClass mainClass) {
+		Systray systray = mainClass.getSystray();
 		if (timeDurationFieldIsSetInternal) {
 			return;
 		}

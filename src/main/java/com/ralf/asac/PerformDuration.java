@@ -9,20 +9,27 @@ class PerformDuration {
 	private final RepeatAlarmData repeatAlarmData;
 	private final MainClass mainClass;
 	private Alarm oldAlarmsComboBoxValue;
+	final String name;
 	private MyWorker myWorker;
 
 	PerformDuration(final long minutes, final RepeatAlarmData repeatAlarmData, final MainClass mainClass) {
 		if (repeatAlarmData == null) {
 			this.minutes = minutes;
+			name = mainClass.getName();
 		} else {
 			this.minutes = repeatAlarmData.duration;
+			this.name = repeatAlarmData.alarmComboBox.name;
 		}
 		this.repeatAlarmData = repeatAlarmData;
 		this.mainClass = mainClass;
 	}
 
 	void start() {
-		oldAlarmsComboBoxValue = mainClass.getAlarmsComboBox().getValue();
+		if (repeatAlarmData != null) {
+			oldAlarmsComboBoxValue = repeatAlarmData.alarmComboBox;
+		} else {
+			oldAlarmsComboBoxValue = mainClass.getAlarmsComboBox().getValue();
+		}
 
 		mainClass.deactivate();
 		mainClass.setVisibilityPauseButton(true);
@@ -60,8 +67,6 @@ class PerformDuration {
 
 				final String minutesString = time + Asac.getMinuteString(time);
 
-				final String name = mainClass.getName();
-
 				if (name.isBlank()) {
 					mainClass.setTitle(minutesString);
 					mainClass.getSystray().setSystrayToolTip(minutesString);
@@ -93,7 +98,6 @@ class PerformDuration {
 	}
 
 	void launchBell() {
-		final String name = mainClass.getName();
 		mainClass.setTimeDurationFieldText("");
 		mainClass.getSystray().setTimeDurationFieldText("");
 		String title = MainClass.messages.getString("title");
