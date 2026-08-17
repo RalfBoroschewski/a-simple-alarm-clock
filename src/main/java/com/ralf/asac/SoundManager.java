@@ -3,8 +3,6 @@ package com.ralf.asac;
 import java.util.ArrayList;
 import java.util.Optional;
 
-import com.ralf.asac.SoundManager.SoundManagerItem;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
