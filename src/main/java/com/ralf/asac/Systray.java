@@ -58,7 +58,7 @@ class Systray extends CommonPanel {
 			return;
 		}
 
-		URL imageURL = ClassLoader.getSystemResource("alarm.png");
+		final URL imageURL = ClassLoader.getSystemResource("alarm.png");
 		BufferedImage image = null;
 		try {
 			image = ImageIO.read(imageURL);
@@ -84,10 +84,10 @@ class Systray extends CommonPanel {
 		popupStage.initOwner(owner);
 		popupStage.initStyle(StageStyle.UNDECORATED);
 
-		Pane pane = getPane();
+		final Pane pane = getPane();
 		pane.setPrefSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
 
-		Scene scene = new Scene(pane);
+		final Scene scene = new Scene(pane);
 
 		popupStage.setScene(scene);
 
@@ -102,13 +102,13 @@ class Systray extends CommonPanel {
 	private void addListener() {
 		trayIcon.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseClicked(java.awt.event.MouseEvent event) {
+			public void mouseClicked(final java.awt.event.MouseEvent event) {
 				if (SwingUtilities.isRightMouseButton(event)) {
 					Platform.runLater(() -> {
 						alarmsComboBox.showStoredAlarms();
 
 						Platform.runLater(() -> {
-							Point2D point = getPopupStageCoordinates(event);
+							final Point2D point = getPopupStageCoordinates(event);
 
 							popupStage.setX(point.getX());
 							popupStage.setY(point.getY());

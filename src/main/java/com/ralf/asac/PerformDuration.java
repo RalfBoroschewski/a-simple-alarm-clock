@@ -61,7 +61,7 @@ class PerformDuration {
 
 			for (int indexMinutes = 0; indexMinutes < minutes; indexMinutes++) {
 				final long time = minutes - indexMinutes;
-				String timeString = time + "";
+				final String timeString = time + "";
 				mainClass.setTimeDurationFieldText(timeString);
 				mainClass.getSystray().setTimeDurationFieldText(timeString);
 
@@ -100,7 +100,7 @@ class PerformDuration {
 	void launchBell() {
 		mainClass.setTimeDurationFieldText("");
 		mainClass.getSystray().setTimeDurationFieldText("");
-		String title = MainClass.messages.getString("title");
+		final String title = MainClass.messages.getString("title");
 		mainClass.setTitle(title);
 		mainClass.getSystray().setSystrayToolTip(title);
 		mainClass.setVisibilityDeactivateButton(false);

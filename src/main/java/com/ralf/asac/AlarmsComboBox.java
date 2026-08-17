@@ -139,7 +139,7 @@ public class AlarmsComboBox extends ComboBox<Alarm> {
 		}
 	}
 
-	void protectedSetValue(Alarm alarm) {
+	void protectedSetValue(final Alarm alarm) {
 		Platform.runLater(() -> {
 			isInternal = true;
 			setValue(alarm);

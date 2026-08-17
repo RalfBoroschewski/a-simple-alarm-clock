@@ -3,6 +3,8 @@ package com.ralf.asac;
 import java.util.ArrayList;
 import java.util.Optional;
 
+import com.ralf.asac.SoundManager.SoundManagerItem;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -125,6 +127,7 @@ class SoundManager {
 	@SuppressWarnings("java:S3776")
 	private void setListener(final ArrayList<AlarmManager.AlarmManagerItem> alarmManagerItems,
 			final AlarmManager alarmManager) {
+
 		editButton.setOnAction(event -> {
 			if (selectedItem != null) {
 				final String selectedName = selectedItem.getName();
@@ -174,7 +177,7 @@ class SoundManager {
 			if (selectedItem == null)
 				return;
 
-			AlarmSounds.AlarmSoundData defaultSound = Preferences.getDefaultSound();
+			final AlarmSounds.AlarmSoundData defaultSound = Preferences.getDefaultSound();
 			boolean isInUse = false;
 			if (defaultSound.getName().equals(selectedItem.getItem().name)) {
 				isInUse = true;
@@ -239,7 +242,7 @@ class SoundManager {
 	}
 
 	void rebuildListView() {
-		ArrayList<MyRow> tableData = new ArrayList<>();
+		final ArrayList<MyRow> tableData = new ArrayList<>();
 		int index = 0;
 		for (SoundManagerItem item : soundItems) {
 			tableData.add(new MyRow(item, index++));

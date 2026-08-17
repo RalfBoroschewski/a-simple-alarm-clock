@@ -8,6 +8,7 @@ import java.net.URI;
 import java.net.URL;
 
 import javafx.application.Platform;
+import javafx.geometry.Point2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -86,12 +87,18 @@ class BellIcon {
 			stage.setScene(scene);
 			stage.setAlwaysOnTop(true);
 			stage.show();
+
+			final Point2D point = Asac.getCoordinatesofMiddleOfTheScreen(stage);
+
+			stage.setX(point.getX());
+			stage.setY(point.getY() - 200); // 200 is for avoiding that this window is
+											// overlapping the main window
 		});
 	}
 
-	URL getURL() {
+	private URL getURL() {
 		if (alarmSoundData == null || alarmSoundData.getPath() == null || alarmSoundData.getPath().isBlank()) {
-			AlarmSounds.AlarmSoundData defaultSound = Preferences.getDefaultSound();
+			final AlarmSounds.AlarmSoundData defaultSound = Preferences.getDefaultSound();
 			if (defaultSound.getName() != null) {
 				return getURLbyFilePath(defaultSound.getPath());
 			}
@@ -103,12 +110,11 @@ class BellIcon {
 			return ClassLoader.getSystemResource(alarmSoundData.getName());
 		} else {
 			return getURLbyFilePath(alarmSoundData.getPath());
-
 		}
 	}
 
 	@SuppressWarnings("java:S4507")
-	URL getURLbyFilePath(final String filePath) {
+	private URL getURLbyFilePath(final String filePath) {
 		final File file = new File(filePath);
 		if (!file.isFile()) {
 			return ClassLoader.getSystemResource(Asac.DEFAULT_SOUND_FILE);

@@ -8,8 +8,8 @@ import java.util.ResourceBundle;
 
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
@@ -21,7 +21,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.stage.Popup;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -94,7 +93,9 @@ public class MainClass extends Application {
 		stage.setScene(scene);
 		stage.show();
 
-		setToMiddleOfTheScreen();
+		final Point2D point = Asac.getCoordinatesofMiddleOfTheScreen(stage);
+		stage.setX(point.getX());
+		stage.setY(point.getY());
 
 		stage.setOnCloseRequest(event -> deactivate());
 
@@ -108,17 +109,6 @@ public class MainClass extends Application {
 
 		alarmsComboBox.setAlarmsComboBoxToBeSynchronize(systray.getAlarmsComboBox());
 		setListener();
-	}
-
-	private void setToMiddleOfTheScreen() {
-		final Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
-
-		final double stageWidth = stage.getWidth();
-		final double stageHeight = stage.getHeight();
-		final double windowsPositionX = (primScreenBounds.getWidth() - stageWidth) / 2;
-		final double windowsPositionY = (primScreenBounds.getHeight() - stageHeight) / 2;
-		stage.setX(windowsPositionX);
-		stage.setY(windowsPositionY);
 	}
 
 	private Pane getTitlePane() {
@@ -391,7 +381,7 @@ class RepeatAlarmData {
 	final AlarmSounds.AlarmSoundData alarmSoundData;
 	final Alarm alarmComboBox;
 
-	RepeatAlarmData(long duration, AlarmSounds.AlarmSoundData alarmSoundData, Alarm alarmComboBox) {
+	RepeatAlarmData(final long duration, final AlarmSounds.AlarmSoundData alarmSoundData, final Alarm alarmComboBox) {
 		this.duration = duration;
 		this.alarmSoundData = alarmSoundData;
 		this.alarmComboBox = alarmComboBox;

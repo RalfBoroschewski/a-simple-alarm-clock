@@ -1,5 +1,10 @@
 package com.ralf.asac;
 
+import javafx.geometry.Point2D;
+import javafx.geometry.Rectangle2D;
+import javafx.stage.Screen;
+import javafx.stage.Stage;
+
 public class Asac {
 
 	static final String DEFAULT_SOUND_FILE = "default.wav";
@@ -22,8 +27,8 @@ public class Asac {
 
 	static OperationSystem getOperationSystem() {
 
-		String xdgDesktop = System.getenv("XDG_CURRENT_DESKTOP");
-		String kdeSession = System.getenv("KDE_FULL_SESSION");
+		final String xdgDesktop = System.getenv("XDG_CURRENT_DESKTOP");
+		final String kdeSession = System.getenv("KDE_FULL_SESSION");
 
 		if ("KDE".equalsIgnoreCase(xdgDesktop) || "true".equalsIgnoreCase(kdeSession)) {
 			return OperationSystem.KDE;
@@ -33,7 +38,7 @@ public class Asac {
 			return OperationSystem.XFCE;
 		}
 
-		String osName = System.getProperty("os.name").toLowerCase();
+		final String osName = System.getProperty("os.name").toLowerCase();
 
 		if (osName.contains("win")) {
 			return OperationSystem.WINDOWS;
@@ -52,4 +57,14 @@ public class Asac {
 		}
 	}
 
+	static Point2D getCoordinatesofMiddleOfTheScreen(final Stage stage) {
+		final Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
+
+		final double stageWidth = stage.getWidth();
+		final double stageHeight = stage.getHeight();
+		final double windowsPositionX = (primScreenBounds.getWidth() - stageWidth) / 2;
+		final double windowsPositionY = (primScreenBounds.getHeight() - stageHeight) / 2;
+
+		return new Point2D(windowsPositionX, windowsPositionY);
+	}
 }

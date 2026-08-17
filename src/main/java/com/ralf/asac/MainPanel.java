@@ -4,7 +4,7 @@ public class MainPanel extends CommonPanel {
 
 	private final MainClass mainClass;
 
-	MainPanel(MainClass mainClass) {
+	MainPanel(final MainClass mainClass) {
 		super(false);
 		this.mainClass = mainClass;
 	}

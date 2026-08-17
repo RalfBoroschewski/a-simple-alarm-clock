@@ -88,7 +88,7 @@ public abstract class CommonPanel {
 
 		if (hasExitButtom) {
 			positionY++;
-			Button exitButton = new Button(MainClass.messages.getString("CommonPanel.exit"));
+			final Button exitButton = new Button(MainClass.messages.getString("CommonPanel.exit"));
 			gridPane.add(exitButton, positionX, positionY, 1, 1);
 			exitButton.setOnAction(event -> System.exit(0));
 		}

@@ -50,6 +50,7 @@ class Preferences {
 			alarmStrings[1] = item.getTime();
 
 			final AlarmSounds.AlarmSoundData alarmSoundData = item.getAlarmSoundData();
+
 			if (alarmSoundData != null) {
 				alarmStrings[2] = alarmSoundData.getName();
 				alarmStrings[3] = alarmSoundData.getPath();
@@ -79,7 +80,7 @@ class Preferences {
 	}
 
 	static ArrayList<AlarmManager.AlarmManagerItem> getAlarms() {
-		ArrayList<AlarmManager.AlarmManagerItem> items = new ArrayList<>();
+		final ArrayList<AlarmManager.AlarmManagerItem> items = new ArrayList<>();
 		final String alarmsString = PREFERENCES_ROOT.get(ALARMS, "");
 
 		final String[] alarmsStrings = alarmsString.split(SEPARATOR);
