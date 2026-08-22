@@ -20,7 +20,7 @@ public class AlarmsComboBox extends ComboBox<Alarm> {
 	AlarmsComboBox() {
 	}
 
-	void initialize(final MainPanel mainPanel, final TimeDurationField timeDurationField) {
+	void initialize(final MainClass mainClass, final TimeDurationField timeDurationField) {
 		setEditable(true);
 
 		valueProperty().addListener((obs, oldValue, newValue) -> {
@@ -48,7 +48,7 @@ public class AlarmsComboBox extends ComboBox<Alarm> {
 				}
 
 			}
-			timeDurationField.evaluateTimeDurationField(mainPanel);
+			timeDurationField.evaluateTimeDurationField(mainClass);
 
 		});
 

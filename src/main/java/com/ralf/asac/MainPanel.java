@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
+import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.geometry.Point2D;
 import javafx.scene.Scene;
@@ -14,6 +15,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.util.Duration;
 
 public class MainPanel {
 	private final MainClass mainClass;
@@ -22,19 +24,17 @@ public class MainPanel {
 	private Scene scene;
 	static final String PAUSE_KEY = "MainClass.pause";
 
-//	private final boolean hasExitButtom;
-
-	protected final AlarmsComboBox alarmsComboBox;
-	protected final TimeDurationField timeDurationField;
+	private final AlarmsComboBox alarmsComboBox;
+	final TimeDurationField timeDurationField;
 
 	PerformTime oldPerformTime;
 	PerformDuration oldPerformDuration;
 
-	protected final Button deactivateButton;
-	protected final Button pauseButton;
+	private final Button deactivateButton;
+	private final Button pauseButton;
 	private boolean pauseButtonIsPause;
-	protected final Button alarmManagerButton;
-	protected final Button repeatButton;
+	private final Button alarmManagerButton;
+	private final Button repeatButton;
 	private RepeatAlarmData repeatAlarmData;
 
 	protected final DurationButton durationButton = new DurationButton();
@@ -44,22 +44,27 @@ public class MainPanel {
 
 	private GridPane gridPane;
 
-	private double xOffset = 0;
-	private double yOffset = 0;
+	private double xOffset;
+	private double yOffset;
+
+	private boolean isSystray;
+	private double xPosition;
+	private double yPosition;
+
+	private boolean hasFocusedPropertyListener;
 
 	MainPanel(final MainClass mainClass) {
 		this.mainClass = mainClass;
-		// this.hasExitButtom = hasExitButtom;
 		timeDurationField = new TimeDurationField();
 		alarmsComboBox = new AlarmsComboBox();
 		deactivateButton = new Button(MainClass.messages.getString("CommonPanel.deactivate"));
 		pauseButton = new Button(MainClass.messages.getString(PAUSE_KEY));
 		repeatButton = new Button();
 		alarmManagerButton = new Button(MainClass.messages.getString("CommonPanel.alarm.manager"));
+
 	}
 
-	void init(final Pane titlePane, final Pane bottomPane) {
-		stage = mainClass.getStage();
+	void init(final Pane titlePane, final Pane bottomPane, boolean isSystray) {
 		pauseButton.setVisible(false);
 		repeatButton.setVisible(false);
 		deactivateButton.setVisible(false);
@@ -74,11 +79,20 @@ public class MainPanel {
 
 		if (gridPane == null) {
 			gridPane = new GridPane();
+			scene = new Scene(gridPane);
+			stage = mainClass.getStage();
+			stage.setScene(scene);
+			stage.initStyle(StageStyle.UNDECORATED);
+			gridPane.setStyle("-fx-border-color: black; -fx-border-style: solid;");
+			setListener(gridPane);
+			gridPane.setStyle("-fx-background-color: white;");
+			durationButton.init(mainClass);
+			timeButton.init(mainClass);
+			alarmsComboBox.initialize(mainClass, timeDurationField);
+
 		} else {
 			gridPane.getChildren().clear();
 		}
-
-		gridPane.setStyle("-fx-background-color: white;");
 
 		int positionX = 0;
 		int positionY = 0;
@@ -119,36 +133,34 @@ public class MainPanel {
 
 		if (bottomPane != null) {
 			positionY++;
-			final Button exitButton = new Button(MainClass.messages.getString("CommonPanel.exit"));
 			gridPane.add(bottomPane, positionX, positionY, 1, 1);
-			exitButton.setOnAction(event -> System.exit(0));
 		}
 
-		scene = new Scene(gridPane);
 		setTitle(MainClass.messages.getString("title"));
-		stage.setScene(scene);
 
-		stage.initStyle(StageStyle.UNDECORATED);
 		setIcon(false);
 
-		stage.show();
+		if (!isSystray) {
+			xPosition = stage.getX();
+			yPosition = stage.getY();
+		}
 
-		durationButton.init(this);
-		timeButton.init(this);
+	}
 
-		alarmsComboBox.initialize(this, timeDurationField);
+	void update(Point2D point, boolean hasFocusedPropertyListener) {
+		this.hasFocusedPropertyListener = hasFocusedPropertyListener;
+
 		alarmsComboBox.showStoredAlarms();
-
-		final Point2D point = Asac.getCoordinatesofMiddleOfTheScreen(stage);
-		stage.setX(point.getX());
-		stage.setY(point.getY());
-
-		setListener(gridPane);
+		if (point != null) {
+			stage.setX(point.getX());
+			stage.setY(point.getY());
+		}
+		stage.show();
 	}
 
 	private void setListener(GridPane gridPane) {
 
-		timeDurationField.setListener(alarmsComboBox, this);
+		timeDurationField.setListener(alarmsComboBox, mainClass);
 
 		deactivateButton.setOnAction(event -> {
 			deactivate();
@@ -161,20 +173,36 @@ public class MainPanel {
 			pauseButtonIsPause = !pauseButtonIsPause;
 		});
 
-		alarmManagerButton.setOnAction(event -> {
-			new AlarmManager(mainClass);
-		});
+		alarmManagerButton.setOnAction(event -> new AlarmManager(mainClass));
 
 		repeatButton.setOnAction(event -> {
 			timeDurationField.setText(repeatAlarmData.duration + "");
 
 			alarmsComboBox.protectedSetValue(repeatAlarmData.alarmComboBox);
-			PerformDuration performDuration = new PerformDuration(0, repeatAlarmData, this);
+			PerformDuration performDuration = new PerformDuration(0, repeatAlarmData, mainClass);
 			performDuration.start();
 		});
 
 		gridPane.setOnMousePressed(this::handleMousePressed);
 		gridPane.setOnMouseDragged(this::handleMouseDragged);
+
+		stage.focusedProperty().addListener((obs, oldValue, focused) -> {
+			if (!hasFocusedPropertyListener) {
+				return;
+			}
+
+			if (focused == null || !focused) {
+				final PauseTransition delay = new PauseTransition(Duration.millis(100));
+
+				delay.setOnFinished(event -> {
+					if (!stage.isFocused()) {
+						stage.hide();
+					}
+				});
+
+				delay.play();
+			}
+		});
 	}
 
 	private void handleMousePressed(MouseEvent event) {
@@ -186,6 +214,11 @@ public class MainPanel {
 		final Stage tmpStage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
 		tmpStage.setX(event.getScreenX() - xOffset);
 		tmpStage.setY(event.getScreenY() - yOffset);
+
+		if (!isSystray) {
+			xPosition = stage.getX();
+			yPosition = stage.getY();
+		}
 	}
 
 	void deactivate() {
@@ -221,6 +254,13 @@ public class MainPanel {
 
 		setIcon(false);
 
+	}
+
+	void restorePosition() {
+		if (!isSystray) {
+			stage.setX(xPosition);
+			stage.setY(yPosition);
+		}
 	}
 
 	Pane getPane() {
@@ -311,9 +351,7 @@ public class MainPanel {
 	}
 
 	void setVisibilityDeactivateButton(final boolean visibility) {
-		Platform.runLater(() -> {
-			deactivateButton.setVisible(visibility);
-		});
+		Platform.runLater(() -> deactivateButton.setVisible(visibility));
 	}
 
 	void deactivatePauseButton() {
@@ -324,9 +362,7 @@ public class MainPanel {
 	}
 
 	void setVisibilityPauseButton(final boolean visibility) {
-		Platform.runLater(() -> {
-			pauseButton.setVisible(visibility);
-		});
+		Platform.runLater(() -> pauseButton.setVisible(visibility));
 	}
 
 	Alarm getStoredAlarm() {
@@ -355,27 +391,4 @@ public class MainPanel {
 			});
 		}
 	}
-
-//	
-//	
-//	
-//	
-//	
-//
-//	void processOnActionDeactivateButton() {
-//		mainClass.processOnActionDeactivateButton();
-//	}
-//
-//	void processOnActionPauseButton() {
-//		mainClass.processOnActionPauseButton();
-//	}
-//
-//	void processOnActionAlarmManagerButton() {
-//		mainClass.processOnActionAlarmManagerButton();
-//	}
-//
-//	void processOnActionRepeatButton() {
-//		mainClass.processOnActionRepeatButton();
-//	}
-
 }

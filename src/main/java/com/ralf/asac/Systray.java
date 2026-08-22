@@ -7,53 +7,47 @@ import java.awt.TrayIcon;
 import java.awt.event.MouseAdapter;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 
 import javax.imageio.ImageIO;
 import javax.swing.SwingUtilities;
 
-import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
-import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
-import javafx.util.Duration;
 
 class Systray {
 
 	private final MainClass mainClass;
 	private final TrayIcon trayIcon;
-	private final Stage popupStage;
 
 	boolean timeDurationFieldIsSetInternal;
+
+	private final HBox bottomPanel;
 
 	@SuppressWarnings("java:S4507")
 	Systray(final MainClass mainClass) {
 		this.mainClass = mainClass;
 
-//		init(null);
-//
-//		durationButton.init(mainClass.getMainPanel());
-//		timeButton.init(mainClass);
-//
-//		alarmsComboBox.initialize(mainClass, timeDurationField);
-//		timeDurationField.setListener(alarmsComboBox, mainClass);
-//		alarmsComboBox.setAlarmsComboBoxToBeSynchronize(mainClass.getAlarmsComboBox());
+		bottomPanel = new HBox();
+		final Button exitButton = new Button(MainClass.messages.getString("CommonPanel.exit"));
+		bottomPanel.getChildren().add(exitButton);
+		exitButton.setOnAction(event -> System.exit(0));
 
 		if (!SystemTray.isSupported()) {
 			trayIcon = null;
-			popupStage = null;
 			return;
 		}
 
 		if (Asac.getOperationSystem() == Asac.OperationSystem.KDE) {
 			trayIcon = null;
-			popupStage = null;
 			return;
 		}
 
@@ -67,35 +61,17 @@ class Systray {
 
 		if (image != null) {
 			trayIcon = new TrayIcon(image);
+			trayIcon.setImage(image);
 			trayIcon.setImageAutoSize(true);
 		} else {
 			trayIcon = null;
-			popupStage = null;
 			return;
 		}
-
-		final Stage owner = new Stage();
-		owner.setOpacity(1);
-		owner.setWidth(1);
-		owner.setHeight(1);
-
-		popupStage = new Stage();
-		popupStage.initOwner(owner);
-		popupStage.initStyle(StageStyle.UNDECORATED);
 
 		final Pane pane = mainClass.getMainPanel().getPane();
 		pane.setPrefSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
 
-		final Scene scene = new Scene(pane);
-
-		popupStage.setScene(scene);
-
-		final DurationButton trayIconDurationButton = new DurationButton();
-		trayIconDurationButton.init(mainClass.getMainPanel());
-
 		addListener();
-
-		hideWhenMouseClickedOutsideSysTrayPopup();
 	}
 
 	private void addListener() {
@@ -104,36 +80,55 @@ class Systray {
 			public void mouseClicked(final java.awt.event.MouseEvent event) {
 				if (SwingUtilities.isRightMouseButton(event)) {
 					Platform.runLater(() -> {
-						// alarmsComboBox.showStoredAlarms();
+						final Point2D point = getPopupStageCoordinates(event);
+						MainPanel mainPanel = mainClass.getMainPanel();
+						mainPanel.init(null, bottomPanel, true);
+						mainPanel.update(point, true);
 
-						Platform.runLater(() -> {
-							final Point2D point = getPopupStageCoordinates(event);
-
-							popupStage.setX(point.getX());
-							popupStage.setY(point.getY());
-
-							popupStage.show();
-							popupStage.sizeToScene();
-						});
+						mainPanel.getStage().show();
 
 					});
 				} else if (SwingUtilities.isLeftMouseButton(event)) {
 					Platform.runLater(() -> {
-						mainClass.show();
+						Stage stage = mainClass.getStage();
+						mainClass.getMainPanel().update(null, false);
+						MainPanel mainPanel = mainClass.getMainPanel();
+						mainPanel.init(mainClass.getTitlePane(), null, true);
 						SystemTray.getSystemTray().remove(trayIcon);
+						mainPanel.restorePosition();
+						stage.show();
 					});
 				}
 			}
 		});
 	}
 
+	@SuppressWarnings("java:S4507")
+	void setIcon(boolean isActive) {
+		if (trayIcon == null) {
+			return;
+		}
+		String name = isActive ? "alarmActive.png" : "alarm.png";
+		final URL url = ClassLoader.getSystemResource(name);
+
+		BufferedImage image = null;
+
+		try {
+			final InputStream inputStream = url.openStream();
+			image = ImageIO.read(inputStream);
+			trayIcon.setImage(image);
+		} catch (IOException exception) {
+			exception.printStackTrace();
+		}
+	}
+
 	Point2D getPopupStageCoordinates(final java.awt.event.MouseEvent event) {
 		final Point point = event.getLocationOnScreen();
 		final Screen screen = Screen.getScreensForRectangle(point.x, point.y, 1, 1).get(0);
-		final double popupWidth = popupStage.getWidth();
+		final double popupWidth = mainClass.getStage().getWidth();
 
-		final double width = popupStage.getWidth();
-		final double height = popupStage.getHeight();
+		final double width = mainClass.getStage().getWidth();
+		final double height = mainClass.getStage().getHeight();
 
 		final Rectangle2D bounds = screen.getVisualBounds();
 
@@ -168,22 +163,6 @@ class Systray {
 		return new Point2D(x, y);
 	}
 
-	private void hideWhenMouseClickedOutsideSysTrayPopup() {
-		popupStage.focusedProperty().addListener((obs, oldValue, focused) -> {
-			if (focused == null || !focused) {
-				final PauseTransition delay = new PauseTransition(Duration.millis(100));
-
-				delay.setOnFinished(event -> {
-					if (!popupStage.isFocused()) {
-						popupStage.hide();
-					}
-				});
-
-				delay.play();
-			}
-		});
-	}
-
 	boolean hasSystray() {
 		return trayIcon != null;
 	}
@@ -212,45 +191,4 @@ class Systray {
 			}
 		}
 	}
-
-	void hide() {
-		if (popupStage != null) {
-			popupStage.hide();
-		}
-	}
-
-//	void setTimeDurationFieldText(final String text) {
-//		Platform.runLater(() -> {
-//			timeDurationFieldIsSetInternal = true;
-//			timeDurationField.setText(text);
-//			timeDurationFieldIsSetInternal = false;
-//		});
-//	}
-
-//	@Override
-//	AlarmsComboBox getAlarmsComboBox() {
-//		return alarmsComboBox;
-//	}
-
-//	@Override
-//	public void processOnActionDeactivateButton() {
-////		mainClass.getCommonPanel().processOnActionDeactivateButton();
-//		popupStage.hide();
-//	}
-//
-//	@Override
-//	public void processOnActionPauseButton() {
-////		mainClass.getCommonPanel().processOnActionPauseButton();
-//	}
-//
-//	@Override
-//	public void processOnActionAlarmManagerButton() {
-////		mainClass.getCommonPanel().processOnActionAlarmManagerButton();
-//	}
-//
-//	@Override
-//	public void processOnActionRepeatButton() {
-////		mainClass.getCommonPanel().processOnActionRepeatButton();
-//		popupStage.hide();
-//	}
 }

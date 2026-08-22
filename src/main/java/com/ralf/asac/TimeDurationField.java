@@ -80,7 +80,7 @@ class TimeDurationField extends TextField {
 		setTextFormatter(new TextFormatter<>(filter));
 	}
 
-	void setListener(final AlarmsComboBox alarmsComboBox, final MainPanel mainClass) {
+	void setListener(final AlarmsComboBox alarmsComboBox, final MainClass mainClass) {
 
 		setOnAction(event -> {
 			final String name = alarmsComboBox.getEditor().getText();
@@ -94,23 +94,20 @@ class TimeDurationField extends TextField {
 		});
 	}
 
-	void evaluateTimeDurationField(final MainPanel mainPanel) {
-//		final Systray systray = mainClass.getSystray();
+	void evaluateTimeDurationField(final MainClass mainClass) {
 		if (timeDurationFieldIsSetInternal) {
 			return;
 		}
 		final String timeDuration = this.getText();
+		MainPanel mainPanel = mainClass.getMainPanel();
 
 		if (timeDuration != null && !timeDuration.isEmpty()) {
 			mainPanel.deactivate();
-//			if (systray != null) {
-//				systray.hide();
-//			}
 
 			final int colonIndex = timeDuration.indexOf(':');
 			if (colonIndex < 0) {
 				final long minute = Long.parseLong(timeDuration);
-				final PerformDuration performDuration = new PerformDuration(minute, null, mainPanel);
+				final PerformDuration performDuration = new PerformDuration(minute, null, mainClass);
 				performDuration.start();
 			} else {
 				final String hourString = timeDuration.substring(0, colonIndex);
@@ -130,7 +127,7 @@ class TimeDurationField extends TextField {
 							() -> stage.setTitle(name + "\u00A0" + mainPanel.getDashForTitle() + "\u00A0" + time));
 				}
 
-				final PerformTime performTime = new PerformTime(hour, minute, mainPanel);
+				final PerformTime performTime = new PerformTime(hour, minute, mainClass);
 				performTime.start();
 			}
 		}

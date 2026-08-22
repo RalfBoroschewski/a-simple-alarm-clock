@@ -7,12 +7,14 @@ class PerformDuration {
 
 	private final long minutes;
 	private final RepeatAlarmData repeatAlarmData;
-	private final MainPanel mainPanel;
+	private final MainClass mainClass;
 	private Alarm oldAlarmsComboBoxValue;
 	final String name;
 	private MyWorker myWorker;
 
-	PerformDuration(final long minutes, final RepeatAlarmData repeatAlarmData, final MainPanel mainPanel) {
+	PerformDuration(final long minutes, final RepeatAlarmData repeatAlarmData, final MainClass mainClass) {
+		this.mainClass = mainClass;
+		MainPanel mainPanel = mainClass.getMainPanel();
 		if (repeatAlarmData == null) {
 			this.minutes = minutes;
 			name = mainPanel.getName();
@@ -21,10 +23,10 @@ class PerformDuration {
 			this.name = repeatAlarmData.alarmComboBox.name;
 		}
 		this.repeatAlarmData = repeatAlarmData;
-		this.mainPanel = mainPanel;
 	}
 
 	void start() {
+		MainPanel mainPanel = mainClass.getMainPanel();
 		if (repeatAlarmData != null) {
 			oldAlarmsComboBoxValue = repeatAlarmData.alarmComboBox;
 		} else {
@@ -53,9 +55,11 @@ class PerformDuration {
 		@Override
 		@SuppressWarnings({ "java:S2583", "java:S3516", "java:S2589" })
 		protected Integer call() throws Exception {
+			MainPanel mainPanel = mainClass.getMainPanel();
 			startBell = true;
 
 			mainPanel.setVisibilityDeactivateButton(true);
+			mainClass.getSystray().setIcon(true);
 
 			long step = 1;
 
@@ -68,8 +72,10 @@ class PerformDuration {
 
 				if (name.isBlank()) {
 					mainPanel.setTitle(minutesString);
+					mainClass.getSystray().setSystrayToolTip(minutesString);
 				} else {
 					mainPanel.setTitle(name + "\u00A0" + mainPanel.getDashForTitle() + "\u00A0" + minutesString);
+					mainClass.getSystray().setSystrayToolTip(name + " - " + minutesString);
 				}
 
 				for (int indexSeconds = 0; indexSeconds < 60; indexSeconds += step) {
@@ -85,6 +91,7 @@ class PerformDuration {
 				}
 			}
 
+			mainClass.getSystray().setIcon(false);
 			if (startBell) {
 				launchBell();
 			}
@@ -95,9 +102,11 @@ class PerformDuration {
 	}
 
 	void launchBell() {
+		MainPanel mainPanel = mainClass.getMainPanel();
 		mainPanel.setTimeDurationFieldText("");
 		final String title = MainClass.messages.getString("title");
 		mainPanel.setTitle(title);
+		mainClass.getSystray().setSystrayToolTip(title);
 		mainPanel.setVisibilityDeactivateButton(false);
 		mainPanel.deactivatePauseButton();
 

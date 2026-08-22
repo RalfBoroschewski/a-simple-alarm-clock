@@ -11,17 +11,18 @@ class PerformTime {
 	private MyWorker myWorker;
 	private final int hour;
 	private final int minute;
-	private final MainPanel mainPanel;
+	private final MainClass mainClass;
 
 	static int INTERVAL_LENGTH_IN_SECONDS = 15;
 
-	PerformTime(final int hour, final int minute, final MainPanel MainPanel) {
+	PerformTime(final int hour, final int minute, final MainClass mainClass) {
 		this.hour = hour;
 		this.minute = minute;
-		this.mainPanel = MainPanel;
+		this.mainClass = mainClass;
 	}
 
 	public void start() {
+		MainPanel mainPanel = mainClass.getMainPanel();
 		mainPanel.deactivate();
 		mainPanel.setRepeatButton(null);
 
@@ -46,14 +47,16 @@ class PerformTime {
 		final String time = hourString + ":" + minuteString;
 		mainPanel.setTimeDurationFieldText(time);
 		mainPanel.setTitle(time);
+		mainClass.getSystray().setSystrayToolTip(time);
+		mainClass.getSystray().setIcon(true);
 
 		final String name = mainPanel.getName();
 
-//		if (name.isBlank()) {
-//			mainPanel.getSystray().setSystrayToolTip(time);
-//		} else {
-//			mainPanel.getSystray().setSystrayToolTip(name + " - " + time);
-//		}
+		if (name.isBlank()) {
+			mainClass.getSystray().setSystrayToolTip(time);
+		} else {
+			mainClass.getSystray().setSystrayToolTip(name + " - " + time);
+		}
 
 		myWorker = new MyWorker(desiredTime);
 		new Thread(myWorker).start();
@@ -75,9 +78,12 @@ class PerformTime {
 		@Override
 		protected Integer call() throws Exception {
 			startBell = true;
+			MainPanel mainPanel = mainClass.getMainPanel();
 			mainPanel.setVisibilityDeactivateButton(true);
 
 			LocalDateTime now = LocalDateTime.now(ZoneId.systemDefault());
+
+			mainClass.getSystray().setIcon(true);
 
 			while (now.compareTo(desiredTime) < 0 && startBell) {
 				final int nowSeconds = now.getSecond();
@@ -94,12 +100,13 @@ class PerformTime {
 				now = LocalDateTime.now(ZoneId.systemDefault());
 			}
 
+			mainClass.getSystray().setIcon(false);
+
 			if (startBell) {
 				mainPanel.setVisibilityDeactivateButton(false);
-//				mainPanel.setTimeDurationFieldText("");
-//				mainPanel.getSystray().setTimeDurationFieldText("");
-//				mainPanel.getSystray().setSystrayToolTip("");
+				mainPanel.setTimeDurationFieldText("");
 				mainPanel.setTitle(MainClass.messages.getString("title"));
+				mainClass.getSystray().setSystrayToolTip(MainClass.messages.getString("title"));
 
 				final String name = mainPanel.getName();
 
