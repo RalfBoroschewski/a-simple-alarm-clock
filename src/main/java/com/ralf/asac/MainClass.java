@@ -12,6 +12,7 @@ import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -70,7 +71,8 @@ public class MainClass extends Application {
 		hBoxTitleBar.setAlignment(Pos.CENTER_RIGHT);
 		hBoxTitleBar.setMaxWidth(Double.MAX_VALUE);
 
-		hBoxTitleBar.getChildren().addAll(minimizeButton, finishButton);
+		hBoxTitleBar.getChildren().addAll(new Label("Asac                                 "), minimizeButton,
+				finishButton);
 		titlePane.setRight(hBoxTitleBar);
 
 		return titlePane;

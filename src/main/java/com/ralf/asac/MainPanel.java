@@ -57,10 +57,10 @@ public class MainPanel {
 		this.mainClass = mainClass;
 		timeDurationField = new TimeDurationField();
 		alarmsComboBox = new AlarmsComboBox();
-		deactivateButton = new Button(MainClass.messages.getString("CommonPanel.deactivate"));
+		deactivateButton = new Button(MainClass.messages.getString("MainPanel.deactivate"));
 		pauseButton = new Button(MainClass.messages.getString(PAUSE_KEY));
 		repeatButton = new Button();
-		alarmManagerButton = new Button(MainClass.messages.getString("CommonPanel.alarm.manager"));
+		alarmManagerButton = new Button(MainClass.messages.getString("MainPanel.alarm.manager"));
 
 	}
 
@@ -69,7 +69,7 @@ public class MainPanel {
 		repeatButton.setVisible(false);
 		deactivateButton.setVisible(false);
 
-		final double width = Double.parseDouble(MainClass.messages.getString("CommonPanel.buttons.width"));
+		final double width = Double.parseDouble(MainClass.messages.getString("MainPanel.buttons.width"));
 		alarmsComboBox.setPrefWidth(width);
 		alarmManagerButton.setPrefWidth(width);
 		durationButton.setPrefWidth(width);

@@ -37,7 +37,7 @@ class Systray {
 		this.mainClass = mainClass;
 
 		bottomPanel = new HBox();
-		final Button exitButton = new Button(MainClass.messages.getString("CommonPanel.exit"));
+		final Button exitButton = new Button(MainClass.messages.getString("Systray.exit"));
 		bottomPanel.getChildren().add(exitButton);
 		exitButton.setOnAction(event -> System.exit(0));
 
