@@ -11,23 +11,23 @@ class PerformTime {
 	private MyWorker myWorker;
 	private final int hour;
 	private final int minute;
-	private final MainClass mainClass;
+	private final MainPanel mainPanel;
 
 	static int INTERVAL_LENGTH_IN_SECONDS = 15;
 
-	PerformTime(final int hour, final int minute, final MainClass mainClass) {
+	PerformTime(final int hour, final int minute, final MainPanel MainPanel) {
 		this.hour = hour;
 		this.minute = minute;
-		this.mainClass = mainClass;
+		this.mainPanel = MainPanel;
 	}
 
 	public void start() {
-		mainClass.deactivate();
-		mainClass.setRepeatButton(null);
+		mainPanel.deactivate();
+		mainPanel.setRepeatButton(null);
 
-		mainClass.oldPerformTime = this;
-		mainClass.setIcon(true);
-		mainClass.setRepeatButton(new RepeatAlarmData(-1, null, null));
+		mainPanel.oldPerformTime = this;
+		mainPanel.setIcon(true);
+		mainPanel.setRepeatButton(new RepeatAlarmData(-1, null, null));
 
 		final LocalDateTime now = LocalDateTime.now(ZoneId.systemDefault());
 
@@ -44,17 +44,16 @@ class PerformTime {
 		minuteString = minuteString.substring(minuteString.length() - 2);
 
 		final String time = hourString + ":" + minuteString;
-		mainClass.setTimeDurationFieldText(time);
-		mainClass.getSystray().setTimeDurationFieldText(time);
-		mainClass.setTitle(time);
+		mainPanel.setTimeDurationFieldText(time);
+		mainPanel.setTitle(time);
 
-		final String name = mainClass.getName();
+		final String name = mainPanel.getName();
 
-		if (name.isBlank()) {
-			mainClass.getSystray().setSystrayToolTip(time);
-		} else {
-			mainClass.getSystray().setSystrayToolTip(name + " - " + time);
-		}
+//		if (name.isBlank()) {
+//			mainPanel.getSystray().setSystrayToolTip(time);
+//		} else {
+//			mainPanel.getSystray().setSystrayToolTip(name + " - " + time);
+//		}
 
 		myWorker = new MyWorker(desiredTime);
 		new Thread(myWorker).start();
@@ -76,7 +75,7 @@ class PerformTime {
 		@Override
 		protected Integer call() throws Exception {
 			startBell = true;
-			mainClass.setVisibilityDeactivateButton(true);
+			mainPanel.setVisibilityDeactivateButton(true);
 
 			LocalDateTime now = LocalDateTime.now(ZoneId.systemDefault());
 
@@ -96,25 +95,25 @@ class PerformTime {
 			}
 
 			if (startBell) {
-				mainClass.setVisibilityDeactivateButton(false);
-				mainClass.setTimeDurationFieldText("");
-				mainClass.getSystray().setTimeDurationFieldText("");
-				mainClass.getSystray().setSystrayToolTip("");
-				mainClass.setTitle(MainClass.messages.getString("title"));
+				mainPanel.setVisibilityDeactivateButton(false);
+//				mainPanel.setTimeDurationFieldText("");
+//				mainPanel.getSystray().setTimeDurationFieldText("");
+//				mainPanel.getSystray().setSystrayToolTip("");
+				mainPanel.setTitle(MainClass.messages.getString("title"));
 
-				final String name = mainClass.getName();
+				final String name = mainPanel.getName();
 
 				AlarmSounds.AlarmSoundData alarmSoundData = null;
-				final Alarm storedAlarm = mainClass.getStoredAlarm();
+				final Alarm storedAlarm = mainPanel.getStoredAlarm();
 				if (storedAlarm != null) {
 					alarmSoundData = storedAlarm.alarmSoundData;
 				}
 
-				mainClass.bellIcon = new BellIcon(name, alarmSoundData);
-				mainClass.bellIcon.play();
+				mainPanel.bellIcon = new BellIcon(name, alarmSoundData);
+				mainPanel.bellIcon.play();
 				Platform.runLater(() -> {
-					mainClass.resetStoredAlarmsVaLue();
-					mainClass.setIcon(false);
+					mainPanel.resetStoredAlarmsVaLue();
+					mainPanel.setIcon(false);
 				});
 			}
 			return 0;

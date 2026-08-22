@@ -24,7 +24,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
-class Systray extends CommonPanel {
+class Systray {
 
 	private final MainClass mainClass;
 	private final TrayIcon trayIcon;
@@ -34,17 +34,16 @@ class Systray extends CommonPanel {
 
 	@SuppressWarnings("java:S4507")
 	Systray(final MainClass mainClass) {
-		super(true);
 		this.mainClass = mainClass;
 
-		init(null);
-
-		durationButton.init(mainClass);
-		timeButton.init(mainClass);
-
-		alarmsComboBox.initialize(mainClass, timeDurationField);
-		timeDurationField.setListener(alarmsComboBox, mainClass);
-		alarmsComboBox.setAlarmsComboBoxToBeSynchronize(mainClass.getAlarmsComboBox());
+//		init(null);
+//
+//		durationButton.init(mainClass.getMainPanel());
+//		timeButton.init(mainClass);
+//
+//		alarmsComboBox.initialize(mainClass, timeDurationField);
+//		timeDurationField.setListener(alarmsComboBox, mainClass);
+//		alarmsComboBox.setAlarmsComboBoxToBeSynchronize(mainClass.getAlarmsComboBox());
 
 		if (!SystemTray.isSupported()) {
 			trayIcon = null;
@@ -84,7 +83,7 @@ class Systray extends CommonPanel {
 		popupStage.initOwner(owner);
 		popupStage.initStyle(StageStyle.UNDECORATED);
 
-		final Pane pane = getPane();
+		final Pane pane = mainClass.getMainPanel().getPane();
 		pane.setPrefSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
 
 		final Scene scene = new Scene(pane);
@@ -92,7 +91,7 @@ class Systray extends CommonPanel {
 		popupStage.setScene(scene);
 
 		final DurationButton trayIconDurationButton = new DurationButton();
-		trayIconDurationButton.init(mainClass);
+		trayIconDurationButton.init(mainClass.getMainPanel());
 
 		addListener();
 
@@ -105,7 +104,7 @@ class Systray extends CommonPanel {
 			public void mouseClicked(final java.awt.event.MouseEvent event) {
 				if (SwingUtilities.isRightMouseButton(event)) {
 					Platform.runLater(() -> {
-						alarmsComboBox.showStoredAlarms();
+						// alarmsComboBox.showStoredAlarms();
 
 						Platform.runLater(() -> {
 							final Point2D point = getPopupStageCoordinates(event);
@@ -220,38 +219,38 @@ class Systray extends CommonPanel {
 		}
 	}
 
-	void setTimeDurationFieldText(final String text) {
-		Platform.runLater(() -> {
-			timeDurationFieldIsSetInternal = true;
-			timeDurationField.setText(text);
-			timeDurationFieldIsSetInternal = false;
-		});
-	}
+//	void setTimeDurationFieldText(final String text) {
+//		Platform.runLater(() -> {
+//			timeDurationFieldIsSetInternal = true;
+//			timeDurationField.setText(text);
+//			timeDurationFieldIsSetInternal = false;
+//		});
+//	}
 
-	@Override
-	AlarmsComboBox getAlarmsComboBox() {
-		return alarmsComboBox;
-	}
+//	@Override
+//	AlarmsComboBox getAlarmsComboBox() {
+//		return alarmsComboBox;
+//	}
 
-	@Override
-	public void processOnActionDeactivateButton() {
-		mainClass.getCommonPanel().processOnActionDeactivateButton();
-		popupStage.hide();
-	}
-
-	@Override
-	public void processOnActionPauseButton() {
-		mainClass.getCommonPanel().processOnActionPauseButton();
-	}
-
-	@Override
-	public void processOnActionAlarmManagerButton() {
-		mainClass.getCommonPanel().processOnActionAlarmManagerButton();
-	}
-
-	@Override
-	public void processOnActionRepeatButton() {
-		mainClass.getCommonPanel().processOnActionRepeatButton();
-		popupStage.hide();
-	}
+//	@Override
+//	public void processOnActionDeactivateButton() {
+////		mainClass.getCommonPanel().processOnActionDeactivateButton();
+//		popupStage.hide();
+//	}
+//
+//	@Override
+//	public void processOnActionPauseButton() {
+////		mainClass.getCommonPanel().processOnActionPauseButton();
+//	}
+//
+//	@Override
+//	public void processOnActionAlarmManagerButton() {
+////		mainClass.getCommonPanel().processOnActionAlarmManagerButton();
+//	}
+//
+//	@Override
+//	public void processOnActionRepeatButton() {
+////		mainClass.getCommonPanel().processOnActionRepeatButton();
+//		popupStage.hide();
+//	}
 }

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.ralf.asac.AlarmManager.AlarmManagerItem;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -154,7 +156,7 @@ class AlarmManager {
 			editButton.setDisable(false);
 		});
 
-		setListener(mainClass);
+		setListener(mainClass.getMainPanel());
 
 		final Scene scene = new Scene(gridPane);
 		stage.setScene(scene);
@@ -166,8 +168,8 @@ class AlarmManager {
 	}
 
 	@SuppressWarnings("java:S3776")
-	private void setListener(final MainClass mainClass) {
-		Stage stage = mainClass.getStage();
+	private void setListener(final MainPanel mainPanel) {
+		Stage stage = mainPanel.getStage();
 
 		editButton.setOnAction(event -> {
 			if (selectedItem != null) {
@@ -185,7 +187,7 @@ class AlarmManager {
 					rebuildListView();
 					selectedItem(alarmManagerItem);
 					Preferences.setAlarms(alarmManagerItems);
-					mainClass.getAlarmsComboBox().showStoredAlarms();
+					mainPanel.getAlarmsComboBox().showStoredAlarms();
 
 				}
 			}
@@ -206,7 +208,7 @@ class AlarmManager {
 				alarmManagerItems.remove(selectedItem.getAlarmManagerItem());
 				rebuildListView();
 				Preferences.setAlarms(alarmManagerItems);
-				mainClass.getAlarmsComboBox().showStoredAlarms();
+				mainPanel.getAlarmsComboBox().showStoredAlarms();
 				deleteButton.setDisable(true);
 				editButton.setDisable(true);
 			}
@@ -224,7 +226,7 @@ class AlarmManager {
 				rebuildListView();
 				selectedItem(item);
 				Preferences.setAlarms(alarmManagerItems);
-				mainClass.getAlarmsComboBox().showStoredAlarms();
+				mainPanel.getAlarmsComboBox().showStoredAlarms();
 			}
 		});
 

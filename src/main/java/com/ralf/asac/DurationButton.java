@@ -15,10 +15,10 @@ class DurationButton extends Button {
 
 	}
 
-	void init(final MainClass mainClass) {
+	void init(final MainPanel mainPanel) {
 
 		final ContextMenu contextMenu = new ContextMenu();
-		final MyDurationPopupListener listener = new MyDurationPopupListener(mainClass, contextMenu);
+		final MyDurationPopupListener listener = new MyDurationPopupListener(mainPanel, contextMenu);
 
 		durationPopup = new DurationPopup();
 		durationPopup.buildPopup(listener);
@@ -27,11 +27,11 @@ class DurationButton extends Button {
 	}
 
 	class MyDurationPopupListener implements DurationPopupListener {
-		private final MainClass mainClass;
+		private final MainPanel mainPanel;
 		private final ContextMenu contextMenu;
 
-		MyDurationPopupListener(final MainClass mainClass, final ContextMenu contextMenu) {
-			this.mainClass = mainClass;
+		MyDurationPopupListener(final MainPanel mainPanel, final ContextMenu contextMenu) {
+			this.mainPanel = mainPanel;
 			this.contextMenu = contextMenu;
 		}
 
@@ -40,7 +40,7 @@ class DurationButton extends Button {
 			final String margin = "            ";
 			final String menuItemText = "\u00A0" + margin + minute + minutesString + margin;
 			final MenuItem menuItem = new MenuItem(menuItemText);
-			menuItem.setOnAction(event -> new PerformDuration(minute, null, mainClass).start());
+			menuItem.setOnAction(event -> new PerformDuration(minute, null, mainPanel).start());
 			contextMenu.getItems().add(menuItem);
 		}
 

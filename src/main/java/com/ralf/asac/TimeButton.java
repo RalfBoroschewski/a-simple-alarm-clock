@@ -15,11 +15,11 @@ class TimeButton extends Button {
 		super(MainClass.messages.getString("TimeButton.set.time"));
 	}
 
-	void init(MainClass mainClass) {
-		this.setOnAction(event -> buildTimePopup(mainClass).show(this, Side.BOTTOM, 0, 0));
+	void init(MainPanel mainPanel) {
+		this.setOnAction(event -> buildTimePopup(mainPanel).show(this, Side.BOTTOM, 0, 0));
 	}
 
-	ContextMenu buildTimePopup(final MainClass mainClass) {
+	ContextMenu buildTimePopup(final MainPanel mainPanel) {
 
 		final LocalDateTime now = LocalDateTime.now(ZoneId.systemDefault());
 		int hourNow = now.getHour();
@@ -47,7 +47,7 @@ class TimeButton extends Button {
 				minuteString = minuteString.substring(minuteString.length() - 2);
 				final MenuItem menuItem = new MenuItem("\u00A0" + marginMinute + minuteString + marginMinute);
 				final int tmpHour = hour;
-				menuItem.setOnAction(event -> new PerformTime(tmpHour % 24, minute, mainClass).start());
+				menuItem.setOnAction(event -> new PerformTime(tmpHour % 24, minute, mainPanel).start());
 				hourMenu.getItems().add(menuItem);
 			}
 			startIndex = 0;

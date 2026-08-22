@@ -7,37 +7,37 @@ class PerformDuration {
 
 	private final long minutes;
 	private final RepeatAlarmData repeatAlarmData;
-	private final MainClass mainClass;
+	private final MainPanel mainPanel;
 	private Alarm oldAlarmsComboBoxValue;
 	final String name;
 	private MyWorker myWorker;
 
-	PerformDuration(final long minutes, final RepeatAlarmData repeatAlarmData, final MainClass mainClass) {
+	PerformDuration(final long minutes, final RepeatAlarmData repeatAlarmData, final MainPanel mainPanel) {
 		if (repeatAlarmData == null) {
 			this.minutes = minutes;
-			name = mainClass.getName();
+			name = mainPanel.getName();
 		} else {
 			this.minutes = repeatAlarmData.duration;
 			this.name = repeatAlarmData.alarmComboBox.name;
 		}
 		this.repeatAlarmData = repeatAlarmData;
-		this.mainClass = mainClass;
+		this.mainPanel = mainPanel;
 	}
 
 	void start() {
 		if (repeatAlarmData != null) {
 			oldAlarmsComboBoxValue = repeatAlarmData.alarmComboBox;
 		} else {
-			oldAlarmsComboBoxValue = mainClass.getAlarmsComboBox().getValue();
+			oldAlarmsComboBoxValue = mainPanel.getAlarmsComboBox().getValue();
 		}
 
-		mainClass.deactivate();
-		mainClass.setVisibilityPauseButton(true);
-		mainClass.setRepeatButton(new RepeatAlarmData(-1, null, null));
+		mainPanel.deactivate();
+		mainPanel.setVisibilityPauseButton(true);
+		mainPanel.setRepeatButton(new RepeatAlarmData(-1, null, null));
 
-		mainClass.oldPerformDuration = this;
+		mainPanel.oldPerformDuration = this;
 
-		mainClass.setIcon(true);
+		mainPanel.setIcon(true);
 		myWorker = new MyWorker();
 		new Thread(myWorker).start();
 	}
@@ -55,28 +55,25 @@ class PerformDuration {
 		protected Integer call() throws Exception {
 			startBell = true;
 
-			mainClass.setVisibilityDeactivateButton(true);
+			mainPanel.setVisibilityDeactivateButton(true);
 
 			long step = 1;
 
 			for (int indexMinutes = 0; indexMinutes < minutes; indexMinutes++) {
 				final long time = minutes - indexMinutes;
 				final String timeString = time + "";
-				mainClass.setTimeDurationFieldText(timeString);
-				mainClass.getSystray().setTimeDurationFieldText(timeString);
+				mainPanel.setTimeDurationFieldText(timeString);
 
 				final String minutesString = time + Asac.getMinuteString(time);
 
 				if (name.isBlank()) {
-					mainClass.setTitle(minutesString);
-					mainClass.getSystray().setSystrayToolTip(minutesString);
+					mainPanel.setTitle(minutesString);
 				} else {
-					mainClass.setTitle(name + "\u00A0" + mainClass.getDashForTitle() + "\u00A0" + minutesString);
-					mainClass.getSystray().setSystrayToolTip(name + " - " + minutesString);
+					mainPanel.setTitle(name + "\u00A0" + mainPanel.getDashForTitle() + "\u00A0" + minutesString);
 				}
 
 				for (int indexSeconds = 0; indexSeconds < 60; indexSeconds += step) {
-					step = mainClass.getPauseButtonIsPause() ? 0 : 1;
+					step = mainPanel.getPauseButtonIsPause() ? 0 : 1;
 
 					if (!startBell)
 						return 1;
@@ -98,17 +95,15 @@ class PerformDuration {
 	}
 
 	void launchBell() {
-		mainClass.setTimeDurationFieldText("");
-		mainClass.getSystray().setTimeDurationFieldText("");
+		mainPanel.setTimeDurationFieldText("");
 		final String title = MainClass.messages.getString("title");
-		mainClass.setTitle(title);
-		mainClass.getSystray().setSystrayToolTip(title);
-		mainClass.setVisibilityDeactivateButton(false);
-		mainClass.deactivatePauseButton();
+		mainPanel.setTitle(title);
+		mainPanel.setVisibilityDeactivateButton(false);
+		mainPanel.deactivatePauseButton();
 
 		AlarmSounds.AlarmSoundData alarmSoundData = null;
 		if (repeatAlarmData == null) {
-			Alarm storedAlarm = mainClass.getStoredAlarm();
+			Alarm storedAlarm = mainPanel.getStoredAlarm();
 			if (storedAlarm != null) {
 				alarmSoundData = storedAlarm.alarmSoundData;
 			}
@@ -116,16 +111,16 @@ class PerformDuration {
 			alarmSoundData = repeatAlarmData.alarmSoundData;
 		}
 
-		mainClass.setRepeatButton(new RepeatAlarmData(minutes, alarmSoundData, oldAlarmsComboBoxValue));
+		mainPanel.setRepeatButton(new RepeatAlarmData(minutes, alarmSoundData, oldAlarmsComboBoxValue));
 
 		if (minutes == 0) {
 			Asac.sleep(100); // avoid that the BellIcon vanishes after entering 0 in the timeDurationField
 		}
-		mainClass.bellIcon = new BellIcon(name, alarmSoundData);
-		mainClass.bellIcon.play();
+		mainPanel.bellIcon = new BellIcon(name, alarmSoundData);
+		mainPanel.bellIcon.play();
 		Platform.runLater(() -> {
-			mainClass.resetStoredAlarmsVaLue();
-			mainClass.setIcon(false);
+			mainPanel.resetStoredAlarmsVaLue();
+			mainPanel.setIcon(false);
 		});
 	}
 

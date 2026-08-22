@@ -80,7 +80,7 @@ class TimeDurationField extends TextField {
 		setTextFormatter(new TextFormatter<>(filter));
 	}
 
-	void setListener(final AlarmsComboBox alarmsComboBox, final MainClass mainClass) {
+	void setListener(final AlarmsComboBox alarmsComboBox, final MainPanel mainClass) {
 
 		setOnAction(event -> {
 			final String name = alarmsComboBox.getEditor().getText();
@@ -94,23 +94,23 @@ class TimeDurationField extends TextField {
 		});
 	}
 
-	void evaluateTimeDurationField(final MainClass mainClass) {
-		final Systray systray = mainClass.getSystray();
+	void evaluateTimeDurationField(final MainPanel mainPanel) {
+//		final Systray systray = mainClass.getSystray();
 		if (timeDurationFieldIsSetInternal) {
 			return;
 		}
 		final String timeDuration = this.getText();
 
 		if (timeDuration != null && !timeDuration.isEmpty()) {
-			mainClass.deactivate();
-			if (systray != null) {
-				systray.hide();
-			}
+			mainPanel.deactivate();
+//			if (systray != null) {
+//				systray.hide();
+//			}
 
 			final int colonIndex = timeDuration.indexOf(':');
 			if (colonIndex < 0) {
 				final long minute = Long.parseLong(timeDuration);
-				final PerformDuration performDuration = new PerformDuration(minute, null, mainClass);
+				final PerformDuration performDuration = new PerformDuration(minute, null, mainPanel);
 				performDuration.start();
 			} else {
 				final String hourString = timeDuration.substring(0, colonIndex);
@@ -121,16 +121,16 @@ class TimeDurationField extends TextField {
 				final String tmp = "00" + minuteString;
 				final String minuteStringFormated = tmp.substring(0, tmp.length() - 2);
 				final String time = hour + ":" + minuteStringFormated;
-				final String name = mainClass.getName();
-				final Stage stage = mainClass.getStage();
+				final String name = mainPanel.getName();
+				final Stage stage = mainPanel.getStage();
 				if (name.isBlank()) {
 					Platform.runLater(() -> stage.setTitle(time));
 				} else {
 					Platform.runLater(
-							() -> stage.setTitle(name + "\u00A0" + mainClass.getDashForTitle() + "\u00A0" + time));
+							() -> stage.setTitle(name + "\u00A0" + mainPanel.getDashForTitle() + "\u00A0" + time));
 				}
 
-				final PerformTime performTime = new PerformTime(hour, minute, mainClass);
+				final PerformTime performTime = new PerformTime(hour, minute, mainPanel);
 				performTime.start();
 			}
 		}
