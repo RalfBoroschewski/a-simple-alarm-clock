@@ -14,7 +14,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
 public class MainPanel {
@@ -65,30 +64,35 @@ public class MainPanel {
 	}
 
 	void init(final Pane titlePane, final Pane bottomPane, boolean isSystray) {
-		pauseButton.setVisible(false);
-		repeatButton.setVisible(false);
-		deactivateButton.setVisible(false);
-
-		final double width = Double.parseDouble(MainClass.messages.getString("MainPanel.buttons.width"));
-		alarmsComboBox.setPrefWidth(width);
-		alarmManagerButton.setPrefWidth(width);
-		durationButton.setPrefWidth(width);
-		timeButton.setPrefWidth(width);
-		timeDurationField.setPrefWidth(width);
-		deactivateButton.setPrefWidth(width);
+		this.isSystray = isSystray;
 
 		if (gridPane == null) {
 			gridPane = new GridPane();
 			scene = new Scene(gridPane);
 			stage = mainClass.getStage();
 			stage.setScene(scene);
-			stage.initStyle(StageStyle.UNDECORATED);
+			// stage.initStyle(StageStyle.UNDECORATED);
 			gridPane.setStyle("-fx-border-color: black; -fx-border-style: solid;");
 			setListener(gridPane);
 			gridPane.setStyle("-fx-background-color: white;");
 			durationButton.init(mainClass);
 			timeButton.init(mainClass);
 			alarmsComboBox.initialize(mainClass, timeDurationField);
+
+			pauseButton.setVisible(false);
+			repeatButton.setVisible(false);
+			deactivateButton.setVisible(false);
+
+			final double width = Double.parseDouble(MainClass.messages.getString("MainPanel.buttons.width"));
+			alarmsComboBox.setPrefWidth(width);
+			alarmManagerButton.setPrefWidth(width);
+			durationButton.setPrefWidth(width);
+			timeButton.setPrefWidth(width);
+			timeDurationField.setPrefWidth(width);
+			deactivateButton.setPrefWidth(width);
+			setTitle(MainClass.messages.getString("title"));
+
+			setIcon(false);
 
 		} else {
 			gridPane.getChildren().clear();
@@ -98,8 +102,8 @@ public class MainPanel {
 		int positionY = 0;
 
 		if (titlePane != null) {
-			positionX++;
-			gridPane.add(titlePane, positionX, positionY, 1, 1);
+			// positionX++;
+			gridPane.add(titlePane, positionX, positionY, 2, 1);
 		}
 
 		positionX = 0;
@@ -136,25 +140,22 @@ public class MainPanel {
 			gridPane.add(bottomPane, positionX, positionY, 1, 1);
 		}
 
-		setTitle(MainClass.messages.getString("title"));
-
-		setIcon(false);
-
-		if (!isSystray) {
-			xPosition = stage.getX();
-			yPosition = stage.getY();
-		}
-
 	}
 
 	void update(Point2D point, boolean hasFocusedPropertyListener) {
+		System.out.println("Holla 20 " + point);
 		this.hasFocusedPropertyListener = hasFocusedPropertyListener;
 
 		alarmsComboBox.showStoredAlarms();
 		if (point != null) {
 			stage.setX(point.getX());
 			stage.setY(point.getY());
+			System.out.println("Holla 21");
+			xPosition = point.getX();
+			yPosition = point.getY();
 		}
+		System.out.println("Holla 22 " + stage.getX());
+		System.out.println("Holla 23 " + stage.getY());
 		stage.show();
 	}
 
@@ -218,6 +219,8 @@ public class MainPanel {
 		if (!isSystray) {
 			xPosition = stage.getX();
 			yPosition = stage.getY();
+			System.out.println("Hallo 1 " + xPosition);
+			System.out.println("Hallo 2 " + yPosition);
 		}
 	}
 
@@ -257,10 +260,13 @@ public class MainPanel {
 	}
 
 	void restorePosition() {
-		if (!isSystray) {
-			stage.setX(xPosition);
-			stage.setY(yPosition);
-		}
+		System.out.println("Hallo 3");
+		// if (!isSystray) {
+		System.out.println("Hallo 4 " + xPosition);
+		System.out.println("Hallo 5 " + yPosition);
+		stage.setX(xPosition);
+		stage.setY(yPosition);
+		// }
 	}
 
 	Pane getPane() {

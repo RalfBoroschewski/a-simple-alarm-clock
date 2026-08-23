@@ -82,21 +82,33 @@ class Systray {
 					Platform.runLater(() -> {
 						final Point2D point = getPopupStageCoordinates(event);
 						MainPanel mainPanel = mainClass.getMainPanel();
-						mainPanel.init(null, bottomPanel, true);
-						mainPanel.update(point, true);
+//						mainPanel.init(null, bottomPanel, true);
+						System.out.println("Egon 4 " + point);
+						Stage stage = mainPanel.getStage();
+						stage.setX(point.getX());
+						stage.setY(point.getY());
+//						mainPanel.update(point, true);
 
-						mainPanel.getStage().show();
+//						stage.setIconified(true);
+						stage.show();
+//						stage.setIconified(true);
 
 					});
 				} else if (SwingUtilities.isLeftMouseButton(event)) {
 					Platform.runLater(() -> {
-						Stage stage = mainClass.getStage();
-						mainClass.getMainPanel().update(null, false);
+						System.out.println("Egon 1");
 						MainPanel mainPanel = mainClass.getMainPanel();
+						mainPanel.restorePosition();
+						Stage stage = mainPanel.getStage();
+						mainClass.getMainPanel().update(null, false);
 						mainPanel.init(mainClass.getTitlePane(), null, true);
 						SystemTray.getSystemTray().remove(trayIcon);
-						mainPanel.restorePosition();
+						System.out.println("Egon 2");
+						stage.setIconified(false);
 						stage.show();
+						stage.setIconified(false);
+						stage.toFront();
+						stage.sizeToScene();
 					});
 				}
 			}

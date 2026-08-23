@@ -47,6 +47,7 @@ public class MainClass extends Application {
 	public void start(final Stage stage) throws Exception {
 		this.stage = stage;
 		mainPanel.init(getTitlePane(), null, false);
+		stage.show();
 		update();
 		setListener();
 		Platform.setImplicitExit(false); // enables mouse clicks in Systray
@@ -55,6 +56,7 @@ public class MainClass extends Application {
 
 	private void update() {
 		final Point2D point = Asac.getCoordinatesofMiddleOfTheScreen(stage);
+		System.out.println("Holla 10 " + point);
 		stage.setX(point.getX());
 		stage.setY(point.getY());
 		mainPanel.update(point, false);
@@ -71,8 +73,11 @@ public class MainClass extends Application {
 		hBoxTitleBar.setAlignment(Pos.CENTER_RIGHT);
 		hBoxTitleBar.setMaxWidth(Double.MAX_VALUE);
 
-		hBoxTitleBar.getChildren().addAll(new Label("Asac                                 "), minimizeButton,
-				finishButton);
+		Label label = new Label("Asac");
+		HBox labelBox = new HBox(100);
+		labelBox.setMinWidth(150);
+		labelBox.getChildren().addAll(label);
+		hBoxTitleBar.getChildren().addAll(labelBox, minimizeButton, finishButton);
 		titlePane.setRight(hBoxTitleBar);
 
 		return titlePane;

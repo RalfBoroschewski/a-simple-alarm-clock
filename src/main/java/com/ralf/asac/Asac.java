@@ -59,12 +59,12 @@ public class Asac {
 
 	static Point2D getCoordinatesofMiddleOfTheScreen(final Stage stage) {
 		final Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
-
 		final double stageWidth = stage.getWidth();
 		final double stageHeight = stage.getHeight();
 		final double windowsPositionX = (primScreenBounds.getWidth() - stageWidth) / 2;
 		final double windowsPositionY = (primScreenBounds.getHeight() - stageHeight) / 2;
 
+		System.out.println("Asac 1 " + stageWidth + " " + stageHeight);
 		return new Point2D(windowsPositionX, windowsPositionY);
 	}
 }
