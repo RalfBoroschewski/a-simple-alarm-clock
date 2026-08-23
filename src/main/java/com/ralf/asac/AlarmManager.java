@@ -37,10 +37,17 @@ class AlarmManager {
 	private final Button manageSoundsButton;
 	private final Button defaultSoundButton;
 	private final CheckBox minimizeToSystrayCheckBox;
+	private final Button okButton;
+
+	private final boolean isSystray;
 
 	@SuppressWarnings("java:S106")
-	AlarmManager(final MainClass mainClass) {
+	AlarmManager(final MainClass mainClass, final boolean isSystray) {
+		this.isSystray = isSystray;
+
 		final Stage stage = new Stage();
+		MainPanel mainPanel = mainClass.getMainPanel();
+		mainPanel.setHasFocusedPropertyCounterListener(Long.MAX_VALUE);
 		stage.initOwner(mainClass.getStage());
 		stage.initModality(Modality.APPLICATION_MODAL);
 		stage.setTitle(MainClass.messages.getString("AlarmManager.title"));
@@ -95,7 +102,7 @@ class AlarmManager {
 			minimizeToSystrayCheckBox.setSelected(true);
 		}
 
-		final Button okButton = new Button(MainClass.messages.getString("ok"));
+		okButton = new Button(MainClass.messages.getString("ok"));
 		okButton.setPrefWidth(widthButtons);
 		okButton.setMinWidth(widthButtons);
 
@@ -154,20 +161,19 @@ class AlarmManager {
 			editButton.setDisable(false);
 		});
 
-		setListener(mainClass.getMainPanel());
+		setListener(mainClass.getMainPanel(), mainClass, stage);
 
 		final Scene scene = new Scene(gridPane);
 		stage.setScene(scene);
 
 		tableView.prefWidthProperty().bind(scene.widthProperty().add(600));
 
-		okButton.setOnAction(event -> stage.hide());
 		stage.showAndWait();
 	}
 
 	@SuppressWarnings("java:S3776")
-	private void setListener(final MainPanel mainPanel) {
-		Stage stage = mainPanel.getStage();
+	private void setListener(final MainPanel mainPanel, MainClass mainClass, Stage thisStage) {
+		final Stage stage = mainPanel.getStage();
 
 		editButton.setOnAction(event -> {
 			if (selectedItem != null) {
@@ -243,19 +249,16 @@ class AlarmManager {
 
 			alarmSounds.setValue(Preferences.getDefaultSound());
 
-			final Button okButton = new Button(MainClass.messages.getString("ok"));
+			final Button okButtonDefaultSound = new Button(MainClass.messages.getString("ok"));
 			final Button cancelButton = new Button(MainClass.messages.getString("cancel"));
 
 			final HBox hBox = new HBox();
-			hBox.getChildren().addAll(okButton, cancelButton);
+			hBox.getChildren().addAll(okButtonDefaultSound, cancelButton);
 
 			final VBox vBox = new VBox();
 			vBox.getChildren().addAll(label, alarmSounds, hBox);
 
-			okButton.setOnAction(event1 -> {
-				Preferences.setDefaultSound(alarmSounds.getValue());
-				stageDefaultSound.close();
-			});
+			okButtonDefaultSound.setOnAction(event1 -> stageDefaultSound.close());
 
 			cancelButton.setOnAction(event1 -> stageDefaultSound.close());
 
@@ -271,6 +274,18 @@ class AlarmManager {
 						: Preferences.SystrayMode.NOT_IN_SYSTRAY)
 
 		);
+
+		okButton.setOnAction(event -> close(thisStage, mainPanel));
+
+		thisStage.setOnCloseRequest(event -> close(thisStage, mainPanel));
+	}
+
+	void close(final Stage thisStage, final MainPanel mainPanel) {
+		if (isSystray) {
+			mainPanel.setHasFocusedPropertyCounterListener(0);
+		}
+		thisStage.hide();
+		mainPanel.getStage().show();
 	}
 
 	void selectedItem(final AlarmManagerItem item) {

@@ -58,7 +58,8 @@ public class MainClass extends Application {
 		final Point2D point = Asac.getCoordinatesofMiddleOfTheScreen(stage);
 		stage.setX(point.getX());
 		stage.setY(point.getY());
-		mainPanel.update(point, false);
+		mainPanel.update(point);
+		mainPanel.setHasFocusedPropertyCounterListener(Long.MAX_VALUE);
 	}
 
 	MainPanel getMainPanel() {
@@ -72,7 +73,7 @@ public class MainClass extends Application {
 		hBoxTitleBar.setAlignment(Pos.CENTER_RIGHT);
 		hBoxTitleBar.setMaxWidth(Double.MAX_VALUE);
 
-		Label label = new Label("Asac");
+		Label label = new Label(messages.getString("title"));
 		HBox labelBox = new HBox(100);
 		labelBox.setMinWidth(150);
 		labelBox.getChildren().addAll(label);

@@ -82,10 +82,9 @@ class Systray {
 				if (SwingUtilities.isLeftMouseButton(event)) {
 					Platform.runLater(() -> {
 						MainPanel mainPanel = mainClass.getMainPanel();
-						mainPanel.setHasFocusedPropertyListener(false);
 						mainPanel.restorePosition();
 						Stage stage = mainPanel.getStage();
-						mainClass.getMainPanel().update(null, false);
+						mainPanel.setHasFocusedPropertyCounterListener(Long.MAX_VALUE);
 						mainPanel.init(mainClass.getTitlePane(), null, false);
 						SystemTray.getSystemTray().remove(trayIcon);
 						stage.show();
@@ -97,7 +96,7 @@ class Systray {
 					Platform.runLater(() -> {
 						final Point2D point = getPopupStageCoordinates(event);
 						MainPanel mainPanel = mainClass.getMainPanel();
-						mainPanel.setHasFocusedPropertyListener(true);
+						mainPanel.setHasFocusedPropertyCounterListener(1);
 						Stage stage = mainPanel.getStage();
 						mainPanel.init(null, bottomPanel, true);
 						stage.setX(point.getX());

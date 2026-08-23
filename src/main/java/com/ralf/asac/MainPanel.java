@@ -22,7 +22,7 @@ public class MainPanel {
 
 	private Stage stage;
 	private Scene scene;
-	static final String PAUSE_KEY = "MainClass.pause";
+	private static final String PAUSE_KEY = "MainClass.pause";
 
 	private final AlarmsComboBox alarmsComboBox;
 	final TimeDurationField timeDurationField;
@@ -51,7 +51,7 @@ public class MainPanel {
 	private double xPosition;
 	private double yPosition;
 
-	private boolean hasFocusedPropertyListener;
+	private long hasFocusedPropertyCounterListener;
 
 	MainPanel(final MainClass mainClass) {
 		this.mainClass = mainClass;
@@ -138,24 +138,19 @@ public class MainPanel {
 			positionY++;
 			gridPane.add(bottomPane, positionX, positionY, 1, 1);
 		}
-
 	}
 
-	void update(Point2D point, boolean hasFocusedPropertyListener) {
-		this.hasFocusedPropertyListener = hasFocusedPropertyListener;
-
+	void update(final Point2D point) {
 		alarmsComboBox.showStoredAlarms();
-		if (point != null) {
-			stage.setX(point.getX());
-			stage.setY(point.getY());
-			xPosition = point.getX();
-			yPosition = point.getY();
-		}
+		stage.setX(point.getX());
+		stage.setY(point.getY());
+		xPosition = point.getX();
+		yPosition = point.getY();
 		stage.show();
 	}
 
-	void setHasFocusedPropertyListener(boolean hasFocusedPropertyListener) {
-		this.hasFocusedPropertyListener = hasFocusedPropertyListener;
+	void setHasFocusedPropertyCounterListener(final long hasFocusedPropertyCounterListener) {
+		this.hasFocusedPropertyCounterListener = hasFocusedPropertyCounterListener;
 	}
 
 	private void setListener(final GridPane gridPane) {
@@ -173,7 +168,7 @@ public class MainPanel {
 			pauseButtonIsPause = !pauseButtonIsPause;
 		});
 
-		alarmManagerButton.setOnAction(event -> new AlarmManager(mainClass));
+		alarmManagerButton.setOnAction(event -> new AlarmManager(mainClass, isSystray));
 
 		repeatButton.setOnAction(event -> {
 			timeDurationField.setText(repeatAlarmData.duration + "");
@@ -187,7 +182,8 @@ public class MainPanel {
 		gridPane.setOnMouseDragged(this::handleMouseDragged);
 
 		stage.focusedProperty().addListener((obs, oldValue, focused) -> {
-			if (!hasFocusedPropertyListener) {
+			if (hasFocusedPropertyCounterListener-- > 0) {
+				stage.show();
 				return;
 			}
 
@@ -205,12 +201,12 @@ public class MainPanel {
 		});
 	}
 
-	private void handleMousePressed(MouseEvent event) {
+	private void handleMousePressed(final MouseEvent event) {
 		xOffset = event.getSceneX();
 		yOffset = event.getSceneY();
 	}
 
-	private void handleMouseDragged(MouseEvent event) {
+	private void handleMouseDragged(final MouseEvent event) {
 		final Stage tmpStage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
 		tmpStage.setX(event.getScreenX() - xOffset);
 		tmpStage.setY(event.getScreenY() - yOffset);
@@ -339,7 +335,7 @@ public class MainPanel {
 		}
 	}
 
-	void setTitle(String title) {
+	void setTitle(final String title) {
 		Platform.runLater(() -> stage.setTitle(title));
 	}
 
@@ -374,7 +370,7 @@ public class MainPanel {
 		return scene;
 	}
 
-	void setRepeatButton(RepeatAlarmData repeatAlarmData) {
+	void setRepeatButton(final RepeatAlarmData repeatAlarmData) {
 		if (repeatAlarmData != null) {
 			this.repeatAlarmData = repeatAlarmData;
 			Platform.runLater(() -> {
