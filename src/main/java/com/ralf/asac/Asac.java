@@ -64,7 +64,6 @@ public class Asac {
 		final double windowsPositionX = (primScreenBounds.getWidth() - stageWidth) / 2;
 		final double windowsPositionY = (primScreenBounds.getHeight() - stageHeight) / 2;
 
-		System.out.println("Asac 1 " + stageWidth + " " + stageHeight);
 		return new Point2D(windowsPositionX, windowsPositionY);
 	}
 }

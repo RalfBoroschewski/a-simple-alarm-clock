@@ -14,6 +14,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
 public class MainPanel {
@@ -71,8 +72,8 @@ public class MainPanel {
 			scene = new Scene(gridPane);
 			stage = mainClass.getStage();
 			stage.setScene(scene);
-			// stage.initStyle(StageStyle.UNDECORATED);
-			gridPane.setStyle("-fx-border-color: black; -fx-border-style: solid;");
+			stage.initStyle(StageStyle.UNDECORATED);
+//			gridPane.setStyle("-fx-border-color: black; -fx-border-style: solid;");
 			setListener(gridPane);
 			gridPane.setStyle("-fx-background-color: white;");
 			durationButton.init(mainClass);
