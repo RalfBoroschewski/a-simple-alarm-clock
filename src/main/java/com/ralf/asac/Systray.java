@@ -78,37 +78,31 @@ class Systray {
 		trayIcon.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(final java.awt.event.MouseEvent event) {
-				if (SwingUtilities.isRightMouseButton(event)) {
-					Platform.runLater(() -> {
-						final Point2D point = getPopupStageCoordinates(event);
-						MainPanel mainPanel = mainClass.getMainPanel();
-//						mainPanel.init(null, bottomPanel, true);
-						System.out.println("Egon 4 " + point);
-						Stage stage = mainPanel.getStage();
-						stage.setX(point.getX());
-						stage.setY(point.getY());
-//						mainPanel.update(point, true);
 
-//						stage.setIconified(true);
-						stage.show();
-//						stage.setIconified(true);
-
-					});
-				} else if (SwingUtilities.isLeftMouseButton(event)) {
+				if (SwingUtilities.isLeftMouseButton(event)) {
 					Platform.runLater(() -> {
-						System.out.println("Egon 1");
 						MainPanel mainPanel = mainClass.getMainPanel();
+						mainPanel.setHasFocusedPropertyListener(false);
 						mainPanel.restorePosition();
 						Stage stage = mainPanel.getStage();
 						mainClass.getMainPanel().update(null, false);
-						mainPanel.init(mainClass.getTitlePane(), null, true);
+						mainPanel.init(mainClass.getTitlePane(), null, false);
 						SystemTray.getSystemTray().remove(trayIcon);
-						System.out.println("Egon 2");
-						stage.setIconified(false);
 						stage.show();
-						stage.setIconified(false);
+						mainPanel.restorePosition();
 						stage.toFront();
 						stage.sizeToScene();
+					});
+				} else if (SwingUtilities.isRightMouseButton(event)) {
+					Platform.runLater(() -> {
+						final Point2D point = getPopupStageCoordinates(event);
+						MainPanel mainPanel = mainClass.getMainPanel();
+						mainPanel.setHasFocusedPropertyListener(true);
+						Stage stage = mainPanel.getStage();
+						mainPanel.init(null, bottomPanel, true);
+						stage.setX(point.getX());
+						stage.setY(point.getY());
+						stage.show();
 					});
 				}
 			}

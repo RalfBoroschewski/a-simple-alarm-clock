@@ -73,9 +73,8 @@ public class MainPanel {
 			stage = mainClass.getStage();
 			stage.setScene(scene);
 			stage.initStyle(StageStyle.UNDECORATED);
-//			gridPane.setStyle("-fx-border-color: black; -fx-border-style: solid;");
+			gridPane.setStyle("-fx-border-color: black; -fx-border-style: solid;");
 			setListener(gridPane);
-			gridPane.setStyle("-fx-background-color: white;");
 			durationButton.init(mainClass);
 			timeButton.init(mainClass);
 			alarmsComboBox.initialize(mainClass, timeDurationField);
@@ -103,7 +102,6 @@ public class MainPanel {
 		int positionY = 0;
 
 		if (titlePane != null) {
-			// positionX++;
 			gridPane.add(titlePane, positionX, positionY, 2, 1);
 		}
 
@@ -144,23 +142,23 @@ public class MainPanel {
 	}
 
 	void update(Point2D point, boolean hasFocusedPropertyListener) {
-		System.out.println("Holla 20 " + point);
 		this.hasFocusedPropertyListener = hasFocusedPropertyListener;
 
 		alarmsComboBox.showStoredAlarms();
 		if (point != null) {
 			stage.setX(point.getX());
 			stage.setY(point.getY());
-			System.out.println("Holla 21");
 			xPosition = point.getX();
 			yPosition = point.getY();
 		}
-		System.out.println("Holla 22 " + stage.getX());
-		System.out.println("Holla 23 " + stage.getY());
 		stage.show();
 	}
 
-	private void setListener(GridPane gridPane) {
+	void setHasFocusedPropertyListener(boolean hasFocusedPropertyListener) {
+		this.hasFocusedPropertyListener = hasFocusedPropertyListener;
+	}
+
+	private void setListener(final GridPane gridPane) {
 
 		timeDurationField.setListener(alarmsComboBox, mainClass);
 
@@ -216,12 +214,9 @@ public class MainPanel {
 		final Stage tmpStage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
 		tmpStage.setX(event.getScreenX() - xOffset);
 		tmpStage.setY(event.getScreenY() - yOffset);
-
 		if (!isSystray) {
 			xPosition = stage.getX();
 			yPosition = stage.getY();
-			System.out.println("Hallo 1 " + xPosition);
-			System.out.println("Hallo 2 " + yPosition);
 		}
 	}
 
@@ -261,13 +256,8 @@ public class MainPanel {
 	}
 
 	void restorePosition() {
-		System.out.println("Hallo 3");
-		// if (!isSystray) {
-		System.out.println("Hallo 4 " + xPosition);
-		System.out.println("Hallo 5 " + yPosition);
 		stage.setX(xPosition);
 		stage.setY(yPosition);
-		// }
 	}
 
 	Pane getPane() {

@@ -56,7 +56,6 @@ public class MainClass extends Application {
 
 	private void update() {
 		final Point2D point = Asac.getCoordinatesofMiddleOfTheScreen(stage);
-		System.out.println("Holla 10 " + point);
 		stage.setX(point.getX());
 		stage.setY(point.getY());
 		mainPanel.update(point, false);
