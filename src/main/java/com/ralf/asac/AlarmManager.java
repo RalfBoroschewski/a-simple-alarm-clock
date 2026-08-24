@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.ralf.asac.AlarmManager.AlarmManagerItem;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -12,7 +14,6 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -25,6 +26,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.StringConverter;
 
 class AlarmManager {
 	private final ArrayList<AlarmManagerItem> alarmManagerItems;
@@ -36,7 +38,7 @@ class AlarmManager {
 	private final Button deleteButton;
 	private final Button manageSoundsButton;
 	private final Button defaultSoundButton;
-	private final CheckBox minimizeToSystrayCheckBox;
+	private final ComboBox<SystrayMode> checkBoxBehavior;
 	private final Button okButton;
 
 	private final boolean isSystray;
@@ -94,12 +96,45 @@ class AlarmManager {
 		defaultSoundButton.setPrefWidth(widthDefaultSoundButton);
 		defaultSoundButton.setMinWidth(widthDefaultSoundButton);
 
-		minimizeToSystrayCheckBox = new CheckBox(MainClass.messages.getString("AlarmManager.minimize.to.systray"));
+		checkBoxBehavior = new ComboBox<>();
+		checkBoxBehavior.setConverter(new StringConverter<SystrayMode>() {
+
+			@Override
+			public String toString(SystrayMode systrayMode) {
+				return systrayMode.name;
+			}
+
+			@Override
+			public SystrayMode fromString(String string) {
+				return null;
+			}
+		});
+
+		String itemNoSystrayString = MainClass.messages.getString("AlarmManager.systray.behavior.no.systray");
+		String itemMinimizeToSystrayString = MainClass.messages.getString("AlarmManager.systray.behavior.minimize");
+		String itemSystrayOnlyString = MainClass.messages.getString("AlarmManager.systray.behavior.systray.only");
+
+		SystrayMode itemNoSystray = new SystrayMode(itemNoSystrayString, Preferences.SystrayMode.NOT_IN_SYSTRAY);
+		SystrayMode itemMinimizeToSystray = new SystrayMode(itemMinimizeToSystrayString,
+				Preferences.SystrayMode.MINIMIZE_TO_SYSTRAY);
+		SystrayMode itemSystrayOnly = new SystrayMode(itemSystrayOnlyString, Preferences.SystrayMode.ONLY_IN_SYSTRAY);
+
 		Preferences.SystrayMode systrayMode = Preferences.getSystrayMode();
-		minimizeToSystrayCheckBox.setPrefWidth(widthMinimizeToSystrayCheckBox);
-		minimizeToSystrayCheckBox.setMinWidth(widthMinimizeToSystrayCheckBox);
-		if (systrayMode == Preferences.SystrayMode.MINIMIZE_TO_SYSTRAY) {
-			minimizeToSystrayCheckBox.setSelected(true);
+
+		checkBoxBehavior.getItems().addAll(itemNoSystray, itemMinimizeToSystray, itemSystrayOnly);
+		checkBoxBehavior.setPrefWidth(widthMinimizeToSystrayCheckBox);
+		checkBoxBehavior.setMinWidth(widthMinimizeToSystrayCheckBox);
+
+		switch (systrayMode) {
+		case NOT_IN_SYSTRAY:
+			checkBoxBehavior.setValue(itemSystrayOnly);
+			break;
+		case MINIMIZE_TO_SYSTRAY:
+			checkBoxBehavior.setValue(itemMinimizeToSystray);
+			break;
+		case ONLY_IN_SYSTRAY:
+			checkBoxBehavior.setValue(itemSystrayOnly);
+			break;
 		}
 
 		okButton = new Button(MainClass.messages.getString("ok"));
@@ -147,8 +182,8 @@ class AlarmManager {
 		if (mainClass.getSystray().hasSystray()) {
 			positionY++;
 
-			gridPane.add(minimizeToSystrayCheckBox, positionX, positionY, 2, 1);
-			GridPane.setMargin(minimizeToSystrayCheckBox, insets);
+			gridPane.add(checkBoxBehavior, positionX, positionY, 2, 1);
+			GridPane.setMargin(checkBoxBehavior, insets);
 		}
 
 		positionY++;
@@ -269,11 +304,7 @@ class AlarmManager {
 			stageDefaultSound.showAndWait();
 		});
 
-		minimizeToSystrayCheckBox.setOnAction(event -> Preferences
-				.setSystrayMode(minimizeToSystrayCheckBox.isSelected() ? Preferences.SystrayMode.MINIMIZE_TO_SYSTRAY
-						: Preferences.SystrayMode.NOT_IN_SYSTRAY)
-
-		);
+		checkBoxBehavior.setOnAction(event -> Preferences.setSystrayMode(checkBoxBehavior.getValue().systrayMode));
 
 		okButton.setOnAction(event -> close(thisStage, mainPanel));
 
@@ -453,4 +484,15 @@ class AlarmManager {
 			return "column1: " + column1 + " column2; " + column2 + " column3; " + column3;
 		}
 	}
+}
+
+class SystrayMode {
+	final String name;
+	final Preferences.SystrayMode systrayMode;
+
+	SystrayMode(final String name, final Preferences.SystrayMode systrayMode) {
+		this.name = name;
+		this.systrayMode = systrayMode;
+	}
+
 }

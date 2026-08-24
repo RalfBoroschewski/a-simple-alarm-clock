@@ -193,17 +193,20 @@ class Preferences {
 	}
 
 	enum SystrayMode {
-		NOT_IN_SYSTRAY, MINIMIZE_TO_SYSTRAY
+		NOT_IN_SYSTRAY, MINIMIZE_TO_SYSTRAY, ONLY_IN_SYSTRAY
 	}
 
 	static void setSystrayMode(final SystrayMode systrayMode) {
 		switch (systrayMode) {
 		case NOT_IN_SYSTRAY:
+		default:
 			PREFERENCES_ROOT.put(SYSTRAY_MODE, "0");
 			break;
 		case MINIMIZE_TO_SYSTRAY:
-		default:
 			PREFERENCES_ROOT.put(SYSTRAY_MODE, "1");
+			break;
+		case ONLY_IN_SYSTRAY:
+			PREFERENCES_ROOT.put(SYSTRAY_MODE, "2");
 			break;
 		}
 
@@ -214,10 +217,12 @@ class Preferences {
 		final String modeString = PREFERENCES_ROOT.get(SYSTRAY_MODE, "0");
 		switch (modeString) {
 		case "0":
+		default:
 			return SystrayMode.NOT_IN_SYSTRAY;
 		case "1":
-		default:
 			return SystrayMode.MINIMIZE_TO_SYSTRAY;
+		case "2":
+			return SystrayMode.ONLY_IN_SYSTRAY;
 		}
 	}
 

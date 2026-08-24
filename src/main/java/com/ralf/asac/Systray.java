@@ -78,33 +78,49 @@ class Systray {
 		trayIcon.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(final java.awt.event.MouseEvent event) {
-
 				if (SwingUtilities.isLeftMouseButton(event)) {
-					Platform.runLater(() -> {
-						MainPanel mainPanel = mainClass.getMainPanel();
-						mainPanel.restorePosition();
-						Stage stage = mainPanel.getStage();
-						mainPanel.setHasFocusedPropertyCounterListener(Long.MAX_VALUE);
-						mainPanel.init(mainClass.getTitlePane(), null, false);
-						SystemTray.getSystemTray().remove(trayIcon);
-						stage.show();
-						mainPanel.restorePosition();
-						stage.toFront();
-						stage.sizeToScene();
-					});
+					switch (Preferences.getSystrayMode()) {
+					case NOT_IN_SYSTRAY:
+					default:
+						showNormal();
+						break;
+					case MINIMIZE_TO_SYSTRAY:
+					case ONLY_IN_SYSTRAY:
+						showAtSystray(event);
+						break;
+					}
 				} else if (SwingUtilities.isRightMouseButton(event)) {
-					Platform.runLater(() -> {
-						final Point2D point = getPopupStageCoordinates(event);
-						MainPanel mainPanel = mainClass.getMainPanel();
-						mainPanel.setHasFocusedPropertyCounterListener(1);
-						Stage stage = mainPanel.getStage();
-						mainPanel.init(null, bottomPanel, true);
-						stage.setX(point.getX());
-						stage.setY(point.getY());
-						stage.show();
-					});
+					showAtSystray(event);
 				}
 			}
+		});
+	}
+
+	private void showNormal() {
+		Platform.runLater(() -> {
+			MainPanel mainPanel = mainClass.getMainPanel();
+			mainPanel.restorePosition();
+			Stage stage = mainPanel.getStage();
+			mainPanel.setHasFocusedPropertyCounterListener(Long.MAX_VALUE);
+			mainPanel.init(mainClass.getTitlePane(), null, false);
+			SystemTray.getSystemTray().remove(trayIcon);
+			stage.show();
+			mainPanel.restorePosition();
+			stage.toFront();
+			stage.sizeToScene();
+		});
+	}
+
+	private void showAtSystray(final java.awt.event.MouseEvent event) {
+		Platform.runLater(() -> {
+			final Point2D point = getPopupStageCoordinates(event);
+			MainPanel mainPanel = mainClass.getMainPanel();
+			mainPanel.setHasFocusedPropertyCounterListener(1);
+			Stage stage = mainPanel.getStage();
+			mainPanel.init(null, bottomPanel, true);
+			stage.setX(point.getX());
+			stage.setY(point.getY());
+			stage.show();
 		});
 	}
 

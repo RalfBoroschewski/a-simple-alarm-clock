@@ -160,6 +160,7 @@ class Alarm {
 		this.alarmSoundData = alarmSoundData;
 	}
 
+	@Override
 	public String toString() {
 		return "Name: " + name + " Time: " + time;
 	}
