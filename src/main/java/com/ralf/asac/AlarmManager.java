@@ -281,9 +281,7 @@ class AlarmManager {
 	}
 
 	void close(final Stage thisStage, final MainPanel mainPanel) {
-		if (isSystray) {
-			mainPanel.setHasFocusedPropertyCounterListener(0);
-		}
+		mainPanel.setHasFocusedPropertyCounterListener(isSystray ? 0 : Long.MAX_VALUE);
 		thisStage.hide();
 		mainPanel.getStage().show();
 	}
