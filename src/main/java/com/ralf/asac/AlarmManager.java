@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import com.ralf.asac.AlarmManager.AlarmManagerItem;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -38,7 +36,7 @@ class AlarmManager {
 	private final Button deleteButton;
 	private final Button manageSoundsButton;
 	private final Button defaultSoundButton;
-	private final ComboBox<SystrayMode> checkBoxBehavior;
+	private final ComboBox<SystrayItem> checkBoxBehavior;
 	private final Button okButton;
 
 	private final boolean isSystray;
@@ -97,27 +95,42 @@ class AlarmManager {
 		defaultSoundButton.setMinWidth(widthDefaultSoundButton);
 
 		checkBoxBehavior = new ComboBox<>();
-		checkBoxBehavior.setConverter(new StringConverter<SystrayMode>() {
+		checkBoxBehavior.setConverter(new StringConverter<SystrayItem>() {
 
 			@Override
-			public String toString(SystrayMode systrayMode) {
+			public String toString(SystrayItem systrayMode) {
 				return systrayMode.name;
 			}
 
 			@Override
-			public SystrayMode fromString(String string) {
+			public SystrayItem fromString(String string) {
 				return null;
 			}
+		});
+
+		checkBoxBehavior.valueProperty().addListener((obs, oldValue, newValue) -> {
+			Preferences.setSystrayMode(newValue.systrayMode);
+			switch (newValue.systrayMode) {
+			case NOT_IN_SYSTRAY:
+				mainPanel.getStage().show();
+				break;
+			case MINIMIZE_TO_SYSTRAY:
+				break;
+			case ONLY_IN_SYSTRAY:
+				mainPanel.getStage().show();
+				break;
+			}
+
 		});
 
 		String itemNoSystrayString = MainClass.messages.getString("AlarmManager.systray.behavior.no.systray");
 		String itemMinimizeToSystrayString = MainClass.messages.getString("AlarmManager.systray.behavior.minimize");
 		String itemSystrayOnlyString = MainClass.messages.getString("AlarmManager.systray.behavior.systray.only");
 
-		SystrayMode itemNoSystray = new SystrayMode(itemNoSystrayString, Preferences.SystrayMode.NOT_IN_SYSTRAY);
-		SystrayMode itemMinimizeToSystray = new SystrayMode(itemMinimizeToSystrayString,
+		SystrayItem itemNoSystray = new SystrayItem(itemNoSystrayString, Preferences.SystrayMode.NOT_IN_SYSTRAY);
+		SystrayItem itemMinimizeToSystray = new SystrayItem(itemMinimizeToSystrayString,
 				Preferences.SystrayMode.MINIMIZE_TO_SYSTRAY);
-		SystrayMode itemSystrayOnly = new SystrayMode(itemSystrayOnlyString, Preferences.SystrayMode.ONLY_IN_SYSTRAY);
+		SystrayItem itemSystrayOnly = new SystrayItem(itemSystrayOnlyString, Preferences.SystrayMode.ONLY_IN_SYSTRAY);
 
 		Preferences.SystrayMode systrayMode = Preferences.getSystrayMode();
 
@@ -486,11 +499,11 @@ class AlarmManager {
 	}
 }
 
-class SystrayMode {
+class SystrayItem {
 	final String name;
 	final Preferences.SystrayMode systrayMode;
 
-	SystrayMode(final String name, final Preferences.SystrayMode systrayMode) {
+	SystrayItem(final String name, final Preferences.SystrayMode systrayMode) {
 		this.name = name;
 		this.systrayMode = systrayMode;
 	}

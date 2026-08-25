@@ -35,6 +35,9 @@ public class MainClass extends Application {
 	private Systray systray;
 
 	static void start(final String[] args) {
+		if (args.length > 0) {
+			Preferences.setSystrayMode(Preferences.SystrayMode.NOT_IN_SYSTRAY);
+		}
 		launch(args);
 	}
 
@@ -47,11 +50,17 @@ public class MainClass extends Application {
 	public void start(final Stage stage) throws Exception {
 		this.stage = stage;
 		mainPanel.init(getTitlePane(), null, false);
-		stage.show();
+
+		systray = new Systray(this);
 		update();
 		setListener();
+		if (Preferences.getSystrayMode() == Preferences.SystrayMode.ONLY_IN_SYSTRAY && systray.hasSystray()) {
+			Platform.runLater(() -> stage.setIconified(true));
+			systray.addSystray();
+		} else {
+			stage.show();
+		}
 		Platform.setImplicitExit(false); // enables mouse clicks in Systray
-		systray = new Systray(this);
 	}
 
 	private void update() {
@@ -105,10 +114,6 @@ public class MainClass extends Application {
 
 	void show() {
 		stage.show();
-	}
-
-	void clearAlarmsComboBox() {
-		mainPanel.getAlarmsComboBox().clear();
 	}
 
 	@SuppressWarnings("java:S4507")

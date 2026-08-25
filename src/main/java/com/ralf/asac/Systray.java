@@ -79,14 +79,17 @@ class Systray {
 			@Override
 			public void mouseClicked(final java.awt.event.MouseEvent event) {
 				if (SwingUtilities.isLeftMouseButton(event)) {
-					switch (Preferences.getSystrayMode()) {
+					final Preferences.SystrayMode systrayMode = hasSystray() ? Preferences.getSystrayMode()
+							: Preferences.SystrayMode.NOT_IN_SYSTRAY;
+
+					switch (systrayMode) {
+					case ONLY_IN_SYSTRAY:
+						showAtSystray(event);
+						break;
+					case MINIMIZE_TO_SYSTRAY:
 					case NOT_IN_SYSTRAY:
 					default:
 						showNormal();
-						break;
-					case MINIMIZE_TO_SYSTRAY:
-					case ONLY_IN_SYSTRAY:
-						showAtSystray(event);
 						break;
 					}
 				} else if (SwingUtilities.isRightMouseButton(event)) {
@@ -121,6 +124,8 @@ class Systray {
 			stage.setX(point.getX());
 			stage.setY(point.getY());
 			stage.show();
+			stage.toFront();
+			stage.setAlwaysOnTop(true);
 		});
 	}
 
