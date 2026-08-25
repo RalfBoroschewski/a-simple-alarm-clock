@@ -16,6 +16,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 class BellIcon {
 	final String name;
@@ -54,11 +55,12 @@ class BellIcon {
 
 		Platform.runLater(() -> {
 			stage = new Stage();
+			stage.initStyle(StageStyle.UNDECORATED);
 			final VBox vBox = new VBox();
 
 			final Button button = new Button();
 
-			if (name != null) {
+			if (name != null && !name.isBlank()) {
 				final Label caption = new Label(name);
 				vBox.getChildren().addAll(caption, button);
 			} else {
