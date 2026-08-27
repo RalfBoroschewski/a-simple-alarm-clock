@@ -40,7 +40,7 @@ class Preferences {
 	static void setAlarms(final List<AlarmManager.AlarmManagerItem> items) {
 		final StringBuilder alarms = new StringBuilder();
 		boolean isFirst = true;
-		for (AlarmManager.AlarmManagerItem item : items) {
+		for (final AlarmManager.AlarmManagerItem item : items) {
 			final String[] alarmStrings = new String[ALARM_STRING_PARTS_NUMBER];
 
 			for (int index = 0; index < alarmStrings.length; index++) {
@@ -116,7 +116,7 @@ class Preferences {
 	static void setSounds(final List<SoundManager.SoundManagerItem> items) {
 		final StringBuilder alarms = new StringBuilder();
 		boolean isFirst = true;
-		for (SoundManager.SoundManagerItem item : items) {
+		for (final SoundManager.SoundManagerItem item : items) {
 			final String[] alarmStrings = new String[ALARM_SOUND_STRING_PARTS_NUMBER];
 
 			for (int index = 0; index < alarmStrings.length; index++) {

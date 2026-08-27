@@ -22,7 +22,7 @@ class PerformTime {
 	}
 
 	public void start() {
-		MainPanel mainPanel = mainClass.getMainPanel();
+		final MainPanel mainPanel = mainClass.getMainPanel();
 		mainPanel.deactivate();
 		mainPanel.setRepeatButton(null);
 
@@ -78,7 +78,7 @@ class PerformTime {
 		@Override
 		protected Integer call() throws Exception {
 			startBell = true;
-			MainPanel mainPanel = mainClass.getMainPanel();
+			final MainPanel mainPanel = mainClass.getMainPanel();
 			mainPanel.setVisibilityDeactivateButton(true);
 
 			LocalDateTime now = LocalDateTime.now(ZoneId.systemDefault());

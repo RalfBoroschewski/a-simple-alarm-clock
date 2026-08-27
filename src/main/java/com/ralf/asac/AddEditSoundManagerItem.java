@@ -79,7 +79,7 @@ class AddEditSoundManagerItem {
 		VBox.setMargin(pathFieldTextField, new Insets(marginTopCaptionFields, marginRightWindow, 0, marginLeftWindow));
 
 		final VBox vBoxPathButton = new VBox();
-		Label emptyLabel = new Label("");
+		final Label emptyLabel = new Label("");
 		vBoxPathButton.getChildren().addAll(emptyLabel, selectFileButton);
 		VBox.setMargin(emptyLabel, new Insets(marginTopPathItems, 0, 0, 0));
 		VBox.setMargin(selectFileButton, new Insets(marginTopCaptionFields, marginRightWindow, 0, 0));
@@ -123,7 +123,7 @@ class AddEditSoundManagerItem {
 
 	private void checkTextFields() {
 
-		boolean entryAlreadyExists = testOnNameAlreadyExist();
+		final boolean entryAlreadyExists = testOnNameAlreadyExist();
 
 		final String currentName = nameTextField.getText();
 		if (isNewEntry) {
@@ -177,7 +177,7 @@ class AddEditSoundManagerItem {
 
 	boolean testOnNameAlreadyExist() {
 		String currentName = nameTextField.getText();
-		for (SoundManager.SoundManagerItem item : items) {
+		for (final SoundManager.SoundManagerItem item : items) {
 			if (currentName.equals(item.getName())) {
 				return true;
 			}

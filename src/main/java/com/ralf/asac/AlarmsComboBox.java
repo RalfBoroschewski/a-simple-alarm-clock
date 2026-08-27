@@ -55,7 +55,7 @@ public class AlarmsComboBox extends ComboBox<Alarm> {
 		setConverter(this, timeDurationField);
 	}
 
-	void setAlarmsComboBoxToBeSynchronize(AlarmsComboBox alarmsComboBoxToBeSynchronize) {
+	void setAlarmsComboBoxToBeSynchronize(final AlarmsComboBox alarmsComboBoxToBeSynchronize) {
 		this.alarmsComboBoxToBeSynchronize = alarmsComboBoxToBeSynchronize;
 	}
 
@@ -89,7 +89,7 @@ public class AlarmsComboBox extends ComboBox<Alarm> {
 					return new Alarm(getEditor().getText(), timeDurationField.getText(), null);
 				}
 
-				for (Alarm item : alarmsComboBox.getItems()) {
+				for (final Alarm item : alarmsComboBox.getItems()) {
 					if (item.name.equals(name)) {
 						return item;
 					}
@@ -125,7 +125,7 @@ public class AlarmsComboBox extends ComboBox<Alarm> {
 
 		final ArrayList<Alarm> tmpStoredAlarms = new ArrayList<>();
 
-		for (AlarmManager.AlarmManagerItem item : items) {
+		for (final AlarmManager.AlarmManagerItem item : items) {
 			tmpStoredAlarms.add(new Alarm(item.getName(), item.getTime(), item.getAlarmSoundData()));
 		}
 
@@ -133,7 +133,7 @@ public class AlarmsComboBox extends ComboBox<Alarm> {
 		getItems().addAll(tmpStoredAlarms);
 
 		if (items.isEmpty()) {
-			Tooltip tooltip = new Tooltip(MainClass.messages.getString("MainClass.tooltip"));
+			final Tooltip tooltip = new Tooltip(MainClass.messages.getString("MainClass.tooltip"));
 			tooltip.setShowDelay(new Duration(0));
 			setTooltip(tooltip);
 		}

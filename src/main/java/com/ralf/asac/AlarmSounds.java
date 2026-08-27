@@ -13,7 +13,7 @@ class AlarmSounds {
 		final List<AlarmSoundData> result = getAlarmSoundsResource();
 		final ArrayList<SoundManager.SoundManagerItem> storedSounds = Preferences.getSounds();
 
-		for (SoundManager.SoundManagerItem storedSound : storedSounds) {
+		for (final SoundManager.SoundManagerItem storedSound : storedSounds) {
 
 			final AlarmSoundData alarmData = new AlarmSoundData(storedSound.getName(), storedSound.getPath());
 			result.add(alarmData);
@@ -25,7 +25,7 @@ class AlarmSounds {
 	// build a list with all sounds inside the .jar
 	private List<AlarmSoundData> getAlarmSoundsResource() {
 		final List<AlarmSoundData> result = new ArrayList<>();
-		try (ScanResult scanResult = new ClassGraph().acceptPaths(".").scan()) {
+		try (final ScanResult scanResult = new ClassGraph().acceptPaths(".").scan()) {
 			final ResourceList resourceList = scanResult.getAllResources();
 			final List<String> paths = resourceList.getPaths();
 			for (String path : paths) {

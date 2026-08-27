@@ -15,7 +15,7 @@ class TimeButton extends Button {
 		super(MainClass.messages.getString("TimeButton.set.time"));
 	}
 
-	void init(MainClass mainClass) {
+	void init(final MainClass mainClass) {
 		this.setOnAction(event -> buildTimePopup(mainClass).show(this, Side.BOTTOM, 0, 0));
 	}
 

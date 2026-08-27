@@ -9,7 +9,7 @@ class PerformDuration {
 	private final RepeatAlarmData repeatAlarmData;
 	private final MainClass mainClass;
 	private Alarm oldAlarmsComboBoxValue;
-	final String name;
+	private final String name;
 	private MyWorker myWorker;
 
 	PerformDuration(final long minutes, final RepeatAlarmData repeatAlarmData, final MainClass mainClass) {
@@ -20,13 +20,13 @@ class PerformDuration {
 			name = mainPanel.getName();
 		} else {
 			this.minutes = repeatAlarmData.duration;
-			this.name = repeatAlarmData.alarmComboBox.name;
+			name = repeatAlarmData.alarmComboBox.name;
 		}
 		this.repeatAlarmData = repeatAlarmData;
 	}
 
 	void start() {
-		MainPanel mainPanel = mainClass.getMainPanel();
+		final MainPanel mainPanel = mainClass.getMainPanel();
 		if (repeatAlarmData != null) {
 			oldAlarmsComboBoxValue = repeatAlarmData.alarmComboBox;
 		} else {
@@ -55,7 +55,7 @@ class PerformDuration {
 		@Override
 		@SuppressWarnings({ "java:S2583", "java:S3516", "java:S2589" })
 		protected Integer call() throws Exception {
-			MainPanel mainPanel = mainClass.getMainPanel();
+			final MainPanel mainPanel = mainClass.getMainPanel();
 			startBell = true;
 
 			mainPanel.setVisibilityDeactivateButton(true);
@@ -102,7 +102,7 @@ class PerformDuration {
 	}
 
 	void launchBell() {
-		MainPanel mainPanel = mainClass.getMainPanel();
+		final MainPanel mainPanel = mainClass.getMainPanel();
 		mainPanel.setTimeDurationFieldText("");
 		final String title = MainClass.messages.getString("title");
 		mainPanel.setTitle(title);
@@ -112,7 +112,7 @@ class PerformDuration {
 
 		AlarmSounds.AlarmSoundData alarmSoundData = null;
 		if (repeatAlarmData == null) {
-			Alarm storedAlarm = mainPanel.getStoredAlarm();
+			final Alarm storedAlarm = mainPanel.getStoredAlarm();
 			if (storedAlarm != null) {
 				alarmSoundData = storedAlarm.alarmSoundData;
 			}

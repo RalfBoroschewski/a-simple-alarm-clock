@@ -76,14 +76,13 @@ public class MainClass extends Application {
 	}
 
 	Pane getTitlePane() {
-
 		final BorderPane titlePane = new BorderPane();
 		final HBox hBoxTitleBar = new HBox();
 		hBoxTitleBar.setAlignment(Pos.CENTER_RIGHT);
 		hBoxTitleBar.setMaxWidth(Double.MAX_VALUE);
 
-		Label label = new Label(messages.getString("title"));
-		HBox labelBox = new HBox(100);
+		final Label label = new Label(messages.getString("title"));
+		final HBox labelBox = new HBox(100);
 		labelBox.setMinWidth(150);
 		labelBox.getChildren().addAll(label);
 		hBoxTitleBar.getChildren().addAll(labelBox, minimizeButton, finishButton);
@@ -128,7 +127,7 @@ public class MainClass extends Application {
 	}
 
 	@SuppressWarnings("java:S4507")
-	Image readImage(String name) {
+	Image readImage(final String name) {
 		final URL url = ClassLoader.getSystemResource(name);
 		Image image = null;
 		try {

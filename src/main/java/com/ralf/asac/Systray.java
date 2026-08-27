@@ -101,9 +101,9 @@ class Systray {
 
 	private void showNormal() {
 		Platform.runLater(() -> {
-			MainPanel mainPanel = mainClass.getMainPanel();
+			final MainPanel mainPanel = mainClass.getMainPanel();
 			mainPanel.restorePosition();
-			Stage stage = mainPanel.getStage();
+			final Stage stage = mainPanel.getStage();
 			mainPanel.setHasFocusedPropertyCounterListener(Long.MAX_VALUE);
 			mainPanel.init(mainClass.getTitlePane(), null, false);
 			SystemTray.getSystemTray().remove(trayIcon);
@@ -117,9 +117,9 @@ class Systray {
 	private void showAtSystray(final java.awt.event.MouseEvent event) {
 		Platform.runLater(() -> {
 			final Point2D point = getPopupStageCoordinates(event);
-			MainPanel mainPanel = mainClass.getMainPanel();
+			final MainPanel mainPanel = mainClass.getMainPanel();
 			mainPanel.setHasFocusedPropertyCounterListener(1);
-			Stage stage = mainPanel.getStage();
+			final Stage stage = mainPanel.getStage();
 			mainPanel.init(null, bottomPanel, true);
 			stage.setX(point.getX());
 			stage.setY(point.getY());
@@ -130,11 +130,11 @@ class Systray {
 	}
 
 	@SuppressWarnings("java:S4507")
-	void setIcon(boolean isActive) {
+	void setIcon(final boolean isActive) {
 		if (trayIcon == null) {
 			return;
 		}
-		String name = isActive ? "alarmActive.png" : "alarm.png";
+		final String name = isActive ? "alarmActive.png" : "alarm.png";
 		final URL url = ClassLoader.getSystemResource(name);
 
 		BufferedImage image = null;
@@ -202,7 +202,7 @@ class Systray {
 	@SuppressWarnings("java:S4507")
 	void addSystray() {
 		boolean alreadySet = false;
-		for (TrayIcon currentTrayIcon : SystemTray.getSystemTray().getTrayIcons()) {
+		for (final TrayIcon currentTrayIcon : SystemTray.getSystemTray().getTrayIcons()) {
 			if (currentTrayIcon == trayIcon) {
 				alreadySet = true;
 				break;

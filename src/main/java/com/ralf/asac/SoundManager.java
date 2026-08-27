@@ -137,7 +137,7 @@ class SoundManager {
 
 				if (addEditSoundManagerItem.isOk()) {
 					boolean hasAChangedItem = false;
-					for (AlarmManager.AlarmManagerItem alarmManagerItem : alarmManagerItems) {
+					for (final AlarmManager.AlarmManagerItem alarmManagerItem : alarmManagerItems) {
 						if (alarmManagerItem.getAlarmSoundData().getName().equals(selectedName)) {
 
 							alarmManagerItem.setAlarmSoundData(new AlarmSounds.AlarmSoundData(newName, newPath));
@@ -182,7 +182,7 @@ class SoundManager {
 			}
 
 			if (!isInUse) {
-				for (AlarmManager.AlarmManagerItem alarmManagerItem : alarmManagerItems) {
+				for (final AlarmManager.AlarmManagerItem alarmManagerItem : alarmManagerItems) {
 					if (alarmManagerItem.getAlarmSoundData().getName().equals(selectedItem.getItem().name)) {
 						isInUse = true;
 					}
@@ -242,7 +242,7 @@ class SoundManager {
 	void rebuildListView() {
 		final ArrayList<MyRow> tableData = new ArrayList<>();
 		int index = 0;
-		for (SoundManagerItem item : soundItems) {
+		for (final SoundManagerItem item : soundItems) {
 			tableData.add(new MyRow(item, index++));
 		}
 		ObservableList<MyRow> data = FXCollections.observableArrayList(tableData);

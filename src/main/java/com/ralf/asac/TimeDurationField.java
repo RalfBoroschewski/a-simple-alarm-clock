@@ -28,7 +28,7 @@ class TimeDurationField extends TextField {
 
 			int numberColons = 0;
 
-			for (char myChar : newText.toCharArray()) {
+			for (final char myChar : newText.toCharArray()) {
 				if (myChar == '.' || myChar == ',' || myChar == ':') {
 					numberColons++;
 				}
@@ -84,7 +84,7 @@ class TimeDurationField extends TextField {
 
 		setOnAction(event -> {
 			final String name = alarmsComboBox.getEditor().getText();
-			for (Alarm alarm : alarmsComboBox.getItems()) {
+			for (final Alarm alarm : alarmsComboBox.getItems()) {
 				if (name.equals(alarm.name)) {
 					alarmsComboBox.getEditor().setText("");
 					break;
@@ -133,7 +133,7 @@ class TimeDurationField extends TextField {
 		}
 	}
 
-	void protectedSetText(String text) {
+	void protectedSetText(final String text) {
 		Platform.runLater(() -> {
 			timeDurationFieldIsSetInternal = true;
 			setText(text);

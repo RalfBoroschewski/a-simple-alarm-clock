@@ -19,8 +19,8 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 class BellIcon {
-	final String name;
-	final AlarmSounds.AlarmSoundData alarmSoundData;
+	private final String name;
+	private final AlarmSounds.AlarmSoundData alarmSoundData;
 
 	AudioOutput audioOutput;
 
@@ -33,7 +33,7 @@ class BellIcon {
 
 	@SuppressWarnings({ "java:S4507" })
 	void play() {
-		URL url = getURL();
+		final URL url = getURL();
 
 		if (url != null) {
 			audioOutput = new AudioOutput(url);

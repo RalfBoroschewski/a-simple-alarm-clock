@@ -46,7 +46,7 @@ class AlarmManager {
 		this.isSystray = isSystray;
 
 		final Stage stage = new Stage();
-		MainPanel mainPanel = mainClass.getMainPanel();
+		final MainPanel mainPanel = mainClass.getMainPanel();
 		mainPanel.setHasFocusedPropertyCounterListener(Long.MAX_VALUE);
 		stage.initOwner(mainClass.getStage());
 		stage.initModality(Modality.APPLICATION_MODAL);
@@ -123,16 +123,18 @@ class AlarmManager {
 
 		});
 
-		String itemNoSystrayString = MainClass.messages.getString("AlarmManager.systray.behavior.no.systray");
-		String itemMinimizeToSystrayString = MainClass.messages.getString("AlarmManager.systray.behavior.minimize");
-		String itemSystrayOnlyString = MainClass.messages.getString("AlarmManager.systray.behavior.systray.only");
+		final String itemNoSystrayString = MainClass.messages.getString("AlarmManager.systray.behavior.no.systray");
+		final String itemMinimizeToSystrayString = MainClass.messages
+				.getString("AlarmManager.systray.behavior.minimize");
+		final String itemSystrayOnlyString = MainClass.messages.getString("AlarmManager.systray.behavior.systray.only");
 
-		SystrayItem itemNoSystray = new SystrayItem(itemNoSystrayString, Preferences.SystrayMode.NOT_IN_SYSTRAY);
-		SystrayItem itemMinimizeToSystray = new SystrayItem(itemMinimizeToSystrayString,
+		final SystrayItem itemNoSystray = new SystrayItem(itemNoSystrayString, Preferences.SystrayMode.NOT_IN_SYSTRAY);
+		final SystrayItem itemMinimizeToSystray = new SystrayItem(itemMinimizeToSystrayString,
 				Preferences.SystrayMode.MINIMIZE_TO_SYSTRAY);
-		SystrayItem itemSystrayOnly = new SystrayItem(itemSystrayOnlyString, Preferences.SystrayMode.ONLY_IN_SYSTRAY);
+		final SystrayItem itemSystrayOnly = new SystrayItem(itemSystrayOnlyString,
+				Preferences.SystrayMode.ONLY_IN_SYSTRAY);
 
-		Preferences.SystrayMode systrayMode = Preferences.getSystrayMode();
+		final Preferences.SystrayMode systrayMode = Preferences.getSystrayMode();
 
 		checkBoxBehavior.getItems().addAll(itemNoSystray, itemMinimizeToSystray, itemSystrayOnly);
 		checkBoxBehavior.setPrefWidth(widthMinimizeToSystrayCheckBox);
@@ -220,7 +222,7 @@ class AlarmManager {
 	}
 
 	@SuppressWarnings("java:S3776")
-	private void setListener(final MainPanel mainPanel, MainClass mainClass, Stage thisStage) {
+	private void setListener(final MainPanel mainPanel, final MainClass mainClass, final Stage thisStage) {
 		final Stage stage = mainPanel.getStage();
 
 		editButton.setOnAction(event -> {
@@ -333,7 +335,7 @@ class AlarmManager {
 	void selectedItem(final AlarmManagerItem item) {
 
 		int row = 0;
-		for (AlarmManagerItem tmpItem : alarmManagerItems) {
+		for (final AlarmManagerItem tmpItem : alarmManagerItems) {
 			if (item.name.equals(tmpItem.name)) {
 				tableView.getSelectionModel().select(row);
 				break;
@@ -371,7 +373,7 @@ class AlarmManager {
 	void rebuildListView() {
 		final ArrayList<MyRow> tableData = new ArrayList<>();
 		int index = 0;
-		for (AlarmManagerItem item : alarmManagerItems) {
+		for (final AlarmManagerItem item : alarmManagerItems) {
 			tableData.add(new MyRow(item, index++));
 		}
 		final ObservableList<MyRow> data = FXCollections.observableArrayList(tableData);
@@ -404,7 +406,7 @@ class AlarmManager {
 		private boolean checkWhetherAlarmExists(final String name,
 				final ArrayList<SoundManager.SoundManagerItem> soundItems) {
 			if (soundItems != null) {
-				for (SoundManager.SoundManagerItem soundItem : soundItems) {
+				for (final SoundManager.SoundManagerItem soundItem : soundItems) {
 					if (name.equals(soundItem.getName())) {
 						return true;
 					}

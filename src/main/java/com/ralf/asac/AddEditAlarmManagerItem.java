@@ -124,7 +124,7 @@ class AddEditAlarmManagerItem {
 
 	boolean testOnNameAlreadyExist() {
 		final String currentName = nameTextField.getText();
-		for (AlarmManager.AlarmManagerItem item : alarmManagerItems) {
+		for (final AlarmManager.AlarmManagerItem item : alarmManagerItems) {
 			if (currentName.equals(item.getName())) {
 				return true;
 			}
