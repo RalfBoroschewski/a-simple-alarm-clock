@@ -24,7 +24,9 @@ class TimeDurationField extends TextField {
 	@SuppressWarnings("java:S3776")
 	public void init() {
 		final UnaryOperator<TextFormatter.Change> filter = change -> {
-			final String newText = change.getControlNewText();
+			String newText = change.getControlNewText();
+			newText = newText.replace('.', ':');
+			newText = newText.replace(',', ':');
 
 			int numberColons = 0;
 
