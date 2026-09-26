@@ -10,7 +10,6 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -21,7 +20,6 @@ import javafx.stage.Stage;
 
 public class MainClass extends Application {
 	private Stage stage;
-	private Scene scene;
 
 	private final MainPanel mainPanel;
 	private final Button minimizeButton = new Button("_");
@@ -149,10 +147,6 @@ public class MainClass extends Application {
 
 	Stage getStage() {
 		return stage;
-	}
-
-	Scene getScene() {
-		return scene;
 	}
 
 	MainPanel getCommonPanel() {
