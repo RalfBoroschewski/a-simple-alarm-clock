@@ -114,17 +114,6 @@ public class MainClass extends Application {
 	}
 
 	@SuppressWarnings("java:S4507")
-	void setIcon(final boolean isActive) {
-
-		Image image = readImage(isActive ? "alarmActive.png" : "alarm.png");
-
-		if (image != null) {
-			stage.getIcons().clear();
-			stage.getIcons().add(image);
-		}
-	}
-
-	@SuppressWarnings("java:S4507")
 	Image readImage(final String name) {
 		final URL url = ClassLoader.getSystemResource(name);
 		Image image = null;

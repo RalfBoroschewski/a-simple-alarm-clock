@@ -10,6 +10,7 @@ class PerformDuration {
 	private final MainClass mainClass;
 	private Alarm oldAlarmsComboBoxValue;
 	private final String name;
+	private final ImageCreatorJavaFx imageCreator;
 	private MyWorker myWorker;
 
 	PerformDuration(final long minutes, final RepeatAlarmData repeatAlarmData, final MainClass mainClass) {
@@ -23,6 +24,7 @@ class PerformDuration {
 			name = repeatAlarmData.alarmComboBox.name;
 		}
 		this.repeatAlarmData = repeatAlarmData;
+		imageCreator = new ImageCreatorJavaFx();
 	}
 
 	void start() {
@@ -39,7 +41,10 @@ class PerformDuration {
 
 		mainPanel.oldPerformDuration = this;
 
-		mainPanel.setIcon(true);
+		imageCreator.clearBackground();
+//		imageCreator.setDuration((int) minutes);
+//		imageCreator.setImageToStage(mainClass);
+
 		myWorker = new MyWorker();
 		new Thread(myWorker).start();
 	}
@@ -59,7 +64,8 @@ class PerformDuration {
 			startBell = true;
 
 			mainPanel.setVisibilityDeactivateButton(true);
-			mainClass.getSystray().setIcon(true);
+
+			// mainClass.getSystray().setIcon(true);
 
 			long step = 1;
 
@@ -70,6 +76,12 @@ class PerformDuration {
 
 				final String minutesString = time + Asac.getMinuteString(time);
 
+				Platform.runLater(() -> {
+					imageCreator.clearBackgroundDuration();
+					imageCreator.setDuration((int) time);
+					imageCreator.setImageToStage(mainClass);
+				});
+
 				if (name.isBlank()) {
 					mainPanel.setTitle(minutesString);
 					mainClass.getSystray().setSystrayToolTip(minutesString);
@@ -77,6 +89,9 @@ class PerformDuration {
 					mainPanel.setTitle(name + "\u00A0" + mainPanel.getDashForTitle() + "\u00A0" + minutesString);
 					mainClass.getSystray().setSystrayToolTip(name + " - " + minutesString);
 				}
+
+//				imageCreator.clearBackgroundDuration();
+//				imageCreator.setDuration((int) time);
 
 				for (int indexSeconds = 0; indexSeconds < 60; indexSeconds += step) {
 					step = mainPanel.getPauseButtonIsPause() ? 0 : 1;
@@ -129,7 +144,7 @@ class PerformDuration {
 		mainPanel.bellIcon.play();
 		Platform.runLater(() -> {
 			mainPanel.resetStoredAlarmsVaLue();
-			mainPanel.setIcon(false);
+			mainPanel.setDeactivateIcon();
 		});
 	}
 

@@ -27,7 +27,7 @@ class PerformTime {
 		mainPanel.setRepeatButton(null);
 
 		mainPanel.oldPerformTime = this;
-		mainPanel.setIcon(true);
+		// mainPanel.setIcon(true);
 		mainPanel.setRepeatButton(new RepeatAlarmData(-1, null, null));
 
 		final LocalDateTime now = LocalDateTime.now(ZoneId.systemDefault());
@@ -57,6 +57,11 @@ class PerformTime {
 		} else {
 			mainClass.getSystray().setSystrayToolTip(name + " - " + time);
 		}
+
+		ImageCreatorJavaFx imageCreator = new ImageCreatorJavaFx();
+		imageCreator.clearBackgroundDuration();
+		imageCreator.setTime(hour, minute);
+		imageCreator.setImageToStage(mainClass);
 
 		myWorker = new MyWorker(desiredTime);
 		new Thread(myWorker).start();
@@ -120,7 +125,7 @@ class PerformTime {
 				mainPanel.bellIcon.play();
 				Platform.runLater(() -> {
 					mainPanel.resetStoredAlarmsVaLue();
-					mainPanel.setIcon(false);
+					mainPanel.setDeactivateIcon();
 				});
 			}
 			return 0;

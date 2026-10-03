@@ -92,7 +92,7 @@ public class MainPanel {
 			deactivateButton.setPrefWidth(width);
 			setTitle(MainClass.messages.getString("title"));
 
-			setIcon(false);
+			setDeactivateIcon();
 
 		} else {
 			gridPane.getChildren().clear();
@@ -247,7 +247,7 @@ public class MainPanel {
 			bellIcon = null;
 		}
 
-		setIcon(false);
+		setDeactivateIcon();
 
 	}
 
@@ -318,9 +318,9 @@ public class MainPanel {
 	}
 
 	@SuppressWarnings("java:S4507")
-	void setIcon(final boolean isActive) {
+	void setDeactivateIcon() {
 
-		final URL url = ClassLoader.getSystemResource(isActive ? "alarmActive.png" : "alarm.png");
+		final URL url = ClassLoader.getSystemResource("alarm.png");
 		Image image = null;
 		try {
 			final InputStream inputStream = url.openStream();
