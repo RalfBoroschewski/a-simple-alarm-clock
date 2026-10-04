@@ -14,7 +14,7 @@ abstract class ImageCreatorBase {
 	static final int DIGIT_WIDTH = 8;
 	static final int DIGIT_HEIGHT = 10;
 
-	static final int X_SHIFT_2_DIGITS = 8;
+	static final int X_SHIFT_2_DIGITS = 7;
 	static final int Y_SHIFT = 10;
 
 	static Point[][] digitsPoints;
