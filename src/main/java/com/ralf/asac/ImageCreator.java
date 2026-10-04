@@ -17,19 +17,23 @@ abstract class ImageCreatorBase {
 	static final int X_SHIFT_2_DIGITS = 8;
 	static final int Y_SHIFT = 10;
 
-	Point[][] digitsPoints;
+	static Point[][] digitsPoints;
 
-	ImageCreatorBase() {
-		if (digitsPoints == null) {
-			final String[] digitStrings = createRawDigits();
-			digitsPoints = new Point[10][];
-			for (int index = 0; index < 10; index++) {
-				digitsPoints[index] = rawToPointsToDraw(digitStrings[index]);
-			}
+	static void createDigitsPoints() {
+		final String[] digitStrings = createRawDigits();
+		digitsPoints = new Point[10][];
+		for (int index = 0; index < 10; index++) {
+			digitsPoints[index] = rawToPointsToDraw(digitStrings[index]);
 		}
 	}
 
-	private String[] createRawDigits() {
+	ImageCreatorBase() {
+		if (digitsPoints == null) {
+			createDigitsPoints();
+		}
+	}
+
+	private static String[] createRawDigits() {
 		String zero = // this comment is for avoiding connecting lines when formating this text
 				/*   */ "..***..." + // see above
 						".*****.." + // see above
@@ -164,7 +168,7 @@ abstract class ImageCreatorBase {
 
 	}
 
-	private Point[] rawToPointsToDraw(final String digitRawString) {
+	private static Point[] rawToPointsToDraw(final String digitRawString) {
 		final ArrayList<Point> points = new ArrayList<>();
 
 		final int rows = 10;
@@ -192,8 +196,6 @@ abstract class ImageCreatorBase {
 		final int digit2 = value % 10;
 		value /= 10;
 		final int digit1 = value % 10;
-
-//		System.out.println(digit1 + " " + digit2 + " " + digit3);
 
 		return new int[] { digit1, digit2, digit3 };
 	}
@@ -236,7 +238,7 @@ abstract class ImageCreatorBase {
 
 	void setDuration(final int duration) {
 		final int[] digits = splitInteger(duration);
-		int shiftX = 15;
+		int shiftX = 13;
 		if (digits[1] != 0) {
 			shiftX = X_SHIFT_2_DIGITS;
 		}
@@ -245,9 +247,6 @@ abstract class ImageCreatorBase {
 			shiftX = 2;
 			isRed = false;
 		}
-
-		System.out.println(digits[0] + " " + digits[1] + " " + digits[2]);
-		System.out.println(shiftX);
 
 		for (int y = Y_SHIFT - 1; y < Y_SHIFT + DIGIT_HEIGHT + 1; y++) {
 			if (isRed) {
@@ -286,7 +285,6 @@ abstract class ImageCreatorBase {
 	void setColor(final int[] digits, int shiftX, final int shiftY, final int indexStart, boolean enableAllDigits) {
 		for (int index = indexStart; index < 3; index++) {
 			if (digits[index] != 0 || index == 2 || enableAllDigits) {
-				System.out.println("Hallo " + index);
 				for (Point point : digitsPoints[digits[index]]) {
 					drawPixelBlack(point.x + shiftX, point.y + shiftY);
 				}
@@ -340,12 +338,14 @@ class ImageCreatorJavaFx extends ImageCreatorBase {
 
 class ImageCreatorAWT extends ImageCreatorBase {
 
+	private final BufferedImage image;
 	private final Graphics2D graphics;
 
 	ImageCreatorAWT() {
-		BufferedImage image = new BufferedImage(32, 32, BufferedImage.TYPE_INT_ARGB);
+		image = new BufferedImage(34, 34, BufferedImage.TYPE_INT_ARGB);
 		graphics = image.createGraphics();
 		graphics.setStroke(new BasicStroke(1));
+		clearBackground();
 	}
 
 	@Override
@@ -370,4 +370,7 @@ class ImageCreatorAWT extends ImageCreatorBase {
 		graphics.dispose();
 	}
 
+	BufferedImage getImage() {
+		return image;
+	}
 }

@@ -93,7 +93,6 @@ public class MainPanel {
 			setTitle(MainClass.messages.getString("title"));
 
 			setDeactivateIcon();
-
 		} else {
 			gridPane.getChildren().clear();
 		}

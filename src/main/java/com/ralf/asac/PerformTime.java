@@ -27,7 +27,6 @@ class PerformTime {
 		mainPanel.setRepeatButton(null);
 
 		mainPanel.oldPerformTime = this;
-		// mainPanel.setIcon(true);
 		mainPanel.setRepeatButton(new RepeatAlarmData(-1, null, null));
 
 		final LocalDateTime now = LocalDateTime.now(ZoneId.systemDefault());
@@ -47,8 +46,6 @@ class PerformTime {
 		final String time = hourString + ":" + minuteString;
 		mainPanel.setTimeDurationFieldText(time);
 		mainPanel.setTitle(time);
-		mainClass.getSystray().setSystrayToolTip(time);
-		mainClass.getSystray().setIcon(true);
 
 		final String name = mainPanel.getName();
 
@@ -58,10 +55,17 @@ class PerformTime {
 			mainClass.getSystray().setSystrayToolTip(name + " - " + time);
 		}
 
-		ImageCreatorJavaFx imageCreator = new ImageCreatorJavaFx();
-		imageCreator.clearBackgroundDuration();
-		imageCreator.setTime(hour, minute);
-		imageCreator.setImageToStage(mainClass);
+		ImageCreatorJavaFx imageCreatorTaskbar = new ImageCreatorJavaFx();
+		imageCreatorTaskbar.setTime(hour, minute);
+		imageCreatorTaskbar.setImageToStage(mainClass);
+
+		if (mainClass.getSystray().hasSystray()) {
+			mainClass.getSystray().setSystrayToolTip(time);
+
+			ImageCreatorAWT imageCreatorSystray = new ImageCreatorAWT();
+			imageCreatorSystray.setTime(hour, minute);
+			mainClass.getSystray().setIcon(imageCreatorSystray.getImage());
+		}
 
 		myWorker = new MyWorker(desiredTime);
 		new Thread(myWorker).start();
@@ -88,8 +92,6 @@ class PerformTime {
 
 			LocalDateTime now = LocalDateTime.now(ZoneId.systemDefault());
 
-			mainClass.getSystray().setIcon(true);
-
 			while (now.compareTo(desiredTime) < 0 && startBell) {
 				final int nowSeconds = now.getSecond();
 				final int nextIntervalSeconds = ((nowSeconds + INTERVAL_LENGTH_IN_SECONDS) / INTERVAL_LENGTH_IN_SECONDS)
@@ -105,7 +107,11 @@ class PerformTime {
 				now = LocalDateTime.now(ZoneId.systemDefault());
 			}
 
-			mainClass.getSystray().setIcon(false);
+			mainClass.getSystray().setDeactivateIcon();
+			Platform.runLater(() -> {
+				mainPanel.resetStoredAlarmsVaLue();
+				mainPanel.setDeactivateIcon();
+			});
 
 			if (startBell) {
 				mainPanel.setVisibilityDeactivateButton(false);
@@ -123,10 +129,6 @@ class PerformTime {
 
 				mainPanel.bellIcon = new BellIcon(name, alarmSoundData);
 				mainPanel.bellIcon.play();
-				Platform.runLater(() -> {
-					mainPanel.resetStoredAlarmsVaLue();
-					mainPanel.setDeactivateIcon();
-				});
 			}
 			return 0;
 		}

@@ -13,6 +13,7 @@ import java.net.URL;
 import javax.imageio.ImageIO;
 import javax.swing.SwingUtilities;
 
+import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
@@ -22,6 +23,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 class Systray {
 
@@ -104,13 +106,22 @@ class Systray {
 			final MainPanel mainPanel = mainClass.getMainPanel();
 			mainPanel.restorePosition();
 			final Stage stage = mainPanel.getStage();
+
 			mainPanel.setHasFocusedPropertyCounterListener(Long.MAX_VALUE);
 			mainPanel.init(mainClass.getTitlePane(), null, false);
 			SystemTray.getSystemTray().remove(trayIcon);
+			stage.hide();
+			stage.setIconified(false);
+			PauseTransition pause = new PauseTransition(Duration.millis(100));
+			pause.setOnFinished(e -> {
+				stage.setAlwaysOnTop(true);
+				stage.toFront();
+				stage.requestFocus();
+				stage.setAlwaysOnTop(false);
+			});
+			pause.play();
+
 			stage.show();
-			mainPanel.restorePosition();
-			stage.toFront();
-			stage.sizeToScene();
 		});
 	}
 
@@ -130,12 +141,11 @@ class Systray {
 	}
 
 	@SuppressWarnings("java:S4507")
-	void setIcon(final boolean isActive) {
+	void setDeactivateIcon() {
 		if (trayIcon == null) {
 			return;
 		}
-		final String name = isActive ? "alarmActive.png" : "alarm.png";
-		final URL url = ClassLoader.getSystemResource(name);
+		final URL url = ClassLoader.getSystemResource("alarm.png");
 
 		BufferedImage image = null;
 
@@ -146,6 +156,13 @@ class Systray {
 		} catch (IOException exception) {
 			exception.printStackTrace();
 		}
+	}
+
+	void setIcon(BufferedImage image) {
+		if (trayIcon == null) {
+			return;
+		}
+		trayIcon.setImage(image);
 	}
 
 	Point2D getPopupStageCoordinates(final java.awt.event.MouseEvent event) {

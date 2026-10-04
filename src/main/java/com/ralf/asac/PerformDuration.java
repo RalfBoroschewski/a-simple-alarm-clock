@@ -10,7 +10,8 @@ class PerformDuration {
 	private final MainClass mainClass;
 	private Alarm oldAlarmsComboBoxValue;
 	private final String name;
-	private final ImageCreatorJavaFx imageCreator;
+	private final ImageCreatorJavaFx imageCreatorTaskbar;
+	private final ImageCreatorAWT imageCreatorSystray;
 	private MyWorker myWorker;
 
 	PerformDuration(final long minutes, final RepeatAlarmData repeatAlarmData, final MainClass mainClass) {
@@ -21,10 +22,16 @@ class PerformDuration {
 			name = mainPanel.getName();
 		} else {
 			this.minutes = repeatAlarmData.duration;
-			name = repeatAlarmData.alarmComboBox.name;
+			if (repeatAlarmData.alarmComboBox != null) {
+				name = repeatAlarmData.alarmComboBox.name;
+			} else {
+				name = "";
+			}
+
 		}
 		this.repeatAlarmData = repeatAlarmData;
-		imageCreator = new ImageCreatorJavaFx();
+		imageCreatorTaskbar = new ImageCreatorJavaFx();
+		imageCreatorSystray = new ImageCreatorAWT();
 	}
 
 	void start() {
@@ -41,10 +48,8 @@ class PerformDuration {
 
 		mainPanel.oldPerformDuration = this;
 
-		imageCreator.clearBackground();
-//		imageCreator.setDuration((int) minutes);
-//		imageCreator.setImageToStage(mainClass);
-
+		imageCreatorTaskbar.clearBackground();
+		mainPanel.setVisibilityDeactivateButton(true);
 		myWorker = new MyWorker();
 		new Thread(myWorker).start();
 	}
@@ -58,14 +63,10 @@ class PerformDuration {
 		boolean startBell;
 
 		@Override
-		@SuppressWarnings({ "java:S2583", "java:S3516", "java:S2589" })
+		@SuppressWarnings({ "java:S2583", "java:S3516", "java:S2589", "java:S3776" })
 		protected Integer call() throws Exception {
 			final MainPanel mainPanel = mainClass.getMainPanel();
 			startBell = true;
-
-			mainPanel.setVisibilityDeactivateButton(true);
-
-			// mainClass.getSystray().setIcon(true);
 
 			long step = 1;
 
@@ -76,11 +77,7 @@ class PerformDuration {
 
 				final String minutesString = time + Asac.getMinuteString(time);
 
-				Platform.runLater(() -> {
-					imageCreator.clearBackgroundDuration();
-					imageCreator.setDuration((int) time);
-					imageCreator.setImageToStage(mainClass);
-				});
+				adjustIcons(time);
 
 				if (name.isBlank()) {
 					mainPanel.setTitle(minutesString);
@@ -89,9 +86,6 @@ class PerformDuration {
 					mainPanel.setTitle(name + "\u00A0" + mainPanel.getDashForTitle() + "\u00A0" + minutesString);
 					mainClass.getSystray().setSystrayToolTip(name + " - " + minutesString);
 				}
-
-//				imageCreator.clearBackgroundDuration();
-//				imageCreator.setDuration((int) time);
 
 				for (int indexSeconds = 0; indexSeconds < 60; indexSeconds += step) {
 					step = mainPanel.getPauseButtonIsPause() ? 0 : 1;
@@ -106,7 +100,11 @@ class PerformDuration {
 				}
 			}
 
-			mainClass.getSystray().setIcon(false);
+			if (mainClass.getSystray().hasSystray()) {
+				mainClass.getSystray().setDeactivateIcon();
+				imageCreatorSystray.dispose();
+			}
+
 			if (startBell) {
 				launchBell();
 			}
@@ -114,6 +112,22 @@ class PerformDuration {
 			return 0;
 		}
 
+	}
+
+	@SuppressWarnings("java:S3398")
+	private void adjustIcons(long time) {
+		Platform.runLater(() -> {
+			imageCreatorTaskbar.clearBackgroundDuration();
+			imageCreatorTaskbar.setDuration((int) time);
+			imageCreatorTaskbar.setImageToStage(mainClass);
+
+			if (mainClass.getSystray().hasSystray()) {
+				imageCreatorSystray.clearBackgroundDuration();
+				imageCreatorSystray.setDuration((int) time);
+				mainClass.getSystray().setIcon(imageCreatorSystray.getImage());
+			}
+
+		});
 	}
 
 	void launchBell() {
