@@ -45,22 +45,21 @@ class PerformTime {
 
 		final String time = hourString + ":" + minuteString;
 		mainPanel.setTimeDurationFieldText(time);
-		mainPanel.setTitle(time);
+		final String programName = "Asac";
+		mainPanel.setTitle(programName + "\n" + time);
 
 		final String name = mainPanel.getName();
-
-		if (name.isBlank()) {
-			mainClass.getSystray().setSystrayToolTip(time);
-		} else {
-			mainClass.getSystray().setSystrayToolTip(name + " - " + time);
-		}
 
 		ImageCreatorJavaFx imageCreatorTaskbar = new ImageCreatorJavaFx();
 		imageCreatorTaskbar.setTime(hour, minute);
 		imageCreatorTaskbar.setImageToStage(mainClass);
 
 		if (mainClass.getSystray().hasSystray()) {
-			mainClass.getSystray().setSystrayToolTip(time);
+			if (name.isBlank()) {
+				mainClass.getSystray().setSystrayToolTip(programName + ": " + time);
+			} else {
+				mainClass.getSystray().setSystrayToolTip(programName + ": " + name + " - " + time);
+			}
 
 			ImageCreatorAWT imageCreatorSystray = new ImageCreatorAWT();
 			imageCreatorSystray.setTime(hour, minute);
