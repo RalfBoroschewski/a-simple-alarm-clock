@@ -78,13 +78,16 @@ class PerformDuration {
 				final String minutesString = time + Asac.getMinuteString(time);
 
 				adjustIcons(time);
-
+				final String programName = "Asac";
 				if (name.isBlank()) {
-					mainPanel.setTitle(minutesString);
-					mainClass.getSystray().setSystrayToolTip(minutesString);
+					String title = programName + "\n" + minutesString;
+					mainPanel.setTitle(title);
+					mainClass.getSystray().setSystrayToolTip(title);
 				} else {
-					mainPanel.setTitle(name + "\u00A0" + mainPanel.getDashForTitle() + "\u00A0" + minutesString);
-					mainClass.getSystray().setSystrayToolTip(name + " - " + minutesString);
+					// String
+					mainPanel.setTitle(programName + "\n" + name + "\u00A0" + mainPanel.getDashForTitle() + "\u00A0\n"
+							+ minutesString);
+					mainClass.getSystray().setSystrayToolTip(programName + ": " + name + " - " + minutesString);
 				}
 
 				for (int indexSeconds = 0; indexSeconds < 60; indexSeconds += step) {

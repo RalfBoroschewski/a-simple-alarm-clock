@@ -283,12 +283,14 @@ abstract class ImageCreatorBase {
 	}
 
 	void setColor(final int[] digits, int shiftX, final int shiftY, final int indexStart, boolean enableAllDigits) {
+		boolean hasLeadingDigit = false;
 		for (int index = indexStart; index < 3; index++) {
-			if (digits[index] != 0 || index == 2 || enableAllDigits) {
+			if (digits[index] != 0 || index == 2 || enableAllDigits || hasLeadingDigit) {
 				for (Point point : digitsPoints[digits[index]]) {
 					drawPixelBlack(point.x + shiftX, point.y + shiftY);
 				}
 				shiftX += DIGIT_WIDTH + 2;
+				hasLeadingDigit = true;
 			}
 		}
 	}
