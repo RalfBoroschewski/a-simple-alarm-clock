@@ -173,8 +173,7 @@ public class MainPanel {
 			timeDurationField.setText(repeatAlarmData.duration + "");
 
 			alarmsComboBox.protectedSetValue(repeatAlarmData.alarmComboBox);
-			PerformDuration performDuration = new PerformDuration(0, repeatAlarmData, mainClass);
-			performDuration.start();
+			mainClass.createPerformDuration(0, repeatAlarmData);
 		});
 
 		gridPane.setOnMousePressed(this::handleMousePressed);

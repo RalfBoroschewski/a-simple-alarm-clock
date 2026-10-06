@@ -141,6 +141,31 @@ public class MainClass extends Application {
 	MainPanel getCommonPanel() {
 		return mainPanel;
 	}
+
+	PerformTime oldPerformTime;
+	PerformDuration oldPerformDuration;
+
+	private void doNotChangeIcons() {
+		if (oldPerformTime != null) {
+			oldPerformTime.doNotChangeIcons();
+		}
+		if (oldPerformDuration != null) {
+			oldPerformDuration.doNotChangeIcons();
+		}
+	}
+
+	void createPerformTime(final int hour, final int minute) {
+		doNotChangeIcons();
+		oldPerformTime = new PerformTime(hour, minute, this);
+		oldPerformTime.start();
+	}
+
+	void createPerformDuration(final long minutes, final RepeatAlarmData repeatAlarmData) {
+		doNotChangeIcons();
+		oldPerformDuration = new PerformDuration(minutes, repeatAlarmData, this);
+		oldPerformDuration.start();
+	}
+
 }
 
 class RepeatAlarmData {

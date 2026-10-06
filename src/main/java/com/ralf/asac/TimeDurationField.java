@@ -109,8 +109,7 @@ class TimeDurationField extends TextField {
 			final int colonIndex = timeDuration.indexOf(':');
 			if (colonIndex < 0) {
 				final long minute = Long.parseLong(timeDuration);
-				final PerformDuration performDuration = new PerformDuration(minute, null, mainClass);
-				performDuration.start();
+				mainClass.createPerformDuration(minute, null);
 			} else {
 				final String hourString = timeDuration.substring(0, colonIndex);
 				final String minuteString = timeDuration.substring(colonIndex + 1);
@@ -129,8 +128,7 @@ class TimeDurationField extends TextField {
 							() -> stage.setTitle(name + "\u00A0" + mainPanel.getDashForTitle() + "\u00A0" + time));
 				}
 
-				final PerformTime performTime = new PerformTime(hour, minute, mainClass);
-				performTime.start();
+				mainClass.createPerformTime(hour, minute);
 			}
 		}
 	}

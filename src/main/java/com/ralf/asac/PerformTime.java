@@ -45,7 +45,7 @@ class PerformTime {
 
 		final String time = hourString + ":" + minuteString;
 		mainPanel.setTimeDurationFieldText(time);
-		final String programName = "Asac";
+		final String programName = MainClass.messages.getString("title");
 		mainPanel.setTitle(programName + "\n" + time);
 
 		final String name = mainPanel.getName();
@@ -54,16 +54,12 @@ class PerformTime {
 		imageCreatorTaskbar.setTime(hour, minute);
 		imageCreatorTaskbar.setImageToStage(mainClass);
 
-		if (mainClass.getSystray().hasSystray()) {
-			if (name.isBlank()) {
-				mainClass.getSystray().setSystrayToolTip(programName + ": " + time);
-			} else {
-				mainClass.getSystray().setSystrayToolTip(programName + ": " + name + " - " + time);
-			}
-
-			ImageCreatorAWT imageCreatorSystray = new ImageCreatorAWT();
-			imageCreatorSystray.setTime(hour, minute);
-			mainClass.getSystray().setIcon(imageCreatorSystray.getImage());
+		if (name.isBlank()) {
+			mainPanel.setTitle(programName + "\n" + time);
+			mainClass.getSystray().setSystrayToolTip(programName + ": " + time);
+		} else {
+			mainPanel.setTitle(programName + "\n" + name + "\u00A0" + mainPanel.getDashForTitle() + "\u00A0\n" + time);
+			mainClass.getSystray().setSystrayToolTip(programName + ": " + name + " - " + time);
 		}
 
 		myWorker = new MyWorker(desiredTime);
@@ -74,9 +70,14 @@ class PerformTime {
 		myWorker.startBell = false;
 	}
 
+	void doNotChangeIcons() {
+		myWorker.doNotChangeIcons = true;
+	}
+
 	private class MyWorker extends Task<Integer> {
 		private final LocalDateTime desiredTime;
 		boolean startBell;
+		boolean doNotChangeIcons;
 
 		MyWorker(final LocalDateTime desiredTime) {
 			this.desiredTime = desiredTime;
@@ -103,13 +104,16 @@ class PerformTime {
 				} else {
 					break;
 				}
+
 				now = LocalDateTime.now(ZoneId.systemDefault());
 			}
 
 			mainClass.getSystray().setDeactivateIcon();
 			Platform.runLater(() -> {
 				mainPanel.resetStoredAlarmsVaLue();
-				mainPanel.setDeactivateIcon();
+				if (!doNotChangeIcons) {
+					mainPanel.setDeactivateIcon();
+				}
 			});
 
 			if (startBell) {

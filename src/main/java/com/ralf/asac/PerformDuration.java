@@ -58,9 +58,14 @@ class PerformDuration {
 		myWorker.startBell = false;
 	}
 
+	void doNotChangeIcons() {
+		myWorker.doNotChangeIcons = true;
+	}
+
 	private class MyWorker extends Task<Integer> {
 
 		boolean startBell;
+		boolean doNotChangeIcons;
 
 		@Override
 		@SuppressWarnings({ "java:S2583", "java:S3516", "java:S2589", "java:S3776" })
@@ -70,6 +75,8 @@ class PerformDuration {
 
 			long step = 1;
 
+			final String programName = MainClass.messages.getString("title");
+
 			for (int indexMinutes = 0; indexMinutes < minutes; indexMinutes++) {
 				final long time = minutes - indexMinutes;
 				final String timeString = time + "";
@@ -77,17 +84,18 @@ class PerformDuration {
 
 				final String minutesString = time + Asac.getMinuteString(time);
 
-				adjustIcons(time);
-				final String programName = "Asac";
-				if (name.isBlank()) {
-					String title = programName + "\n" + minutesString;
-					mainPanel.setTitle(title);
-					mainClass.getSystray().setSystrayToolTip(title);
-				} else {
-					// String
-					mainPanel.setTitle(programName + "\n" + name + "\u00A0" + mainPanel.getDashForTitle() + "\u00A0\n"
-							+ minutesString);
-					mainClass.getSystray().setSystrayToolTip(programName + ": " + name + " - " + minutesString);
+				if (!doNotChangeIcons) {
+					adjustIcons(time);
+					if (name.isBlank()) {
+						String title = programName + "\n" + minutesString;
+						mainPanel.setTitle(title);
+						mainClass.getSystray().setSystrayToolTip(title);
+					} else {
+						// String
+						mainPanel.setTitle(programName + "\n" + name + "\u00A0" + mainPanel.getDashForTitle()
+								+ "\u00A0\n" + minutesString);
+						mainClass.getSystray().setSystrayToolTip(programName + ": " + name + " - " + minutesString);
+					}
 				}
 
 				for (int indexSeconds = 0; indexSeconds < 60; indexSeconds += step) {
@@ -104,7 +112,10 @@ class PerformDuration {
 			}
 
 			if (mainClass.getSystray().hasSystray()) {
-				mainClass.getSystray().setDeactivateIcon();
+				if (!doNotChangeIcons) {
+					mainClass.getSystray().setDeactivateIcon();
+				}
+
 				imageCreatorSystray.dispose();
 			}
 

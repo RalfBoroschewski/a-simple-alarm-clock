@@ -40,7 +40,7 @@ class DurationButton extends Button {
 			final String margin = "            ";
 			final String menuItemText = "\u00A0" + margin + minute + minutesString + margin;
 			final MenuItem menuItem = new MenuItem(menuItemText);
-			menuItem.setOnAction(event -> new PerformDuration(minute, null, mainClass).start());
+			menuItem.setOnAction(event -> mainClass.createPerformDuration(minute, null));
 			contextMenu.getItems().add(menuItem);
 		}
 

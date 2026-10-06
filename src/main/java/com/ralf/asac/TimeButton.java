@@ -47,7 +47,7 @@ class TimeButton extends Button {
 				minuteString = minuteString.substring(minuteString.length() - 2);
 				final MenuItem menuItem = new MenuItem("\u00A0" + marginMinute + minuteString + marginMinute);
 				final int tmpHour = hour;
-				menuItem.setOnAction(event -> new PerformTime(tmpHour % 24, minute, mainClass).start());
+				menuItem.setOnAction(event -> mainClass.createPerformTime(tmpHour % 24, minute));
 				hourMenu.getItems().add(menuItem);
 			}
 			startIndex = 0;
