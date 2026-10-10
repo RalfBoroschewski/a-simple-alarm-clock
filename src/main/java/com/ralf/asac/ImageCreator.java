@@ -302,11 +302,11 @@ class ImageCreatorJavaFx extends ImageCreatorBase {
 	private PixelWriter pixelWriter;
 
 	static int colorToArgb(javafx.scene.paint.Color color) {
-		int a = (int) Math.round(color.getOpacity() * 255);
+		int alpha = (int) Math.round(color.getOpacity() * 255);
 		int red = (int) Math.round(color.getRed() * 255);
 		int green = (int) Math.round(color.getGreen() * 255);
 		int blue = (int) Math.round(color.getBlue() * 255);
-		return (a << 24) | (red << 16) | (green << 8) | blue;
+		return (alpha << 24) | (red << 16) | (green << 8) | blue;
 	}
 
 	static final int WHITE = colorToArgb(javafx.scene.paint.Color.WHITE);

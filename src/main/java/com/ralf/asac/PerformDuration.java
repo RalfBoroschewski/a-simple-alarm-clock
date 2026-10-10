@@ -14,11 +14,11 @@ class PerformDuration {
 	private final ImageCreatorAWT imageCreatorSystray;
 	private MyWorker myWorker;
 
-	PerformDuration(final long minutes, final RepeatAlarmData repeatAlarmData, final MainClass mainClass) {
+	PerformDuration(final long minute, final RepeatAlarmData repeatAlarmData, final MainClass mainClass) {
 		this.mainClass = mainClass;
 		MainPanel mainPanel = mainClass.getMainPanel();
 		if (repeatAlarmData == null) {
-			this.minutes = minutes;
+			this.minutes = minute;
 			name = mainPanel.getName();
 		} else {
 			this.minutes = repeatAlarmData.duration;
@@ -144,7 +144,8 @@ class PerformDuration {
 		});
 	}
 
-	void launchBell() {
+	@SuppressWarnings("java:S3398")
+	private void launchBell() {
 		final MainPanel mainPanel = mainClass.getMainPanel();
 		mainPanel.setTimeDurationFieldText("");
 		final String title = MainClass.messages.getString("title");
@@ -168,7 +169,7 @@ class PerformDuration {
 		if (minutes == 0) {
 			Asac.sleep(100); // avoid that the BellIcon vanishes after entering 0 in the timeDurationField
 		}
-		mainPanel.bellIcon = new BellIcon(name, alarmSoundData);
+		mainPanel.bellIcon = new BellIcon(name, alarmSoundData, minutes + Asac.getMinuteString(minutes));
 		mainPanel.bellIcon.play();
 		Platform.runLater(() -> {
 			mainPanel.resetStoredAlarmsVaLue();

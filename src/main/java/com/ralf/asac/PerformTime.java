@@ -11,7 +11,9 @@ class PerformTime {
 	private MyWorker myWorker;
 	private final int hour;
 	private final int minute;
+	private String timeString;
 	private final MainClass mainClass;
+	private static final String TITLE = MainClass.messages.getString("title");
 
 	static int INTERVAL_LENGTH_IN_SECONDS = 15;
 
@@ -43,10 +45,9 @@ class PerformTime {
 		String minuteString = "0" + minute;
 		minuteString = minuteString.substring(minuteString.length() - 2);
 
-		final String time = hourString + ":" + minuteString;
-		mainPanel.setTimeDurationFieldText(time);
-		final String programName = MainClass.messages.getString("title");
-		mainPanel.setTitle(programName + "\n" + time);
+		timeString = hourString + ":" + minuteString;
+		mainPanel.setTimeDurationFieldText(timeString);
+		mainPanel.setTitle(TITLE + "\n" + timeString);
 
 		final String name = mainPanel.getName();
 
@@ -55,11 +56,11 @@ class PerformTime {
 		imageCreatorTaskbar.setImageToStage(mainClass);
 
 		if (name.isBlank()) {
-			mainPanel.setTitle(programName + "\n" + time);
-			mainClass.getSystray().setSystrayToolTip(programName + ": " + time);
+			mainPanel.setTitle(TITLE + "\n" + timeString);
+			mainClass.getSystray().setSystrayToolTip(TITLE + ": " + timeString);
 		} else {
-			mainPanel.setTitle(programName + "\n" + name + "\u00A0" + mainPanel.getDashForTitle() + "\u00A0\n" + time);
-			mainClass.getSystray().setSystrayToolTip(programName + ": " + name + " - " + time);
+			mainPanel.setTitle(TITLE + "\n" + name + "\u00A0" + mainPanel.getDashForTitle() + "\u00A0\n" + timeString);
+			mainClass.getSystray().setSystrayToolTip(TITLE + ": " + name + " - " + timeString);
 		}
 
 		myWorker = new MyWorker(desiredTime);
@@ -119,8 +120,8 @@ class PerformTime {
 			if (startBell) {
 				mainPanel.setVisibilityDeactivateButton(false);
 				mainPanel.setTimeDurationFieldText("");
-				mainPanel.setTitle(MainClass.messages.getString("title"));
-				mainClass.getSystray().setSystrayToolTip(MainClass.messages.getString("title"));
+				mainPanel.setTitle(TITLE);
+				mainClass.getSystray().setSystrayToolTip(TITLE);
 
 				final String name = mainPanel.getName();
 
@@ -130,7 +131,7 @@ class PerformTime {
 					alarmSoundData = storedAlarm.alarmSoundData;
 				}
 
-				mainPanel.bellIcon = new BellIcon(name, alarmSoundData);
+				mainPanel.bellIcon = new BellIcon(name, alarmSoundData, timeString);
 				mainPanel.bellIcon.play();
 			}
 			return 0;
