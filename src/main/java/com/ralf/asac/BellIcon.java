@@ -15,7 +15,6 @@ import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Ellipse;
 import javafx.scene.text.Font;
@@ -50,7 +49,7 @@ class BellIcon {
 
 		Platform.runLater(() -> {
 			stage = new Stage();
-			stage.initStyle(StageStyle.UNDECORATED);
+			stage.initStyle(StageStyle.TRANSPARENT);
 
 			final List<Node> nodes = new ArrayList<>();
 
@@ -76,6 +75,7 @@ class BellIcon {
 			stackPane.setPrefSize(diameter, diameter);
 			stackPane.setMaxSize(diameter, diameter);
 			stackPane.getChildren().addAll(nodes);
+			stackPane.setStyle("-fx-background-color: transparent;");
 
 			StrokeTransition transition = new StrokeTransition(new Duration(100.), circle);
 
@@ -85,15 +85,8 @@ class BellIcon {
 			transition.setAutoReverse(true);
 			transition.play();
 
-			final VBox vBox = new VBox();
-
-			if (name != null && !name.isBlank()) {
-				vBox.getChildren().addAll(stackPane);
-			} else {
-				vBox.getChildren().add(stackPane);
-			}
-
-			final Scene scene = new Scene(vBox);
+			final Scene scene = new Scene(stackPane);
+			scene.setFill(Color.TRANSPARENT); // Background transparent
 			stage.setScene(scene);
 
 			scene.setOnMouseClicked(event -> {
@@ -125,10 +118,12 @@ class BellIcon {
 		double width = 0;
 		String nameToBeShown = name;
 
+		double minimalDistanceCircleText = 1;
+
 		do {
 			width = getWidthText(nameToBeShown + "...", font);
 
-			if (width > diameter - 2 * circleStrokeWidth) {
+			if (width > diameter - 2 * (circleStrokeWidth + minimalDistanceCircleText)) {
 				nameToBeShown = nameToBeShown.substring(0, nameToBeShown.length() - 2);
 			}
 
