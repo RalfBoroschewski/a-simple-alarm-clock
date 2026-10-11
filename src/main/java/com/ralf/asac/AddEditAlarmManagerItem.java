@@ -143,8 +143,23 @@ class AddEditAlarmManagerItem {
 		return nameTextField.getText();
 	}
 
-	String getTime() {
-		return timeTextField.getText();
+	String getTimeDuration() {
+		String timeDuration = timeTextField.getText();
+
+		int index = timeDuration.indexOf(':');
+		if (index >= 0) {
+			String hour = "00" + timeDuration.substring(0, index);
+			String minute = "00" + timeDuration.substring(index + 1);
+
+			int lengthHour = hour.length();
+			int lengthMinute = minute.length();
+
+			hour = hour.substring(lengthHour - 2, lengthHour);
+			minute = minute.substring(lengthMinute - 2, lengthMinute);
+
+			return hour + ":" + minute;
+		}
+		return timeDuration;
 	}
 
 	AlarmSounds.AlarmSoundData getAlarmSoundData() {

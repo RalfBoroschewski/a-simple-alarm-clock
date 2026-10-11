@@ -233,7 +233,7 @@ class AlarmManager {
 
 				if (addEditAlarmManagerItem.isOk()) {
 					final AlarmManagerItem alarmManagerItem = new AlarmManagerItem(addEditAlarmManagerItem.getName(),
-							addEditAlarmManagerItem.getTime(), addEditAlarmManagerItem.getAlarmSoundData());
+							addEditAlarmManagerItem.getTimeDuration(), addEditAlarmManagerItem.getAlarmSoundData());
 					alarmManagerItem.adjustAlarmSoundData(soundItems, false);
 					if (selectedItem != null) {
 						alarmManagerItems.set(selectedItem.index, alarmManagerItem);
@@ -272,9 +272,10 @@ class AlarmManager {
 		addButton.setOnAction(event -> {
 			AddEditAlarmManagerItem addEditAlarmManagerItem = new AddEditAlarmManagerItem("", "", null, true,
 					alarmManagerItems, stage);
+
 			if (addEditAlarmManagerItem.isOk()) {
 				final AlarmManagerItem item = new AlarmManagerItem(addEditAlarmManagerItem.getName(),
-						addEditAlarmManagerItem.getTime(), addEditAlarmManagerItem.getAlarmSoundData());
+						addEditAlarmManagerItem.getTimeDuration(), addEditAlarmManagerItem.getAlarmSoundData());
 				item.adjustAlarmSoundData(soundItems, true);
 				alarmManagerItems.add(item);
 				rebuildListView();
