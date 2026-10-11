@@ -10,10 +10,10 @@ import java.util.List;
 import javafx.animation.Animation;
 import javafx.animation.StrokeTransition;
 import javafx.application.Platform;
+import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -29,14 +29,14 @@ class BellIcon {
 	private final AlarmSounds.AlarmSoundData alarmSoundData;
 
 	AudioOutput audioOutput;
-	private final String text;
+	private final String timeDurationText;
 
 	Stage stage;
 
-	BellIcon(final String name, final AlarmSounds.AlarmSoundData alarmSoundData, String text) {
+	BellIcon(final String name, final AlarmSounds.AlarmSoundData alarmSoundData, String timeDurationText) {
 		this.name = name;
 		this.alarmSoundData = alarmSoundData;
-		this.text = text;
+		this.timeDurationText = timeDurationText;
 	}
 
 	@SuppressWarnings({ "java:S4507" })
@@ -54,16 +54,20 @@ class BellIcon {
 
 			final List<Node> nodes = new ArrayList<>();
 
-			int diameter = 140;
+			final int diameter = 140;
 
-			Ellipse circle = new Ellipse(64, 64);
+			final double circleStrokeWidth = 8;
+
+			final Ellipse circle = new Ellipse(64, 64);
 			circle.setStroke(Color.BLUE);
-			circle.setStrokeWidth(8);
+			circle.setStrokeWidth(circleStrokeWidth);
 			circle.setFill(Color.WHITE);
 			nodes.add(circle);
 
-			Text javaFxText = new Text(text);
-			Font font = new Font(javaFxText.getFont().getName(), 15);
+			final Font font = new Font(new Text("Dummy").getFont().getName(), 15);
+			TextsToBeShown textsToBeShown = getTexts(name, timeDurationText, diameter, circleStrokeWidth, font);
+
+			final Text javaFxText = new Text(textsToBeShown.timeDurationText + "\n" + textsToBeShown.name);
 			javaFxText.setFont(font);
 			nodes.add(javaFxText);
 
@@ -84,8 +88,7 @@ class BellIcon {
 			final VBox vBox = new VBox();
 
 			if (name != null && !name.isBlank()) {
-				final Label caption = new Label(name);
-				vBox.getChildren().addAll(caption, stackPane);
+				vBox.getChildren().addAll(stackPane);
 			} else {
 				vBox.getChildren().add(stackPane);
 			}
@@ -109,6 +112,60 @@ class BellIcon {
 			stage.setY(point.getY() - 200); // 200 is for avoiding that this window is
 											// overlapping the main window
 		});
+	}
+
+	private class TextsToBeShown {
+		String name;
+		String timeDurationText;
+	}
+
+	@SuppressWarnings({ "java:S1643" })
+	private TextsToBeShown getTexts(final String name, final String timeDurationText, final double diameter,
+			final double circleStrokeWidth, Font font) {
+		double width = 0;
+		String nameToBeShown = name;
+
+		do {
+			width = getWidthText(nameToBeShown + "...", font);
+
+			if (width > diameter - 2 * circleStrokeWidth) {
+				nameToBeShown = nameToBeShown.substring(0, nameToBeShown.length() - 2);
+			}
+
+		} while (width > diameter);
+
+		if (!name.equals(nameToBeShown)) {
+			nameToBeShown += "...";
+		}
+
+		String timeDurationTextToBeShown = timeDurationText;
+
+		double lengthNameToBeShown = getWidthText(nameToBeShown, font);
+		double lengthTimeDurationToBeShown = getWidthText(timeDurationText, font);
+
+		if (lengthNameToBeShown < lengthTimeDurationToBeShown) {
+			do {
+				nameToBeShown = " " + nameToBeShown + " ";
+				lengthNameToBeShown = getWidthText(nameToBeShown, font);
+			} while (lengthNameToBeShown < lengthTimeDurationToBeShown);
+		} else {
+			do {
+				timeDurationTextToBeShown = " " + timeDurationTextToBeShown + " ";
+				lengthTimeDurationToBeShown = getWidthText(timeDurationTextToBeShown, font);
+			} while (lengthTimeDurationToBeShown < lengthNameToBeShown);
+		}
+
+		TextsToBeShown result = new TextsToBeShown();
+		result.name = nameToBeShown;
+		result.timeDurationText = timeDurationTextToBeShown;
+		return result;
+	}
+
+	private double getWidthText(String text, Font font) {
+		final Text textForDefiningTheWidthOfTheText = new Text(text + "...");
+		textForDefiningTheWidthOfTheText.setFont(font);
+		Bounds bounds = textForDefiningTheWidthOfTheText.getLayoutBounds();
+		return bounds.getWidth();
 	}
 
 	private URL getURL() {
