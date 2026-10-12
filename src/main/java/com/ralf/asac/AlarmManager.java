@@ -39,6 +39,8 @@ class AlarmManager {
 	private final ComboBox<SystrayItem> checkBoxBehavior;
 	private final Button okButton;
 
+	private Alarm lastAlarm;
+
 	private final boolean isSystray;
 
 	@SuppressWarnings("java:S106")
@@ -243,6 +245,11 @@ class AlarmManager {
 					Preferences.setAlarms(alarmManagerItems);
 					mainPanel.getAlarmsComboBox().showStoredAlarms();
 
+					final String name = addEditAlarmManagerItem.getName();
+					final String time = addEditAlarmManagerItem.getTimeDuration();
+					final AlarmSounds.AlarmSoundData alarmSoundData = addEditAlarmManagerItem.getAlarmSoundData();
+
+					lastAlarm = new Alarm(name, time, alarmSoundData);
 				}
 			}
 		});
@@ -282,6 +289,12 @@ class AlarmManager {
 				selectedItem(item);
 				Preferences.setAlarms(alarmManagerItems);
 				mainPanel.getAlarmsComboBox().showStoredAlarms();
+
+				final String name = addEditAlarmManagerItem.getName();
+				final String time = addEditAlarmManagerItem.getTimeDuration();
+				final AlarmSounds.AlarmSoundData alarmSoundData = addEditAlarmManagerItem.getAlarmSoundData();
+
+				lastAlarm = new Alarm(name, time, alarmSoundData);
 			}
 		});
 
@@ -445,6 +458,10 @@ class AlarmManager {
 			}
 			return "Name: " + name + " Time: " + time + " Sound name: " + soundName + " Sound path: " + soundPath;
 		}
+	}
+
+	Alarm getLastAlarm() {
+		return lastAlarm;
 	}
 
 	public static class MyRow {

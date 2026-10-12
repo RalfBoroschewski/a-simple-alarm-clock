@@ -66,7 +66,14 @@ class BellIcon {
 			final Font font = new Font(new Text("Dummy").getFont().getName(), 15);
 			TextsToBeShown textsToBeShown = getTexts(name, timeDurationText, diameter, circleStrokeWidth, font);
 
-			final Text javaFxText = new Text(textsToBeShown.timeDurationText + "\n" + textsToBeShown.name);
+			final Text javaFxText;
+
+			if (name.isEmpty()) {
+				javaFxText = new Text(textsToBeShown.timeDurationText);
+			} else {
+				javaFxText = new Text(textsToBeShown.timeDurationText + "\n" + textsToBeShown.name);
+			}
+
 			javaFxText.setFont(font);
 			nodes.add(javaFxText);
 
@@ -116,7 +123,7 @@ class BellIcon {
 	private TextsToBeShown getTexts(final String name, final String timeDurationText, final double diameter,
 			final double circleStrokeWidth, Font font) {
 		double width = 0;
-		String nameToBeShown = name;
+		String nameToBeShown = name.trim();
 
 		double minimalDistanceCircleText = 1;
 

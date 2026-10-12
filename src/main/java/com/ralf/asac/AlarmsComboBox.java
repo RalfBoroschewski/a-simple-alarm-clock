@@ -24,7 +24,6 @@ public class AlarmsComboBox extends ComboBox<Alarm> {
 		setEditable(true);
 
 		valueProperty().addListener((obs, oldValue, newValue) -> {
-
 			if (isInternal) {
 				return;
 			}
@@ -34,20 +33,17 @@ public class AlarmsComboBox extends ComboBox<Alarm> {
 			}
 
 			final Object value = getValue();
+
 			if (value instanceof Alarm) {
 				storedAlarm = (Alarm) value;
-				if (storedAlarm != null) {
-					timeDurationField.setText(storedAlarm.time);
-				} else {
-					timeDurationField.setText("");
-				}
+				timeDurationField.setText(storedAlarm.time);
 				if (alarmsComboBoxToBeSynchronize != null) {
 					alarmsComboBoxToBeSynchronize.isInternal = true;
 					alarmsComboBoxToBeSynchronize.setValue(storedAlarm);
 					alarmsComboBoxToBeSynchronize.isInternal = false;
 				}
-
 			}
+
 			timeDurationField.evaluateTimeDurationField(mainClass);
 
 		});

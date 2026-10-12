@@ -167,7 +167,14 @@ public class MainPanel {
 			pauseButtonIsPause = !pauseButtonIsPause;
 		});
 
-		alarmManagerButton.setOnAction(event -> new AlarmManager(mainClass, isSystray));
+		alarmManagerButton.setOnAction(event -> {
+			AlarmManager alarmManager = new AlarmManager(mainClass, isSystray);
+
+			Alarm lastAlarm = alarmManager.getLastAlarm();
+			if (lastAlarm != null) {
+				alarmsComboBox.setValue(lastAlarm);
+			}
+		});
 
 		repeatButton.setOnAction(event -> {
 			timeDurationField.setText(repeatAlarmData.duration + "");
