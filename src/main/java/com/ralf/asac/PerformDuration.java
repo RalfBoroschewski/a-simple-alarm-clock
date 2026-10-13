@@ -44,7 +44,7 @@ class PerformDuration {
 
 		mainPanel.deactivate();
 		mainPanel.setVisibilityPauseButton(true);
-		mainPanel.setRepeatButton(new RepeatAlarmData(-1, null, null));
+		mainPanel.setRepeatButton(new RepeatAlarmData(-1, null, null, null));
 
 		mainPanel.oldPerformDuration = this;
 
@@ -164,7 +164,7 @@ class PerformDuration {
 			alarmSoundData = repeatAlarmData.alarmSoundData;
 		}
 
-		mainPanel.setRepeatButton(new RepeatAlarmData(minutes, alarmSoundData, oldAlarmsComboBoxValue));
+		mainPanel.setRepeatButton(new RepeatAlarmData(minutes, name, alarmSoundData, oldAlarmsComboBoxValue));
 
 		if (minutes == 0) {
 			Asac.sleep(100); // avoid that the BellIcon vanishes after entering 0 in the timeDurationField

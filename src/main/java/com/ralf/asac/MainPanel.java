@@ -59,7 +59,7 @@ public class MainPanel {
 		alarmsComboBox = new AlarmsComboBox();
 		deactivateButton = new Button(MainClass.messages.getString("MainPanel.deactivate"));
 		pauseButton = new Button(MainClass.messages.getString(PAUSE_KEY));
-		repeatButton = new Button();
+		repeatButton = new Button("Dummy\nDummy");
 		alarmManagerButton = new Button(MainClass.messages.getString("MainPanel.alarm.manager"));
 
 	}
@@ -131,7 +131,7 @@ public class MainPanel {
 
 		gridPane.add(pauseButton, positionX, positionY, 1, 1);
 
-		gridPane.add(repeatButton, positionX, positionY, 2, 1);
+		gridPane.add(repeatButton, positionX, positionY, 2, 2);
 
 		if (bottomPane != null) {
 			positionY++;
@@ -383,8 +383,16 @@ public class MainPanel {
 						+ Asac.getMinuteString(repeatAlarmData.duration)
 						+ MainClass.messages.getString("MainClass.repeat.button.part2");
 
-				repeatButton.setText(text);
-				repeatButton.setVisible(repeatAlarmData.duration >= 0);
+				if (repeatAlarmData.duration >= 0) {
+					if (repeatAlarmData.name.trim().isEmpty()) {
+						repeatButton.setText(text);
+					} else {
+						repeatButton.setText(text + "\n" + repeatAlarmData.name.trim());
+					}
+					repeatButton.setVisible(true);
+				} else {
+					repeatButton.setVisible(false);
+				}
 
 			});
 		}

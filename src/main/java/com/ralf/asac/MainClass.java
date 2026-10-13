@@ -170,11 +170,14 @@ public class MainClass extends Application {
 
 class RepeatAlarmData {
 	final long duration;
+	final String name;
 	final AlarmSounds.AlarmSoundData alarmSoundData;
 	final Alarm alarmComboBox;
 
-	RepeatAlarmData(final long duration, final AlarmSounds.AlarmSoundData alarmSoundData, final Alarm alarmComboBox) {
+	RepeatAlarmData(final long duration, final String name, final AlarmSounds.AlarmSoundData alarmSoundData,
+			final Alarm alarmComboBox) {
 		this.duration = duration;
+		this.name = name;
 		this.alarmSoundData = alarmSoundData;
 		this.alarmComboBox = alarmComboBox;
 	}

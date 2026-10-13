@@ -29,7 +29,7 @@ class PerformTime {
 		mainPanel.setRepeatButton(null);
 
 		mainPanel.oldPerformTime = this;
-		mainPanel.setRepeatButton(new RepeatAlarmData(-1, null, null));
+		mainPanel.setRepeatButton(new RepeatAlarmData(-1, null, null, null));
 
 		final LocalDateTime now = LocalDateTime.now(ZoneId.systemDefault());
 
