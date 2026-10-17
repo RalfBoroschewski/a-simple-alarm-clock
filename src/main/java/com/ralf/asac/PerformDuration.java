@@ -36,9 +36,6 @@ class PerformDuration {
 	}
 
 	void start() {
-		System.out.println("Hallo 1");
-		new Exception().printStackTrace();
-
 		final MainPanel mainPanel = mainClass.getMainPanel();
 		if (repeatAlarmData != null) {
 			oldAlarmsComboBoxValue = repeatAlarmData.alarmComboBox;
@@ -81,7 +78,6 @@ class PerformDuration {
 
 			final String programName = MainClass.messages.getString("title");
 
-			System.out.println("Hallo 2");
 			for (int indexMinutes = 0; indexMinutes < minutes; indexMinutes++) {
 				final long time = minutes - indexMinutes;
 				final String timeString = time + "";
@@ -116,7 +112,6 @@ class PerformDuration {
 				}
 			}
 
-			System.out.println("Hallo 3");
 			switch (performMode) {
 			case NORMAL:
 				performCommon(mainPanel);
@@ -133,7 +128,13 @@ class PerformDuration {
 		}
 
 		void performCommon(MainPanel mainPanel) {
-			System.out.println("Hallo 4");
+
+			mainPanel.setTimeDurationFieldText("");
+			mainPanel.setTitle(TITLE);
+			mainClass.getSystray().setSystrayToolTip(TITLE);
+			mainPanel.setVisibilityDeactivateButton(false);
+			mainPanel.deactivatePauseButton();
+
 			mainClass.getSystray().setDeactivateIcon();
 			Platform.runLater(() -> {
 				mainPanel.resetStoredAlarmsVaLue();
@@ -142,13 +143,12 @@ class PerformDuration {
 				}
 			});
 			mainPanel.setVisibilityDeactivateButton(false);
-			System.out.println("Hallo 5");
-			mainPanel.setTimeDurationFieldText("");
-			System.out.println("Hallo 6");
-			mainPanel.setTitle(TITLE);
 			mainClass.getSystray().setSystrayToolTip(TITLE);
 			imageCreatorSystray.dispose();
-			System.out.println("Hallo 7");
+			mainPanel.deactivatePauseButton();
+			if (!doNotChangeIcons) {
+				mainPanel.setDeactivateIcon();
+			}
 		}
 	}
 
@@ -171,12 +171,6 @@ class PerformDuration {
 	@SuppressWarnings("java:S3398")
 	private void launchBell() {
 		final MainPanel mainPanel = mainClass.getMainPanel();
-		mainPanel.setTimeDurationFieldText("");
-		final String title = MainClass.messages.getString("title");
-		mainPanel.setTitle(title);
-		mainClass.getSystray().setSystrayToolTip(title);
-		mainPanel.setVisibilityDeactivateButton(false);
-		mainPanel.deactivatePauseButton();
 
 		AlarmSounds.AlarmSoundData alarmSoundData = null;
 		if (repeatAlarmData == null) {
@@ -195,6 +189,7 @@ class PerformDuration {
 		}
 		mainPanel.bellIcon = new BellIcon(name, alarmSoundData, minutes + Asac.getMinuteString(minutes));
 		mainPanel.bellIcon.play();
+
 		Platform.runLater(() -> {
 			mainPanel.resetStoredAlarmsVaLue();
 			mainPanel.setDeactivateIcon();

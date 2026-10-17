@@ -33,9 +33,7 @@ public class AlarmsComboBox extends ComboBox<Alarm> {
 			}
 
 			final Object value = getValue();
-			System.out.println("Holla 1 " + value);
 			if (value instanceof Alarm) {
-				System.out.println("Holla 2 ");
 				storedAlarm = (Alarm) value;
 				timeDurationField.setText(storedAlarm.time);
 				if (alarmsComboBoxToBeSynchronize != null) {
