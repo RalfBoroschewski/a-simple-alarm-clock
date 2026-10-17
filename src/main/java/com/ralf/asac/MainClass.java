@@ -148,9 +148,11 @@ public class MainClass extends Application {
 	private void doNotChangeIcons() {
 		if (oldPerformTime != null) {
 			oldPerformTime.doNotChangeIcons();
+			oldPerformTime.setPerformMode(PerformMode.RESTARTED);
 		}
 		if (oldPerformDuration != null) {
 			oldPerformDuration.doNotChangeIcons();
+			oldPerformDuration.setPerformMode(PerformMode.RESTARTED);
 		}
 	}
 

@@ -13,6 +13,7 @@ class PerformDuration {
 	private final ImageCreatorJavaFx imageCreatorTaskbar;
 	private final ImageCreatorAWT imageCreatorSystray;
 	private MyWorker myWorker;
+	private static final String TITLE = MainClass.messages.getString("title");
 
 	PerformDuration(final long minute, final RepeatAlarmData repeatAlarmData, final MainClass mainClass) {
 		this.mainClass = mainClass;
@@ -35,6 +36,9 @@ class PerformDuration {
 	}
 
 	void start() {
+		System.out.println("Hallo 1");
+		new Exception().printStackTrace();
+
 		final MainPanel mainPanel = mainClass.getMainPanel();
 		if (repeatAlarmData != null) {
 			oldAlarmsComboBoxValue = repeatAlarmData.alarmComboBox;
@@ -54,8 +58,8 @@ class PerformDuration {
 		new Thread(myWorker).start();
 	}
 
-	void stop() {
-		myWorker.startBell = false;
+	void setPerformMode(PerformMode performMode) {
+		myWorker.performMode = performMode;
 	}
 
 	void doNotChangeIcons() {
@@ -64,19 +68,20 @@ class PerformDuration {
 
 	private class MyWorker extends Task<Integer> {
 
-		boolean startBell;
+		PerformMode performMode;
 		boolean doNotChangeIcons;
 
 		@Override
 		@SuppressWarnings({ "java:S2583", "java:S3516", "java:S2589", "java:S3776" })
 		protected Integer call() throws Exception {
 			final MainPanel mainPanel = mainClass.getMainPanel();
-			startBell = true;
+			performMode = PerformMode.NORMAL;
 
 			long step = 1;
 
 			final String programName = MainClass.messages.getString("title");
 
+			System.out.println("Hallo 2");
 			for (int indexMinutes = 0; indexMinutes < minutes; indexMinutes++) {
 				final long time = minutes - indexMinutes;
 				final String timeString = time + "";
@@ -101,31 +106,50 @@ class PerformDuration {
 				for (int indexSeconds = 0; indexSeconds < 60; indexSeconds += step) {
 					step = mainPanel.getPauseButtonIsPause() ? 0 : 1;
 
-					if (!startBell)
+					if (performMode != PerformMode.NORMAL)
 						return 1;
 					Asac.sleep(1000L);
 				}
 
-				if (!startBell) {
+				if (performMode != PerformMode.NORMAL) {
 					break;
 				}
 			}
 
-			if (mainClass.getSystray().hasSystray()) {
-				if (!doNotChangeIcons) {
-					mainClass.getSystray().setDeactivateIcon();
-				}
-
-				imageCreatorSystray.dispose();
-			}
-
-			if (startBell) {
+			System.out.println("Hallo 3");
+			switch (performMode) {
+			case NORMAL:
+				performCommon(mainPanel);
 				launchBell();
+				break;
+			case DEACTIVATE:
+				performCommon(mainPanel);
+				break;
+			default:
+				break;
 			}
 
 			return 0;
 		}
 
+		void performCommon(MainPanel mainPanel) {
+			System.out.println("Hallo 4");
+			mainClass.getSystray().setDeactivateIcon();
+			Platform.runLater(() -> {
+				mainPanel.resetStoredAlarmsVaLue();
+				if (!doNotChangeIcons) {
+					mainPanel.setDeactivateIcon();
+				}
+			});
+			mainPanel.setVisibilityDeactivateButton(false);
+			System.out.println("Hallo 5");
+			mainPanel.setTimeDurationFieldText("");
+			System.out.println("Hallo 6");
+			mainPanel.setTitle(TITLE);
+			mainClass.getSystray().setSystrayToolTip(TITLE);
+			imageCreatorSystray.dispose();
+			System.out.println("Hallo 7");
+		}
 	}
 
 	@SuppressWarnings("java:S3398")

@@ -232,11 +232,11 @@ public class MainPanel {
 		pauseButtonIsPause = false;
 
 		if (oldPerformTime != null) {
-			oldPerformTime.stop();
+			oldPerformTime.setPerformMode(PerformMode.DEACTIVATE);
 		}
 		oldPerformTime = null;
 		if (oldPerformDuration != null) {
-			oldPerformDuration.stop();
+			oldPerformDuration.setPerformMode(PerformMode.DEACTIVATE);
 		}
 		oldPerformDuration = null;
 		deactivateButton.setVisible(false);
@@ -397,4 +397,8 @@ public class MainPanel {
 			});
 		}
 	}
+}
+
+enum PerformMode {
+	NORMAL, DEACTIVATE, RESTARTED
 }
