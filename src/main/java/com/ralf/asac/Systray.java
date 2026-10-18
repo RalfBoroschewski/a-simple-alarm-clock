@@ -113,7 +113,6 @@ class Systray {
 			mainPanel.setHasFocusedPropertyCounterListener(Long.MAX_VALUE);
 			mainPanel.init(mainClass.getTitlePane(), null, false);
 			SystemTray.getSystemTray().remove(trayIcon);
-			System.out.println("Holla 1");
 			stage.hide();
 			stage.setIconified(false);
 			PauseTransition pause = new PauseTransition(Duration.millis(100));

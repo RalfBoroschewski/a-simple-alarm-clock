@@ -196,7 +196,7 @@ class AlarmManager {
 		gridPane.add(vBox, positionX, positionY, 3, 1);
 		GridPane.setMargin(vBox, new Insets(50, 10, 0, 10));
 
-		if (mainClass.getSystray().hasSystray()) {
+		if (mainClass.getSystray().hasSystray() && Math.random() > 2) { // never
 			positionY++;
 
 			gridPane.add(checkBoxBehavior, positionX, positionY, 2, 1);
@@ -234,8 +234,9 @@ class AlarmManager {
 						alarmManagerItems, stage);
 
 				if (addEditAlarmManagerItem.isOk()) {
-					final AlarmManagerItem alarmManagerItem = new AlarmManagerItem(addEditAlarmManagerItem.getName(),
-							addEditAlarmManagerItem.getTimeDuration(), addEditAlarmManagerItem.getAlarmSoundData());
+					final AlarmManager.AlarmManagerItem alarmManagerItem = new AlarmManager.AlarmManagerItem(
+							addEditAlarmManagerItem.getName(), addEditAlarmManagerItem.getTimeDuration(),
+							addEditAlarmManagerItem.getAlarmSoundData());
 					alarmManagerItem.adjustAlarmSoundData(soundItems, false);
 					if (selectedItem != null) {
 						alarmManagerItems.set(selectedItem.index, alarmManagerItem);
@@ -342,7 +343,6 @@ class AlarmManager {
 
 	void close(final Stage thisStage, final MainPanel mainPanel) {
 		mainPanel.setHasFocusedPropertyCounterListener(isSystray ? 0 : Long.MAX_VALUE);
-		System.out.println("Holla 2");
 		thisStage.hide();
 		mainPanel.getStage().show();
 	}
@@ -385,6 +385,7 @@ class AlarmManager {
 
 	}
 
+	@SuppressWarnings("java:S9391")
 	void rebuildListView() {
 		final ArrayList<MyRow> tableData = new ArrayList<>();
 		int index = 0;

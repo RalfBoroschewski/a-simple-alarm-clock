@@ -97,7 +97,6 @@ public class MainClass extends Application {
 				return;
 			}
 
-			System.out.println("Holla 3");
 			stage.hide();
 			systray.addSystray();
 

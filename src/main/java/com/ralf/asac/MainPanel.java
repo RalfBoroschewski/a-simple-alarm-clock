@@ -142,14 +142,12 @@ public class MainPanel {
 	}
 
 	void update(final Point2D point) {
-		System.out.println("Hallo 2");
 		alarmsComboBox.showStoredAlarms();
 		stage.setX(point.getX());
 		stage.setY(point.getY());
 		xPosition = point.getX();
 		yPosition = point.getY();
 		if (!isFirstCall || Preferences.getSystrayMode() != Preferences.SystrayMode.ONLY_IN_SYSTRAY) {
-			System.out.println("Hallo 2a");
 			stage.show();
 		}
 	}
@@ -193,34 +191,21 @@ public class MainPanel {
 		gridPane.setOnMouseDragged(this::handleMouseDragged);
 
 		stage.focusedProperty().addListener((obs, oldValue, focused) -> {
-			System.out.println("Hallo 3");
 			if (hasFocusedPropertyCounterListener-- > 0) {
-				System.out.println("Hallo 4 " + isFirstCall);
-				System.out.println("Hallo 5 " + Preferences.getSystrayMode());
 
-				// if (!isFirstCall || Preferences.getSystrayMode() !=
-				// Preferences.SystrayMode.ONLY_IN_SYSTRAY) {
-				System.out.println("Hallo 6");
 				stage.show();
-				// }
 				isFirstCall = false;
 
 				return;
 			}
 
 			if (focused == null || !focused) {
-				System.out.println("Hallo 7 " + obs);
-				System.out.println("Hallo 8 " + obs.getValue());
-				System.out.println("Hallo 9 " + oldValue);
 				final PauseTransition delay = new PauseTransition(Duration.millis(200));
 
 				delay.setOnFinished(event -> {
-					System.out.println("Hallo 10 ");
 					if (!stage.isFocused() && mainClass.getSystray().getMouseClickedCounter() > 0) {
-						System.out.println("Hallo 11");
 						stage.hide();
 					} else {
-						System.out.println("Hallo 12");
 						stage.show();
 						stage.hide();
 						stage.show();
