@@ -144,7 +144,7 @@ class AlarmManager {
 
 		switch (systrayMode) {
 		case NOT_IN_SYSTRAY:
-			checkBoxBehavior.setValue(itemSystrayOnly);
+			checkBoxBehavior.setValue(itemNoSystray);
 			break;
 		case MINIMIZE_TO_SYSTRAY:
 			checkBoxBehavior.setValue(itemMinimizeToSystray);
@@ -342,6 +342,7 @@ class AlarmManager {
 
 	void close(final Stage thisStage, final MainPanel mainPanel) {
 		mainPanel.setHasFocusedPropertyCounterListener(isSystray ? 0 : Long.MAX_VALUE);
+		System.out.println("Holla 2");
 		thisStage.hide();
 		mainPanel.getStage().show();
 	}

@@ -55,6 +55,10 @@ class PerformTime {
 		imageCreatorTaskbar.setTime(hour, minute);
 		imageCreatorTaskbar.setImageToStage(mainClass);
 
+		ImageCreatorAWT imageCreatorSystray = new ImageCreatorAWT();
+		imageCreatorSystray.setTime(hour, minute);
+		mainClass.getSystray().setIcon(imageCreatorSystray.getImage());
+
 		if (name.isBlank()) {
 			mainPanel.setTitle(TITLE + "\n" + timeString);
 			mainClass.getSystray().setSystrayToolTip(TITLE + ": " + timeString);

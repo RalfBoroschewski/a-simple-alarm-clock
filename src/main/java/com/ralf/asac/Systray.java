@@ -34,6 +34,8 @@ class Systray {
 
 	private final HBox bottomPanel;
 
+	private int mouseClickedCounter;
+
 	@SuppressWarnings("java:S4507")
 	Systray(final MainClass mainClass) {
 		this.mainClass = mainClass;
@@ -97,6 +99,7 @@ class Systray {
 				} else if (SwingUtilities.isRightMouseButton(event)) {
 					showAtSystray(event);
 				}
+				mouseClickedCounter++;
 			}
 		});
 	}
@@ -110,6 +113,7 @@ class Systray {
 			mainPanel.setHasFocusedPropertyCounterListener(Long.MAX_VALUE);
 			mainPanel.init(mainClass.getTitlePane(), null, false);
 			SystemTray.getSystemTray().remove(trayIcon);
+			System.out.println("Holla 1");
 			stage.hide();
 			stage.setIconified(false);
 			PauseTransition pause = new PauseTransition(Duration.millis(100));
@@ -233,5 +237,9 @@ class Systray {
 				exception.printStackTrace();
 			}
 		}
+	}
+
+	int getMouseClickedCounter() {
+		return mouseClickedCounter;
 	}
 }

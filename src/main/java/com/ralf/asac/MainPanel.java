@@ -53,6 +53,8 @@ public class MainPanel {
 
 	private long hasFocusedPropertyCounterListener;
 
+	private boolean isFirstCall = true;
+
 	MainPanel(final MainClass mainClass) {
 		this.mainClass = mainClass;
 		timeDurationField = new TimeDurationField();
@@ -134,18 +136,22 @@ public class MainPanel {
 		gridPane.add(repeatButton, positionX, positionY, 2, 2);
 
 		if (bottomPane != null) {
-			positionY++;
+			positionY += 2;
 			gridPane.add(bottomPane, positionX, positionY, 1, 1);
 		}
 	}
 
 	void update(final Point2D point) {
+		System.out.println("Hallo 2");
 		alarmsComboBox.showStoredAlarms();
 		stage.setX(point.getX());
 		stage.setY(point.getY());
 		xPosition = point.getX();
 		yPosition = point.getY();
-		stage.show();
+		if (!isFirstCall || Preferences.getSystrayMode() != Preferences.SystrayMode.ONLY_IN_SYSTRAY) {
+			System.out.println("Hallo 2a");
+			stage.show();
+		}
 	}
 
 	void setHasFocusedPropertyCounterListener(final long hasFocusedPropertyCounterListener) {
@@ -187,17 +193,37 @@ public class MainPanel {
 		gridPane.setOnMouseDragged(this::handleMouseDragged);
 
 		stage.focusedProperty().addListener((obs, oldValue, focused) -> {
+			System.out.println("Hallo 3");
 			if (hasFocusedPropertyCounterListener-- > 0) {
+				System.out.println("Hallo 4 " + isFirstCall);
+				System.out.println("Hallo 5 " + Preferences.getSystrayMode());
+
+				// if (!isFirstCall || Preferences.getSystrayMode() !=
+				// Preferences.SystrayMode.ONLY_IN_SYSTRAY) {
+				System.out.println("Hallo 6");
 				stage.show();
+				// }
+				isFirstCall = false;
+
 				return;
 			}
 
 			if (focused == null || !focused) {
-				final PauseTransition delay = new PauseTransition(Duration.millis(100));
+				System.out.println("Hallo 7 " + obs);
+				System.out.println("Hallo 8 " + obs.getValue());
+				System.out.println("Hallo 9 " + oldValue);
+				final PauseTransition delay = new PauseTransition(Duration.millis(200));
 
 				delay.setOnFinished(event -> {
-					if (!stage.isFocused()) {
+					System.out.println("Hallo 10 ");
+					if (!stage.isFocused() && mainClass.getSystray().getMouseClickedCounter() > 0) {
+						System.out.println("Hallo 11");
 						stage.hide();
+					} else {
+						System.out.println("Hallo 12");
+						stage.show();
+						stage.hide();
+						stage.show();
 					}
 				});
 
@@ -338,6 +364,12 @@ public class MainPanel {
 			stage.getIcons().clear();
 			stage.getIcons().add(image);
 		}
+
+		Systray systray = mainClass.getSystray();
+		if (systray != null) {
+			systray.setDeactivateIcon();
+		}
+
 	}
 
 	void setTitle(final String title) {
