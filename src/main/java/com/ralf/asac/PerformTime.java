@@ -71,8 +71,8 @@ class PerformTime {
 		new Thread(myWorker).start();
 	}
 
-	void stop() {
-		myWorker.startBell = false;
+	void setPerformMode(PerformMode performMode) {
+		myWorker.performMode = performMode;
 	}
 
 	void doNotChangeIcons() {
@@ -81,7 +81,7 @@ class PerformTime {
 
 	private class MyWorker extends Task<Integer> {
 		private final LocalDateTime desiredTime;
-		boolean startBell;
+		PerformMode performMode;
 		boolean doNotChangeIcons;
 
 		MyWorker(final LocalDateTime desiredTime) {
@@ -91,13 +91,13 @@ class PerformTime {
 		@SuppressWarnings({ "java:S2142", "java:S4507", "java:S2589" })
 		@Override
 		protected Integer call() throws Exception {
-			startBell = true;
+			performMode = PerformMode.NORMAL;
 			final MainPanel mainPanel = mainClass.getMainPanel();
 			mainPanel.setVisibilityDeactivateButton(true);
 
 			LocalDateTime now = LocalDateTime.now(ZoneId.systemDefault());
 
-			while (now.compareTo(desiredTime) < 0 && startBell) {
+			while (now.compareTo(desiredTime) < 0 && performMode == PerformMode.NORMAL) {
 				final int nowSeconds = now.getSecond();
 				final int nextIntervalSeconds = ((nowSeconds + INTERVAL_LENGTH_IN_SECONDS) / INTERVAL_LENGTH_IN_SECONDS)
 						* INTERVAL_LENGTH_IN_SECONDS;
@@ -113,20 +113,9 @@ class PerformTime {
 				now = LocalDateTime.now(ZoneId.systemDefault());
 			}
 
-			mainClass.getSystray().setDeactivateIcon();
-			Platform.runLater(() -> {
-				mainPanel.resetStoredAlarmsVaLue();
-				if (!doNotChangeIcons) {
-					mainPanel.setDeactivateIcon();
-				}
-			});
-
-			if (startBell) {
-				mainPanel.setVisibilityDeactivateButton(false);
-				mainPanel.setTimeDurationFieldText("");
-				mainPanel.setTitle(TITLE);
-				mainClass.getSystray().setSystrayToolTip(TITLE);
-
+			switch (performMode) {
+			case NORMAL:
+				performCommon(mainPanel);
 				final String name = mainPanel.getName();
 
 				AlarmSounds.AlarmSoundData alarmSoundData = null;
@@ -137,8 +126,29 @@ class PerformTime {
 
 				mainPanel.bellIcon = new BellIcon(name, alarmSoundData, timeString);
 				mainPanel.bellIcon.play();
+				break;
+			case DEACTIVATE:
+				performCommon(mainPanel);
+				break;
+			default:
+				break;
 			}
+
 			return 0;
+		}
+
+		void performCommon(MainPanel mainPanel) {
+			mainClass.getSystray().setDeactivateIcon();
+			Platform.runLater(() -> {
+				mainPanel.resetStoredAlarmsVaLue();
+				if (!doNotChangeIcons) {
+					mainPanel.setDeactivateIcon();
+				}
+			});
+			mainPanel.setVisibilityDeactivateButton(false);
+			mainPanel.setTimeDurationFieldText("");
+			mainPanel.setTitle(TITLE);
+			mainClass.getSystray().setSystrayToolTip(TITLE);
 		}
 	}
 

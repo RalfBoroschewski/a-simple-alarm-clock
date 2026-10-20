@@ -33,7 +33,6 @@ public class AlarmsComboBox extends ComboBox<Alarm> {
 			}
 
 			final Object value = getValue();
-
 			if (value instanceof Alarm) {
 				storedAlarm = (Alarm) value;
 				timeDurationField.setText(storedAlarm.time);
