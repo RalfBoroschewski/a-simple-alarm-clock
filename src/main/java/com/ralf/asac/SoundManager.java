@@ -239,6 +239,7 @@ class SoundManager {
 
 	}
 
+	@SuppressWarnings("java:S9391")
 	void rebuildListView() {
 		final ArrayList<MyRow> tableData = new ArrayList<>();
 		int index = 0;

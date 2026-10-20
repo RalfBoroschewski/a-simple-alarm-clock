@@ -115,6 +115,7 @@ public class AlarmsComboBox extends ComboBox<Alarm> {
 		getEditor().clear();
 	}
 
+	@SuppressWarnings("java:S9391")
 	void showStoredAlarms() {
 		final ArrayList<AlarmManager.AlarmManagerItem> items = Preferences.getAlarms();
 

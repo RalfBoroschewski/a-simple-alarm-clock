@@ -114,6 +114,7 @@ class BellIcon {
 		});
 	}
 
+	@SuppressWarnings("java:S9396")
 	private class TextsToBeShown {
 		String name;
 		String timeDurationText;
