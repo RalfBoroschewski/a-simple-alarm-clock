@@ -16,10 +16,10 @@ public class AlarmsComboBox extends ComboBox<Alarm> {
 
 	private boolean isInternal;
 
-	@SuppressWarnings("java:S6201")
 	AlarmsComboBox() {
 	}
 
+	@SuppressWarnings("java:S6201")
 	void initialize(final MainClass mainClass, final TimeDurationField timeDurationField) {
 		setEditable(true);
 
@@ -33,11 +33,12 @@ public class AlarmsComboBox extends ComboBox<Alarm> {
 			}
 
 			final Object value = getValue();
-			if (value instanceof Alarm tempAlarm) {
-				timeDurationField.setText(tempAlarm.time);
+			if (value instanceof Alarm) {
+				storedAlarm = (Alarm) value;
+				timeDurationField.setText(storedAlarm.time);
 				if (alarmsComboBoxToBeSynchronize != null) {
 					alarmsComboBoxToBeSynchronize.isInternal = true;
-					alarmsComboBoxToBeSynchronize.setValue(tempAlarm);
+					alarmsComboBoxToBeSynchronize.setValue(storedAlarm);
 					alarmsComboBoxToBeSynchronize.isInternal = false;
 				}
 			}

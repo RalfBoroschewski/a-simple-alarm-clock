@@ -138,7 +138,7 @@ class AlarmManager {
 
 		final Preferences.SystrayMode systrayMode = Preferences.getSystrayMode();
 
-		checkBoxBehavior.getItems().addAll(itemNoSystray, itemMinimizeToSystray, itemSystrayOnly);
+		checkBoxBehavior.getItems().addAll(itemNoSystray, itemMinimizeToSystray);
 		checkBoxBehavior.setPrefWidth(widthMinimizeToSystrayCheckBox);
 		checkBoxBehavior.setMinWidth(widthMinimizeToSystrayCheckBox);
 
@@ -196,7 +196,7 @@ class AlarmManager {
 		gridPane.add(vBox, positionX, positionY, 3, 1);
 		GridPane.setMargin(vBox, new Insets(50, 10, 0, 10));
 
-		if (mainClass.getSystray().hasSystray() && Math.random() > 2) { // never
+		if (mainClass.getSystray().hasSystray()) {
 			positionY++;
 
 			gridPane.add(checkBoxBehavior, positionX, positionY, 2, 1);
