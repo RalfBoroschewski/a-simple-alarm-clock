@@ -33,12 +33,11 @@ public class AlarmsComboBox extends ComboBox<Alarm> {
 			}
 
 			final Object value = getValue();
-			if (value instanceof Alarm) {
-				storedAlarm = (Alarm) value;
-				timeDurationField.setText(storedAlarm.time);
+			if (value instanceof Alarm tempAlarm) {
+				timeDurationField.setText(tempAlarm.time);
 				if (alarmsComboBoxToBeSynchronize != null) {
 					alarmsComboBoxToBeSynchronize.isInternal = true;
-					alarmsComboBoxToBeSynchronize.setValue(storedAlarm);
+					alarmsComboBoxToBeSynchronize.setValue(tempAlarm);
 					alarmsComboBoxToBeSynchronize.isInternal = false;
 				}
 			}

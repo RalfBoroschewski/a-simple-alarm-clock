@@ -25,7 +25,6 @@ class PerformTime {
 
 	public void start() {
 		final MainPanel mainPanel = mainClass.getMainPanel();
-		mainPanel.deactivate();
 		mainPanel.setRepeatButton(null);
 
 		mainPanel.oldPerformTime = this;
@@ -75,14 +74,9 @@ class PerformTime {
 		myWorker.performMode = performMode;
 	}
 
-	void doNotChangeIcons() {
-		myWorker.doNotChangeIcons = true;
-	}
-
 	private class MyWorker extends Task<Integer> {
 		private final LocalDateTime desiredTime;
 		PerformMode performMode;
-		boolean doNotChangeIcons;
 
 		MyWorker(final LocalDateTime desiredTime) {
 			this.desiredTime = desiredTime;
@@ -141,14 +135,14 @@ class PerformTime {
 			mainClass.getSystray().setDeactivateIcon();
 			Platform.runLater(() -> {
 				mainPanel.resetStoredAlarmsVaLue();
-				if (!doNotChangeIcons) {
-					mainPanel.setDeactivateIcon();
-				}
+				mainPanel.setDeactivateIcon();
+
+				mainPanel.setVisibilityDeactivateButton(false);
+				mainPanel.setTimeDurationFieldText("");
+				mainPanel.setTitle(TITLE);
+				mainClass.getSystray().setSystrayToolTip(TITLE);
+
 			});
-			mainPanel.setVisibilityDeactivateButton(false);
-			mainPanel.setTimeDurationFieldText("");
-			mainPanel.setTitle(TITLE);
-			mainClass.getSystray().setSystrayToolTip(TITLE);
 		}
 	}
 

@@ -5,6 +5,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
+import javafx.application.Platform;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.stage.Stage;
@@ -320,9 +321,12 @@ class ImageCreatorJavaFx extends ImageCreatorBase {
 	}
 
 	void setImageToStage(final MainClass mainClass) {
-		Stage stage = mainClass.getStage();
-		stage.getIcons().clear();
-		stage.getIcons().add(image);
+		Platform.runLater(() -> {
+			Stage stage = mainClass.getStage();
+			stage.getIcons().clear();
+			stage.getIcons().add(image);
+		});
+
 	}
 
 	void drawPixelWhite(int x, int y) {

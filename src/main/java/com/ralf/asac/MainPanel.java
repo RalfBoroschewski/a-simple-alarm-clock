@@ -243,11 +243,11 @@ public class MainPanel {
 		pauseButtonIsPause = false;
 
 		if (oldPerformTime != null) {
-			oldPerformTime.setPerformMode(PerformMode.DEACTIVATE);
+			oldPerformTime.setPerformMode(PerformMode.RESTARTED);
 		}
 		oldPerformTime = null;
 		if (oldPerformDuration != null) {
-			oldPerformDuration.setPerformMode(PerformMode.DEACTIVATE);
+			oldPerformDuration.setPerformMode(PerformMode.RESTARTED);
 		}
 		oldPerformDuration = null;
 		deactivateButton.setVisible(false);
@@ -335,7 +335,6 @@ public class MainPanel {
 
 	@SuppressWarnings("java:S4507")
 	void setDeactivateIcon() {
-
 		final URL url = ClassLoader.getSystemResource("alarm.png");
 		Image image = null;
 		try {
@@ -345,9 +344,13 @@ public class MainPanel {
 			exception.printStackTrace();
 		}
 
-		if (image != null) {
-			stage.getIcons().clear();
-			stage.getIcons().add(image);
+		final Image finalImage = image;
+
+		if (finalImage != null) {
+			Platform.runLater(() -> {
+				stage.getIcons().clear();
+				stage.getIcons().add(finalImage);
+			});
 		}
 
 		Systray systray = mainClass.getSystray();

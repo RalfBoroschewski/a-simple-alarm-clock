@@ -59,14 +59,9 @@ class PerformDuration {
 		myWorker.performMode = performMode;
 	}
 
-	void doNotChangeIcons() {
-		myWorker.doNotChangeIcons = true;
-	}
-
 	private class MyWorker extends Task<Integer> {
 
 		PerformMode performMode;
-		boolean doNotChangeIcons;
 
 		@Override
 		@SuppressWarnings({ "java:S2583", "java:S3516", "java:S2589", "java:S3776" })
@@ -85,18 +80,15 @@ class PerformDuration {
 
 				final String minutesString = time + Asac.getMinuteString(time);
 
-				if (!doNotChangeIcons) {
-					adjustIcons(time);
-					if (name.isBlank()) {
-						String title = programName + "\n" + minutesString;
-						mainPanel.setTitle(title);
-						mainClass.getSystray().setSystrayToolTip(title);
-					} else {
-						// String
-						mainPanel.setTitle(programName + "\n" + name + "\u00A0" + mainPanel.getDashForTitle()
-								+ "\u00A0\n" + minutesString);
-						mainClass.getSystray().setSystrayToolTip(programName + ": " + name + " - " + minutesString);
-					}
+				adjustIcons(time);
+				if (name.isBlank()) {
+					String title = programName + "\n" + minutesString;
+					mainPanel.setTitle(title);
+					mainClass.getSystray().setSystrayToolTip(title);
+				} else {
+					mainPanel.setTitle(programName + "\n" + name + "\u00A0" + mainPanel.getDashForTitle() + "\u00A0\n"
+							+ minutesString);
+					mainClass.getSystray().setSystrayToolTip(programName + ": " + name + " - " + minutesString);
 				}
 
 				for (int indexSeconds = 0; indexSeconds < 60; indexSeconds += step) {
@@ -138,17 +130,13 @@ class PerformDuration {
 			mainClass.getSystray().setDeactivateIcon();
 			Platform.runLater(() -> {
 				mainPanel.resetStoredAlarmsVaLue();
-				if (!doNotChangeIcons) {
-					mainPanel.setDeactivateIcon();
-				}
+				mainPanel.setDeactivateIcon();
 			});
 			mainPanel.setVisibilityDeactivateButton(false);
 			mainClass.getSystray().setSystrayToolTip(TITLE);
 			imageCreatorSystray.dispose();
 			mainPanel.deactivatePauseButton();
-			if (!doNotChangeIcons) {
-				mainPanel.setDeactivateIcon();
-			}
+			mainPanel.setDeactivateIcon();
 		}
 	}
 

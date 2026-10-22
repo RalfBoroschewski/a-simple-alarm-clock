@@ -40,14 +40,14 @@ class BellIcon {
 
 	@SuppressWarnings({ "java:S4507" })
 	void play() {
-		final URL url = getURL();
-
-		if (url != null) {
-			audioOutput = new AudioOutput(url);
-			audioOutput.play();
-		}
 
 		Platform.runLater(() -> {
+			final URL url = getURL();
+
+			if (url != null) {
+				audioOutput = new AudioOutput(url);
+				audioOutput.play();
+			}
 			stage = new Stage();
 			stage.initStyle(StageStyle.TRANSPARENT);
 

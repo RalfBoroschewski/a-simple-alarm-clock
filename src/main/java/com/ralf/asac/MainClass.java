@@ -147,17 +147,14 @@ public class MainClass extends Application {
 
 	private void doNotChangeIcons() {
 		if (oldPerformTime != null) {
-			oldPerformTime.doNotChangeIcons();
 			oldPerformTime.setPerformMode(PerformMode.RESTARTED);
 		}
 		if (oldPerformDuration != null) {
-			oldPerformDuration.doNotChangeIcons();
 			oldPerformDuration.setPerformMode(PerformMode.RESTARTED);
 		}
 	}
 
 	void createPerformTime(final int hour, final int minute) {
-		doNotChangeIcons();
 		oldPerformTime = new PerformTime(hour, minute, this);
 		oldPerformTime.start();
 	}

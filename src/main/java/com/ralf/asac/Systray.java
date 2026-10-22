@@ -90,8 +90,7 @@ class Systray {
 					case ONLY_IN_SYSTRAY:
 						showAtSystray(event);
 						break;
-					case MINIMIZE_TO_SYSTRAY:
-					case NOT_IN_SYSTRAY:
+					case MINIMIZE_TO_SYSTRAY, NOT_IN_SYSTRAY:
 					default:
 						showNormal();
 						break;
