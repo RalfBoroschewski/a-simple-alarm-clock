@@ -145,7 +145,7 @@ public class MainClass extends Application {
 	PerformTime oldPerformTime;
 	PerformDuration oldPerformDuration;
 
-	private void doNotChangeIcons() {
+	private void resetFormerPerform() {
 		if (oldPerformTime != null) {
 			oldPerformTime.setPerformMode(PerformMode.RESTARTED);
 		}
@@ -155,12 +155,13 @@ public class MainClass extends Application {
 	}
 
 	void createPerformTime(final int hour, final int minute) {
+		resetFormerPerform();
 		oldPerformTime = new PerformTime(hour, minute, this);
 		oldPerformTime.start();
 	}
 
 	void createPerformDuration(final long minutes, final RepeatAlarmData repeatAlarmData) {
-		doNotChangeIcons();
+		resetFormerPerform();
 		oldPerformDuration = new PerformDuration(minutes, repeatAlarmData, this);
 		oldPerformDuration.start();
 	}
