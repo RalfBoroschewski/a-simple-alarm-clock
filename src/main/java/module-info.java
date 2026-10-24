@@ -1,5 +1,5 @@
 
-module Asac {
+module Rat {
 
 	requires javafx.controls;
 	requires javafx.media;
