@@ -1,4 +1,4 @@
-package com.ralf.asac;
+package com.ralf.rat;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -62,7 +62,7 @@ public class MainClass extends Application {
 	}
 
 	private void update() {
-		final Point2D point = Asac.getCoordinatesofMiddleOfTheScreen(stage);
+		final Point2D point = Rat.getCoordinatesofMiddleOfTheScreen(stage);
 		stage.setX(point.getX());
 		stage.setY(point.getY());
 		mainPanel.update(point);

@@ -1,4 +1,4 @@
-package com.ralf.asac;
+package com.ralf.rat;
 
 import java.awt.AWTException;
 import java.awt.Point;
@@ -50,12 +50,12 @@ class Systray {
 			return;
 		}
 
-		if (Asac.getOperationSystem() == Asac.OperationSystem.KDE) {
+		if (Rat.getOperationSystem() == Rat.OperationSystem.KDE) {
 			trayIcon = null;
 			return;
 		}
 
-		final URL imageURL = ClassLoader.getSystemResource("alarm.png");
+		final URL imageURL = ClassLoader.getSystemResource("rat.png");
 		BufferedImage image = null;
 		try {
 			image = ImageIO.read(imageURL);
@@ -149,7 +149,7 @@ class Systray {
 		if (trayIcon == null) {
 			return;
 		}
-		final URL url = ClassLoader.getSystemResource("alarm.png");
+		final URL url = ClassLoader.getSystemResource("rat.png");
 
 		BufferedImage image = null;
 

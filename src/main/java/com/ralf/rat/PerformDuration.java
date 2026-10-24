@@ -1,4 +1,4 @@
-package com.ralf.asac;
+package com.ralf.rat;
 
 import javafx.application.Platform;
 import javafx.concurrent.Task;
@@ -78,7 +78,7 @@ class PerformDuration {
 				final String timeString = time + "";
 				mainPanel.setTimeDurationFieldText(timeString);
 
-				final String minutesString = time + Asac.getMinuteString(time);
+				final String minutesString = time + Rat.getMinuteString(time);
 
 				adjustIcons(time);
 				if (name.isBlank()) {
@@ -96,7 +96,7 @@ class PerformDuration {
 
 					if (performMode != PerformMode.NORMAL)
 						return 1;
-					Asac.sleep(1000L);
+					Rat.sleep(1000L);
 				}
 
 				if (performMode != PerformMode.NORMAL) {
@@ -173,9 +173,9 @@ class PerformDuration {
 		mainPanel.setRepeatButton(new RepeatAlarmData(minutes, name, alarmSoundData, oldAlarmsComboBoxValue));
 
 		if (minutes == 0) {
-			Asac.sleep(100); // avoid that the BellIcon vanishes after entering 0 in the timeDurationField
+			Rat.sleep(100); // avoid that the BellIcon vanishes after entering 0 in the timeDurationField
 		}
-		mainPanel.bellIcon = new BellIcon(name, alarmSoundData, minutes + Asac.getMinuteString(minutes));
+		mainPanel.bellIcon = new BellIcon(name, alarmSoundData, minutes + Rat.getMinuteString(minutes));
 		mainPanel.bellIcon.play();
 
 		Platform.runLater(() -> {

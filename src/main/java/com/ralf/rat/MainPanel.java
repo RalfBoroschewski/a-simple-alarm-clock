@@ -1,4 +1,4 @@
-package com.ralf.asac;
+package com.ralf.rat;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -314,7 +314,7 @@ public class MainPanel {
 
 	@SuppressWarnings("java:S6208")
 	String getDashForTitle() {
-		switch (Asac.getOperationSystem()) {
+		switch (Rat.getOperationSystem()) {
 		case KDE:
 			return "⸺";
 		case XFCE:
@@ -335,7 +335,7 @@ public class MainPanel {
 
 	@SuppressWarnings("java:S4507")
 	void setDeactivateIcon() {
-		final URL url = ClassLoader.getSystemResource("alarm.png");
+		final URL url = ClassLoader.getSystemResource("rat.png");
 		Image image = null;
 		try {
 			final InputStream inputStream = url.openStream();
@@ -400,7 +400,7 @@ public class MainPanel {
 			this.repeatAlarmData = repeatAlarmData;
 			Platform.runLater(() -> {
 				String text = MainClass.messages.getString("MainClass.repeat.button.part1") + repeatAlarmData.duration
-						+ Asac.getMinuteString(repeatAlarmData.duration)
+						+ Rat.getMinuteString(repeatAlarmData.duration)
 						+ MainClass.messages.getString("MainClass.repeat.button.part2");
 
 				if (repeatAlarmData.duration >= 0) {

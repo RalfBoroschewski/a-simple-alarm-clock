@@ -1,4 +1,4 @@
-package com.ralf.asac;
+package com.ralf.rat;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +30,7 @@ class AlarmSounds {
 			final List<String> paths = resourceList.getPaths();
 			for (String path : paths) {
 				if (testExtention(path, ".mp3") || testExtention(path, ".wav") || testExtention(path, ".aac")) {
-					if (path.equals(Asac.DEFAULT_SOUND_FILE)) {
+					if (path.equals(Rat.DEFAULT_SOUND_FILE)) {
 						path = MainClass.messages.getString("path.default");
 					}
 					AlarmSoundData alarmSoundData = new AlarmSoundData(path);

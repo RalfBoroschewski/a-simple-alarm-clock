@@ -1,0 +1,10 @@
+[Desktop Entry]
+Categories=Utility;Accessibility;
+Encoding=UTF-8
+Exec=/usr/share/ralfs-advanced-timer/ralfs-advanced-timer.sh
+GenericName=ralfs-advanced-timer
+Icon=/usr/share/ralfs-advanced-timer/rat.png
+Name=ralfs-advanced-timer
+Terminal=0
+Type=Application
+Version=1.0

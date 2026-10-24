@@ -1,4 +1,4 @@
-package com.ralf.asac;
+package com.ralf.rat;
 
 import java.awt.BasicStroke;
 import java.awt.Graphics2D;

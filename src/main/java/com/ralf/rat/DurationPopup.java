@@ -1,4 +1,4 @@
-package com.ralf.asac;
+package com.ralf.rat;
 
 class DurationPopup {
 
@@ -8,7 +8,7 @@ class DurationPopup {
 
 		for (final int minute : minutesList) {
 			if (minute != -1) {
-				final String minutesString = Asac.getMinuteString(minute);
+				final String minutesString = Rat.getMinuteString(minute);
 				listener.setMenuItem(minute, minutesString);
 			} else {
 				listener.addSeparator();

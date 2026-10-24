@@ -10,5 +10,5 @@ module Asac {
 	requires java.desktop;
 	requires javafx.graphics;
 
-	exports com.ralf.asac;
+	exports com.ralf.rat;
 }

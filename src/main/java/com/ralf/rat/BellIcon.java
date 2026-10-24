@@ -1,4 +1,4 @@
-package com.ralf.asac;
+package com.ralf.rat;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -106,7 +106,7 @@ class BellIcon {
 			stage.setAlwaysOnTop(true);
 			stage.show();
 
-			final Point2D point = Asac.getCoordinatesofMiddleOfTheScreen(stage);
+			final Point2D point = Rat.getCoordinatesofMiddleOfTheScreen(stage);
 
 			stage.setX(point.getX());
 			stage.setY(point.getY() - 200); // 200 is for avoiding that this window is
@@ -177,10 +177,10 @@ class BellIcon {
 			if (defaultSound.getName() != null) {
 				return getURLbyFilePath(defaultSound.getPath());
 			}
-			return ClassLoader.getSystemResource(Asac.DEFAULT_SOUND_FILE);
+			return ClassLoader.getSystemResource(Rat.DEFAULT_SOUND_FILE);
 		} else if (alarmSoundData.isResource()) {
 			if (alarmSoundData.getName().equals(MainClass.messages.getString("path.default"))) {
-				return ClassLoader.getSystemResource(Asac.DEFAULT_SOUND_FILE);
+				return ClassLoader.getSystemResource(Rat.DEFAULT_SOUND_FILE);
 			}
 			return ClassLoader.getSystemResource(alarmSoundData.getName());
 		} else {
@@ -192,14 +192,14 @@ class BellIcon {
 	private URL getURLbyFilePath(final String filePath) {
 		final File file = new File(filePath);
 		if (!file.isFile()) {
-			return ClassLoader.getSystemResource(Asac.DEFAULT_SOUND_FILE);
+			return ClassLoader.getSystemResource(Rat.DEFAULT_SOUND_FILE);
 		} else {
 			final URI uri = file.toURI();
 			try {
 				return uri.toURL();
 			} catch (MalformedURLException exception) {
 				exception.printStackTrace();
-				return ClassLoader.getSystemResource(Asac.DEFAULT_SOUND_FILE);
+				return ClassLoader.getSystemResource(Rat.DEFAULT_SOUND_FILE);
 			}
 		}
 	}
