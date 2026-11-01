@@ -13,7 +13,7 @@ class Preferences {
 	private static final String SEPARATOR = String.valueOf(new char[] { CHAR1, CHAR2, CHAR3 });
 
 	private static final java.util.prefs.Preferences PREFERENCES_ROOT = java.util.prefs.Preferences.userRoot()
-			.node("/com/ralf/asac");
+			.node("/com/ralf/rat");
 
 	private static final String ALARMS = "alarms";
 	private static final String SOUNDS = "sounds";

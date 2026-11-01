@@ -14,7 +14,7 @@
 		<maven.compiler.target>9</maven.compiler.target>
 
 		<javafx.version>23.0.2</javafx.version>
-		<mainClass>com.ralf.rat.Ralf</mainClass>
+		<mainClass>com.ralf.rat.Rat</mainClass>
 	</properties>
 
 
